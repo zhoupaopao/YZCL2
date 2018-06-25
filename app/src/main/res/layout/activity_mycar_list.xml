@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<include layout="@layout/first_title_icon" />
+    <RadioGroup
+        android:id="@+id/car_status"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/status_all"
+            android:checked="true"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:button="@null"
+            android:text="全部"
+            android:textColor="@drawable/radio_button_color1"/>
+        <RadioButton
+            android:id="@+id/status_yuqi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:button="@null"
+            android:text="逾期"
+            android:textColor="@drawable/radio_button_color1"/>
+        <RadioButton
+            android:id="@+id/status_zdgz"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:button="@null"
+            android:text="重点关注"
+            android:textColor="@drawable/radio_button_color1"/>
+    </RadioGroup>
+
+    <ListView
+        android:id="@+id/carlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+</LinearLayout>

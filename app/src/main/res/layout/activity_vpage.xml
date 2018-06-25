@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollViewMM"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:scrollbars="none"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/page1"
+                android:text="page1"
+                android:clickable="true"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/page2"
+                android:text="page2"
+                android:clickable="true"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/page3"
+                android:text="page3"
+                android:clickable="true"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/page4"
+                android:text="page4"
+                android:clickable="true"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:id="@+id/page5"
+                android:text="page5"
+                android:clickable="true"
+                android:gravity="center"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/vpage">
+
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

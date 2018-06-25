@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:layerType="software"
+    android:background="@color/red"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/fl_vp"
+            android:layout_width="match_parent"
+            android:clipChildren="false"
+            android:layout_height="200dp"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp"
+            android:paddingLeft="58dp"
+            android:paddingRight="58dp"
+            android:paddingTop="24dp"/>
+    <Button
+        android:id="@+id/show"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/fl_vp"
+        android:text="显示"/>
+    <Button
+        android:id="@+id/hide"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/show"
+        android:text="隐藏"/>
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:visibility="gone"></RelativeLayout>
+    </RelativeLayout>

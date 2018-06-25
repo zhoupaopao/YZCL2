@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/page_color"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/account_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/color_jianbian">
+
+        <include
+            android:id="@+id/layout_title"
+            layout="@layout/first_title1" />
+
+        <RelativeLayout
+            android:id="@+id/choose_customer"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/layout_title"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/icon_head"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_account" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/icon_head"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:text="瓜子总部"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:button="@drawable/checkbox"
+                    android:gravity="center_vertical"
+                    android:scaleX="0.90"
+                    android:scaleY="0.90"
+                    android:text="显示下级数据"
+                    android:textColor="@color/white"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_right_light" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_gw"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/layout_radius_white"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:translationZ="5dp"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius_white"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:text="高危报警"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:paddingLeft="50dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/gwbj_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:textSize="18dp"
+            android:textColor="@color/bj_text"
+            android:text="23"
+            android:gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_lx"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/layout_radius_white"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:translationZ="5dp"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius_white1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:text="离线报警"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:paddingLeft="50dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/lxbj_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:textSize="18dp"
+            android:textColor="@color/bj_text"
+            android:text="23"
+            android:gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_sb"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/layout_radius_white"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:translationZ="5dp"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius_white2"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:text="设备报警"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:paddingLeft="50dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/sbbj_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:textSize="18dp"
+            android:textColor="@color/bj_text"
+            android:text="23"
+            android:gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_wl"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/layout_radius_white"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:translationZ="5dp"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius_white3"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:text="电子围栏报警"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:paddingLeft="50dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/dzwlbj_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:textSize="18dp"
+            android:textColor="@color/bj_text"
+            android:text="23"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

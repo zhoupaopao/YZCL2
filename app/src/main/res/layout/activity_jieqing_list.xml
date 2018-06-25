@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<include layout="@layout/first_title_icon" />
+    <com.example.yzcl.mvp.ui.baseactivity.LinearListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_height="55dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/jq_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/car_person_name"
+                    android:textSize="14dp"
+                    android:text="2017年11月"/>
+                <TextView
+                    android:id="@+id/jq_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:textSize="13dp"
+                    android:textColor="@color/car_message_text"
+                    android:text="共计结清200台车辆"/>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/rili"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/rili"/>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/carlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+    </com.example.yzcl.mvp.ui.baseactivity.LinearListView>
+
+    
+
+</LinearLayout>

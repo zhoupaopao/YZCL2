@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/page_color">
+
+
+    <include layout="@layout/first_title" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+            <RelativeLayout
+                android:id="@+id/callmobile"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/layout_radius">
+
+                <TextView
+                    android:id="@+id/number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="400-4000-4000" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/callmobile"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="客服热线：周一至周五（09:00~18:00）"
+                android:textSize="12dp" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>

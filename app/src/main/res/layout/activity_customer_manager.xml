@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/page_color"
+    android:fitsSystemWindows="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <include layout="@layout/first_title_icon"/>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:layout_marginTop="10dp"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/layout_input_corner">
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/search"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+        <EditText
+            android:layout_toRightOf="@id/search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:hint="输入客户名称、用户账号、姓名"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:background="@null"
+            android:textColor="@color/input_text_color"
+            android:textColorHint="@color/input_text_color"
+            android:textSize="14dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>
+    <ListView
+        android:id="@+id/tree_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:divider="#aaa"
+        android:dividerHeight="1px"></ListView>
+</LinearLayout>
