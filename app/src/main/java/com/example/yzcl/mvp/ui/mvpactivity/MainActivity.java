@@ -33,6 +33,7 @@ import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.LoginBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.mvp.ui.baseactivity.CheckPermissionsActivity;
 import com.example.yzcl.utils.StatusBarUtil;
 import com.gyf.barlibrary.ImmersionBar;
 import com.loopj.android.http.AsyncHttpClient;
@@ -53,7 +54,7 @@ import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
 import cn.finalteam.okhttpfinal.RequestParams;
 import okhttp3.Headers;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends CheckPermissionsActivity {
     //登录页面
     private Button login;
     private TextView forgetpwd;

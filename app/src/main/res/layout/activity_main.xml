@@ -110,6 +110,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_border"
                 android:hint="@string/ed_yzm"
+                android:textColorHint="@color/input_hint_color"
                 android:textSize="14sp"
                 android:paddingLeft="5dp"/>
             <ImageView

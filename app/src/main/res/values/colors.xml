@@ -37,7 +37,7 @@
     <color name="view_backgroud">#f1f1f1</color>
     <color name="back_darkgray">#f7f7f7</color>
     <color name="divider_line">#d5d7dc</color>
-
+    <color name="bg_search">#f9f6f6</color>
 
     <color name="ios_btntext_blue">#007aff</color>
     <color name="text_title_11">#111111</color>
