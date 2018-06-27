@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="44dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:id="@+id/iv_warning"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/warning"/>
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginRight="15dp"
+        android:src="@mipmap/delete"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+    <TextView
+        android:id="@+id/his_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="1312123"
+        android:layout_toRightOf="@id/iv_warning"
+        android:layout_toLeftOf="@id/iv_delete"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

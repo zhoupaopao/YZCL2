@@ -37,6 +37,9 @@
             android:layout_marginLeft="8dp"
             android:gravity="center_vertical"
             android:layout_toRightOf="@id/icon_search"
+            android:iconifiedByDefault="false"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
             android:hint="@string/et_search"/>
     </RelativeLayout>
 </RelativeLayout>

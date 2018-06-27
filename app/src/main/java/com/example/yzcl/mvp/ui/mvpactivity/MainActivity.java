@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui.mvpactivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -72,12 +73,14 @@ public class MainActivity extends CheckPermissionsActivity {
     String TAG="MainActivity";
     String key;
     String image;
-
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = getApplication();
+        DialogUIUtils.init(mContext);
         //最有效的标题栏，同时遇到白色背景，同时当前api不支持字体变色
         //api4.4以上可以设置标题栏颜色，但是字体设置为深色需要6.0
         ImmersionBar.with(this)
