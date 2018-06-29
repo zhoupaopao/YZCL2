@@ -12,6 +12,10 @@
     <string name="notifyMsg">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>
     <string name="setting">设置</string>
     <string name="cancel">取消</string>
+    <string name="detail">详情</string>
+    <string name="ggyc">光感异常</string>
+    <string name="status_device">设备状态:</string>
+    <string name="status_offline">离线</string>
     <string name="search_history">搜索历史</string>
     <string name="clear">清空</string>
     <string name="et_search">请输入设备名、车架号、借款人</string>

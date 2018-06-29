@@ -30,7 +30,7 @@
             android:src="@mipmap/smallsearch"/>
         <EditText
             android:id="@+id/et_search"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
             android:textSize="14sp"

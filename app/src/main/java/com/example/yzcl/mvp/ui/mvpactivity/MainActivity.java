@@ -298,7 +298,6 @@ public class MainActivity extends CheckPermissionsActivity {
                 }else{
                     Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                DialogUIUtils.dismiss(dia);
 
             }
 
@@ -312,7 +311,6 @@ public class MainActivity extends CheckPermissionsActivity {
             @Override
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
-                DialogUIUtils.dismiss(dia);
 
             }
         });

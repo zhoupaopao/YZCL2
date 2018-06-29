@@ -166,7 +166,8 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                     case 7:
                         //更多
                         intent=new Intent();
-                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
+//                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
+                                                intent.setClass(HomePage.this, GunDongActivity.class);
                         startActivity(intent);
                         break;
 

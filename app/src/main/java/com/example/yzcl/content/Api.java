@@ -35,4 +35,9 @@ public class Api {
     public  static  String MonitorUrl="http://101.37.119.32:20200/";
     //模糊搜索设备名车架号
     public static final String queVehicleListForSea=MonitorUrl+"/operation/v1/monitor/queVehicleListForSea";
+    //获取车辆信息
+    public static final String queVehicleList=MonitorUrl+"/operation/v1/monitor/queVehicleList";
+    //获取车辆设备的GPS
+    public static final String queCarDeviceGps=MonitorUrl+"/devicegps/v1/queCarDeviceGps";
+
 }
