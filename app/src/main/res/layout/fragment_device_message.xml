@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_top_radius"
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
@@ -11,6 +12,7 @@
         android:layout_height="0dp"
         android:layout_weight="3">
         <TextView
+            android:id="@+id/device_name_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -27,6 +29,7 @@
             android:background="@color/device_msg"
             android:text="@string/ggyc"/>
         <TextView
+            android:id="@+id/dl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="电量10%"
@@ -36,6 +39,10 @@
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -46,12 +53,14 @@
             android:layout_height="wrap_content"
             android:text="@string/status_device"/>
         <TextView
+            android:id="@+id/online_status"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/device_msg"
             android:text="@string/status_offline"/>
         <TextView
+            android:id="@+id/offline_time"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,18 +69,87 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"></LinearLayout>
+        android:gravity="center_vertical"
+        android:layout_weight="2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/last_loc_time"/>
+        <TextView
+            android:id="@+id/last_loc_time"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2017-01-01 22:00:00"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"></LinearLayout>
+        android:gravity="center_vertical"
+        android:layout_weight="2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loc_type"/>
+        <TextView
+            android:id="@+id/loc_type"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/jz_loc"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"></LinearLayout>
+        android:gravity="center_vertical"
+        android:layout_weight="4">
+        <TextView
+            android:id="@+id/loc_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最后定位地址:江苏省无锡市锡山区云林街道风味路二号"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"></LinearLayout>
+        android:gravity="center_vertical"
+        android:layout_weight="3">
+        <TextView
+            android:id="@+id/open_colse_loc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/title_color"
+            android:text="@string/close_loc"/>
+        <TextView
+            android:id="@+id/xfzl"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:textColor="@color/title_color"
+            android:text="@string/xfzl"/>
+        <TextView
+            android:id="@+id/trajectory"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/title_color"
+            android:layout_height="match_parent"
+            android:text="@string/trajectory"/>
+        <TextView
+            android:id="@+id/navigation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/title_color"
+            android:text="@string/navigation"/>
+    </LinearLayout>
 
 </LinearLayout>

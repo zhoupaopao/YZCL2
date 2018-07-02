@@ -140,8 +140,9 @@ public class MainActivity extends CheckPermissionsActivity {
             //登录，需要验证是否有账号密码，有看看是否记住密码，请求接口，成功切换页面
             @Override
             public void onClick(View view) {
-                dia=DialogUIUtils.showLoading(MainActivity.this, "加载中...",false,false,false,false);
-                dia.show();
+
+
+                loginbtn();
 //                DialogUIUtils.showMdLoading(MainActivity.this, "加载中...",true,true,true,true);
 //                SharedPreferences.Editor editor=sp.edit();
 //
@@ -150,23 +151,7 @@ public class MainActivity extends CheckPermissionsActivity {
 //                editor.commit();
 //                waitme();
 
-                if (username.getText().toString().isEmpty()) {
-                    Log.i("in", "1");
-                    Toast.makeText(MainActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-                    DialogUIUtils.dismiss(dia);
-                } else if (password.getText().toString().isEmpty()) {
-                    Log.i("in", "2");
-                    Toast.makeText(MainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
-                    DialogUIUtils.dismiss(dia);
-                } else if(yzm.getText().toString().isEmpty()){
-                    Log.i("in", "3");
-                    Toast.makeText(MainActivity.this, "验证码不能为空", Toast.LENGTH_SHORT).show();
-                    DialogUIUtils.dismiss(dia);
-                }else {
-                    //用户名密码都有数据，请求登录接口
-                    Log.i("in", "3");
-                    login(username.getText().toString().trim(), password.getText().toString().trim(),yzm.getText().toString().trim());
-                }
+
 //                SharedPreferences.Editor editor=sp.edit();
 //                if(rempwd.isChecked()){
 //                    //被选中，直接自动登录
@@ -185,16 +170,38 @@ public class MainActivity extends CheckPermissionsActivity {
             }
         });
         //键盘上面的done的点击事件
-        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        yzm.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if(i== EditorInfo.IME_ACTION_GO){
-                    Toast.makeText(MainActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                    loginbtn();
                 }
                 return false;
             }
         });
 
+    }
+
+    private void loginbtn() {
+        dia=DialogUIUtils.showLoading(MainActivity.this, "登录中...",false,false,false,false);
+        dia.show();
+        if (username.getText().toString().isEmpty()) {
+            Log.i("in", "1");
+            Toast.makeText(MainActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+            DialogUIUtils.dismiss(dia);
+        } else if (password.getText().toString().isEmpty()) {
+            Log.i("in", "2");
+            Toast.makeText(MainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
+            DialogUIUtils.dismiss(dia);
+        } else if(yzm.getText().toString().isEmpty()){
+            Log.i("in", "3");
+            Toast.makeText(MainActivity.this, "验证码不能为空", Toast.LENGTH_SHORT).show();
+            DialogUIUtils.dismiss(dia);
+        }else {
+            //用户名密码都有数据，请求登录接口
+            Log.i("in", "3");
+            login(username.getText().toString().trim(), password.getText().toString().trim(),yzm.getText().toString().trim());
+        }
     }
 
     private void waitme() {
@@ -295,6 +302,7 @@ public class MainActivity extends CheckPermissionsActivity {
                         editor.commit();
                     handler.sendEmptyMessage(1);
                         Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+
                 }else{
                     Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -304,7 +312,7 @@ public class MainActivity extends CheckPermissionsActivity {
             @Override
             public void onFinish() {
                 super.onFinish();
-                DialogUIUtils.dismiss(dia);
+
 
             }
 
@@ -340,11 +348,14 @@ public class MainActivity extends CheckPermissionsActivity {
         public void run() {
             //更新界面
             pic_yzm.setImageBitmap(bm);
+            dia.dialog.dismiss();
         }
 
     };
     public void setpic(){
         //请求图片
+        dia=DialogUIUtils.showLoading(MainActivity.this, "请求中...",false,false,false,false);
+        dia.show();
         RequestParams paramss=new RequestParams();
         paramss.addFormDataPart("username","");
         paramss.addFormDataPart("password","");

@@ -16,6 +16,14 @@
     <string name="ggyc">光感异常</string>
     <string name="status_device">设备状态:</string>
     <string name="status_offline">离线</string>
+    <string name="last_loc_time">最后定位时间:</string>
+    <string name="loc_type">定位类型:</string>
+    <string name="jz_loc">基站定位</string>
+    <string name="close_loc">关闭追踪</string>
+    <string name="xfzl">下发指令</string>
+    <string name="trajectory">轨迹</string>
+    <string name="navigation">导航</string>
+    <string name="last_loc_address">最后定位地址:</string>
     <string name="search_history">搜索历史</string>
     <string name="clear">清空</string>
     <string name="et_search">请输入设备名、车架号、借款人</string>

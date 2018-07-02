@@ -126,6 +126,7 @@ public class GunDongActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
+                Log.i("onPageSelected: ", "onPageSelected: "+position);
             }
 
             @Override

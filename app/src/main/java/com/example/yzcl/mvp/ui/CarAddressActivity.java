@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,6 +30,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.dou361.dialogui.DialogUIUtils;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.DeviceMsPagerAdapter;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
@@ -48,6 +52,7 @@ public class CarAddressActivity extends BaseActivity {
     private ImageView back;
     Intent intent;
     ViewPager viewPager;
+//    RelativeLayout rll;
     private Marker mMarkerA;
     private Marker mMarkerB;
     private Marker mMarkerC;
@@ -65,6 +70,8 @@ public class CarAddressActivity extends BaseActivity {
     private double minlat=0;
     private double minlon=0;
     ArrayList<Fragment>fs;
+    private PopupWindow mPopupWindowDialog;// popupwindow
+
     private ArrayList<carDetailGPSBeans.carDetailGPSBean>datalist=new ArrayList<>();
 //    private RelativeLayout rl;
 
@@ -100,6 +107,7 @@ public class CarAddressActivity extends BaseActivity {
         mBaiduMap=mapView.getMap();
         MapStatusUpdate msu = MapStatusUpdateFactory.zoomTo(14.0f);
         mBaiduMap.setMapStatus(msu);
+//        rll=findViewById(R.id.rll);
 
 
     }
@@ -177,7 +185,7 @@ public class CarAddressActivity extends BaseActivity {
         Log.i(TAG, "zoom1: "+jl);
         Log.i(TAG, "zoom: "+j);
         //可以适当的减1
-        float zoom = j ;
+        float zoom = 18-j+3 ;
         MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, zoom);
         mBaiduMap.setMapStatus(u);
         mBaiduMap.animateMapStatus(u);
@@ -188,23 +196,42 @@ public class CarAddressActivity extends BaseActivity {
     private void setViewpager() {
         fs=new ArrayList<Fragment>();
         for(int i=0;i<datalist.size();i++){
+            if(i==0){
+                //是第一个
+                fs.add(new DeviceMessageFragment(datalist.get(datalist.size()-1)));
+            }
             fs.add(new DeviceMessageFragment(datalist.get(i)));
+            if(i==datalist.size()-1){
+                //是最后一个了
+                fs.add(new DeviceMessageFragment(datalist.get(0)));
+            }
+            Log.i(TAG, "setViewpager: 2222");
         }
         FragmentManager fm=getSupportFragmentManager();
         DeviceMsPagerAdapter adapter=new DeviceMsPagerAdapter(fm,fs,datalist);
         viewPager.setAdapter(adapter);
-        viewPager.setPageMargin(60);
+        viewPager.setPageMargin(25);
         // pageCount设置红缓存的页面数
         viewPager.setOffscreenPageLimit(2);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+//                Log.i(TAG, "onPageScrolled: "+position);
             }
 
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
+                Log.i(TAG, "onPageScrolled: "+position);
+                if(position==0||position>datalist.size()){
+                    //0和超过位数的不做处理，是自己添加的
+                }else{
+                    LatLng movell=new LatLng(Double.parseDouble(datalist.get(position-1).getDgm().getBlat()),Double.parseDouble(datalist.get(position-1).getDgm().getBlng()));
+                    MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(movell);
+                    //对地图的中心点进行更新，
+//                    mBaiduMap.setMapStatus(mapstatusupdate);
+                    mBaiduMap.animateMapStatus(mapstatusupdate);
+                }
             }
 
             @Override
@@ -214,9 +241,11 @@ public class CarAddressActivity extends BaseActivity {
 //        若当前为第一张，设置页面为倒数第二张
                 if (currentPosition == 0) {
                     viewPager.setCurrentItem(fs.size()-2,false);
+                    Log.i(TAG, "onPageScrollStateChanged: 113");
                 } else if (currentPosition == fs.size()-1) {
 //        若当前为倒数第一张，设置页面为第二张
                     viewPager.setCurrentItem(1,false);
+                    Log.i(TAG, "onPageScrollStateChanged: 114");
                 }
             }
         });
@@ -288,15 +317,22 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.i(TAG, marker.getTitle());
-
-
                 //设置经纬度
+                int item=Integer.parseInt(marker.getTitle());
+                viewPager.setCurrentItem(item+1);
                 MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(marker.getPosition());
                 //对地图的中心点进行更新，
                 mBaiduMap.setMapStatus(mapstatusupdate);
                 //显示下方的滚动列表
-                viewPager.setVisibility(View.VISIBLE);
-                viewPager.setAnimation(AnimationUtil.moveToViewLocation());
+                if(viewPager.getVisibility()==View.VISIBLE){
+                    //当前已经显示了
+                    //移动到指定的page
+
+                }else{
+                    viewPager.setVisibility(View.VISIBLE);
+                    viewPager.setAnimation(AnimationUtil.moveToViewLocation());
+                }
+
                 return true;
             }
         });
@@ -307,6 +343,20 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        car_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //显示车辆信息弹出框
+                View rootView = View.inflate(CarAddressActivity.this, R.layout.view_alert_window, null);
+                final Dialog dialog = DialogUIUtils.showCustomAlert(CarAddressActivity.this, rootView, Gravity.CENTER, true, false).show();
+                rootView.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogUIUtils.dismiss(dialog);
+                    }
+                });
             }
         });
     }
