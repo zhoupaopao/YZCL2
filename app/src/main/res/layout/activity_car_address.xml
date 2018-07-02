@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:clipChildren="false"
+    android:id="@+id/root_main4"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <include android:id="@+id/title_l" layout="@layout/layout_title_car_address"/>
     <com.baidu.mapapi.map.MapView

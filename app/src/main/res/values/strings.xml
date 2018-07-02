@@ -26,6 +26,7 @@
     <string name="last_loc_address">最后定位地址:</string>
     <string name="search_history">搜索历史</string>
     <string name="clear">清空</string>
+    <string name="impor_care">重点关注</string>
     <string name="et_search">请输入设备名、车架号、借款人</string>
 
 

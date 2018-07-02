@@ -1,7 +1,12 @@
 package com.example.yzcl.mvp.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +16,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -70,7 +78,7 @@ public class CarAddressActivity extends BaseActivity {
     private double minlat=0;
     private double minlon=0;
     ArrayList<Fragment>fs;
-    private PopupWindow mPopupWindowDialog;// popupwindow
+    private PopupWindow popupWindow;// popupwindow
 
     private ArrayList<carDetailGPSBeans.carDetailGPSBean>datalist=new ArrayList<>();
 //    private RelativeLayout rl;
@@ -349,17 +357,54 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //显示车辆信息弹出框
-                View rootView = View.inflate(CarAddressActivity.this, R.layout.view_alert_window, null);
-                final Dialog dialog = DialogUIUtils.showCustomAlert(CarAddressActivity.this, rootView, Gravity.CENTER, true, false).show();
-                rootView.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                View rootView = findViewById(R.id.root_main4); // 當前頁面的根佈局
+                LayoutInflater mLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                ViewGroup menuView = (ViewGroup) mLayoutInflater.inflate(
+                        R.layout.view_alert_window, null, true);
+                final PopupWindow pw = new PopupWindow(menuView, ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+                pw.setBackgroundDrawable(new BitmapDrawable());//设置背景透明以便点击外部消失
+                pw.setOutsideTouchable(true); // 设置是否允许在外点击使其消失,到底有用没?
+                pw.setTouchable(true); // 设置popupwindow可点击
+                pw.setFocusable(true);
+                pw.showAtLocation(rootView, Gravity.CENTER,0,0);
+//                View popView = LayoutInflater.from(mContext).inflate(
+//                        R.layout.choose_window, null);
+                ImageView close=menuView.findViewById(R.id.close);
+                ListView device_list=menuView.findViewById(R.id.device_list);//显示设备列表
+                TextView owner_name=menuView.findViewById(R.id.owner_name);//车主姓名
+                @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
+                TextView phone_num=menuView.findViewById(R.id.phone_num);//手机号码
+                TextView car_vin=menuView.findViewById(R.id.car_vin);//车架号
+                TextView car_num=menuView.findViewById(R.id.car_num);//车牌号
+                TextView car_type=menuView.findViewById(R.id.car_type);//车型
+                TextView home_address=menuView.findViewById(R.id.home_address);//家庭地址
+                TextView work_address=menuView.findViewById(R.id.work_address);//工作地址
+                TextView customer=menuView.findViewById(R.id.customer);//所属客户
+                close.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        DialogUIUtils.dismiss(dialog);
+                    public void onClick(View view) {
+                        pw.dismiss();
                     }
                 });
+//                popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+//                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//                popupWindow.setOutsideTouchable(true);
+//                popupWindow.setFocusable(true);
+//                popupWindow.showAtLocation(rootView, Gravity.CENTER , 0, 0);
+//                View rootView = View.inflate(CarAddressActivity.this, R.layout.view_alert_window, null);
+//                final Dialog dialog = DialogUIUtils.showCustomAlert(CarAddressActivity.this, rootView, Gravity.CENTER, true, false).show();
+//                rootView.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        DialogUIUtils.dismiss(dialog);
+//                    }
+//                });
             }
         });
     }
+
 
     @Override
     protected void onResume() {
