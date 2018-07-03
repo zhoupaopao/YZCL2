@@ -1,34 +1,65 @@
 package com.example.yzcl.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.yzcl.R;
+import com.example.yzcl.mvp.model.bean.CarDeviceBean;
 
 /**
  * Created by 13126 on 2018/7/2.
  */
 
 public class DeviceListAdapter extends BaseAdapter {
-    public DeviceListAdapter(){
-
+    private CarDeviceBean carDeviceBean;
+    private Context context;
+    public DeviceListAdapter(Context context,CarDeviceBean carDeviceBean){
+        this.carDeviceBean=carDeviceBean;
+        this.context=context;
     }
     @Override
     public int getCount() {
-        return 0;
+        return carDeviceBean.getList().size();
     }
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return carDeviceBean.getList().get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        return null;
+        ViewHolder viewHolder=null;
+        if(view==null){
+            viewHolder=new ViewHolder();
+            view= LayoutInflater.from(context).inflate(R.layout.list_device,viewGroup,false);
+            viewHolder.bind_time=view.findViewById(R.id.bind_time);
+            viewHolder.device_name=view.findViewById(R.id.device_name);
+            viewHolder.install_loc=view.findViewById(R.id.install_loc);
+            view.setTag(viewHolder);
+        }else{
+            viewHolder= (ViewHolder) view.getTag();
+        }
+        String bindtime=carDeviceBean.getList().get(i).getBindtime();
+        String[]aaa=bindtime.split(" ");
+        viewHolder.bind_time.setText("绑车时间:"+aaa[0]);
+        viewHolder.device_name.setText(carDeviceBean.getList().get(i).getInternalnum()+"/"+carDeviceBean.getList().get(i).getDevicetypename());
+        viewHolder.install_loc.setText("安装位置："+carDeviceBean.getList().get(i).getInstall_part());
+        return view;
+    }
+    private class ViewHolder{
+        TextView device_name;
+        TextView bind_time;
+        TextView install_loc;
     }
 }

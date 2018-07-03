@@ -2,19 +2,29 @@ package com.example.yzcl.mvp.ui.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.TieBean;
+import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Lenovo on 2018/6/29.
@@ -92,9 +102,67 @@ public class DeviceMessageFragment extends Fragment{
         loc_type.setText(datalist.getDgm().getType());
         //最后定位地址
         loc_address.setText("最后定位地址:"+datalist.getDgm().getPostion());
+        //导航
+        navigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //召唤弹出框
+                List<TieBean> strings = new ArrayList<TieBean>();
+                strings.add(new TieBean("百度地图"));
+                strings.add(new TieBean("高德地图"));
+                strings.add(new TieBean("腾讯地图"));
+                DialogUIUtils.showSheet(getActivity(), strings, "取消", Gravity.BOTTOM, true, true, new DialogUIItemListener() {
+                    @Override
+                    public void onItemClick(CharSequence text, int position) {
+                        switch (position){
+                            case 0:
+                                //先判断是否安装了第三方地图软件
+                                if(isPackageInstalled("com.baidu.BaiduMap")){
+                                    Toast.makeText(getActivity(),"正在为你打开百度地图",Toast.LENGTH_SHORT).show();
+                                    // 百度地图
+                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("baidumap://map/geocoder?location=" + datalist.getDgm().getBlat() + "," +datalist.getDgm().getBlng() ));
+                                    getContext().startActivity(naviIntent);
+                                }else{
+                                    Toast.makeText(getActivity(),"您未安装百度地图",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            case 1:
+                                if(isPackageInstalled("com.autonavi.minimap")){
+                                    Toast.makeText(getActivity(),"正在为你打开高德地图",Toast.LENGTH_SHORT).show();
+                                    // 高德地图
+                                    Log.i(TAG, "onItemClick: "+ datalist.getDgm().getBlat() +","+datalist.getDgm().getBlng());
+                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("androidamap://route?sourceApplication=appName&slat=&slon=&sname=我的位置&dlat="+ datalist.getDgm().getBlat() +"&dlon="+datalist.getDgm().getBlng() +"&dname=目的地&dev=0&t=2"));
+                                    getContext().startActivity(naviIntent);
+                                }else{
+                                    Toast.makeText(getActivity(),"您未安装高德地图",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            case 2:
+                                if(isPackageInstalled("com.tencent.map")){
+                                    // 腾讯地图
 
+                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("qqmap://map/routeplan?type=drive&from=&fromcoord=&to=目的地&tocoord=" + datalist.getDgm().getBlat() + "," + datalist.getDgm().getBlng() + "&policy=0&referer=appName"));
+                                    getContext().startActivity(naviIntent);
+                                    Toast.makeText(getActivity(),"正在为你打开腾讯地图",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getActivity(),"您未安装腾讯地图",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+
+                        }
+                    }
+
+                    @Override
+                    public void onBottomBtnClick() {
+                    }
+                }).show();
+            }
+        });
     }
-
+    //判断是否安装第三方软件
+    public static boolean isPackageInstalled(String packageName) {
+        return new File("/data/data/" + packageName).exists();
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

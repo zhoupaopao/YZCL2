@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="车主姓名:赵丽丽"/>
+                    android:text="车主姓名：赵丽丽"/>
                 <TextView
                     android:id="@+id/car_status"
                     android:layout_width="wrap_content"
@@ -74,23 +74,25 @@
                 android:id="@+id/car_type"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center_vertical"
             android:text="车型：奥迪-奥迪A4L"/>
-            <TextView
-                android:id="@+id/home_address"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="家庭地址：深圳市罗湖区莲湖路"/>
+            <!--<TextView-->
+                <!--android:id="@+id/home_address"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="家庭地址：深圳市罗湖区莲湖路"/>-->
             <TextView
                 android:id="@+id/work_address"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
+                android:lines="2"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:text="工作地址：深圳市罗湖区莲湖路"/>
+                android:text="联系地址：深圳市罗湖区莲湖路"/>
             <TextView
                 android:id="@+id/customer"
                 android:layout_width="wrap_content"
@@ -116,7 +118,7 @@
             android:id="@+id/device_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/warning_color"></ListView>
+            android:background="@drawable/list_bottom_radius"></ListView>
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"

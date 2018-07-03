@@ -304,6 +304,7 @@ public class MainActivity extends CheckPermissionsActivity {
                         Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 
                 }else{
+                    DialogUIUtils.dismiss(dia);
                     Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

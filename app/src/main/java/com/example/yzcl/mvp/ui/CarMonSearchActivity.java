@@ -62,6 +62,7 @@ public class CarMonSearchActivity extends BaseActivity {
     private RelativeLayout rl_search_history;
     private ArrayList<CarMonSearchListBean.CarSearchBean>carSearchBeans;
     private String TAG="CarMonSearchActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -3,7 +3,9 @@ package com.example.yzcl.mvp.ui;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -40,7 +42,12 @@ import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.dou361.dialogui.DialogUIUtils;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.DeviceListAdapter;
 import com.example.yzcl.adapter.DeviceMsPagerAdapter;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
+import com.example.yzcl.mvp.model.bean.CarDeviceBean;
+import com.example.yzcl.mvp.model.bean.CarMessageBean;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.presenter.AnimationUtil;
 import com.example.yzcl.mvp.ui.Fragment.DeviceMessageFragment;
@@ -48,6 +55,12 @@ import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 import java.util.ArrayList;
+
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 
 /**
  * Created by Lenovo on 2018/6/28.
@@ -79,7 +92,11 @@ public class CarAddressActivity extends BaseActivity {
     private double minlon=0;
     ArrayList<Fragment>fs;
     private PopupWindow popupWindow;// popupwindow
-
+    private String carId="";//车辆id
+    private CarMessageBean carMessageBean;
+    private CarDeviceBean carDeviceBean;
+    private SharedPreferences sp;
+    private View zzc;
     private ArrayList<carDetailGPSBeans.carDetailGPSBean>datalist=new ArrayList<>();
 //    private RelativeLayout rl;
 
@@ -105,6 +122,7 @@ public class CarAddressActivity extends BaseActivity {
 
     private void initView() {
         intent=getIntent();
+        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         car_name=findViewById(R.id.car_name);
         car_vin=findViewById(R.id.car_vin);
         car_detail=findViewById(R.id.car_detail);
@@ -116,7 +134,7 @@ public class CarAddressActivity extends BaseActivity {
         MapStatusUpdate msu = MapStatusUpdateFactory.zoomTo(14.0f);
         mBaiduMap.setMapStatus(msu);
 //        rll=findViewById(R.id.rll);
-
+        zzc=findViewById(R.id.zzc);
 
     }
 
@@ -316,6 +334,7 @@ public class CarAddressActivity extends BaseActivity {
         arraycar=JSONArray.parseArray(carlist);
         JSONObject JOdevice=arraycar.getJSONObject(0);
         carDetailGPSBean=JSONObject.parseObject(JOdevice.toString(),carDetailGPSBeans.carDetailGPSBean.class);
+        carId=carDetailGPSBean.getCar_id();
         car_name.setText(carDetailGPSBean.getCar_no());
         car_vin.setText(carDetailGPSBean.getVin());
         //显示marker覆盖物
@@ -356,38 +375,9 @@ public class CarAddressActivity extends BaseActivity {
         car_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //显示车辆信息弹出框
-                View rootView = findViewById(R.id.root_main4); // 當前頁面的根佈局
-                LayoutInflater mLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                ViewGroup menuView = (ViewGroup) mLayoutInflater.inflate(
-                        R.layout.view_alert_window, null, true);
-                final PopupWindow pw = new PopupWindow(menuView, ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                //获取车辆信息
+                achieveCarMessage();
 
-                pw.setBackgroundDrawable(new BitmapDrawable());//设置背景透明以便点击外部消失
-                pw.setOutsideTouchable(true); // 设置是否允许在外点击使其消失,到底有用没?
-                pw.setTouchable(true); // 设置popupwindow可点击
-                pw.setFocusable(true);
-                pw.showAtLocation(rootView, Gravity.CENTER,0,0);
-//                View popView = LayoutInflater.from(mContext).inflate(
-//                        R.layout.choose_window, null);
-                ImageView close=menuView.findViewById(R.id.close);
-                ListView device_list=menuView.findViewById(R.id.device_list);//显示设备列表
-                TextView owner_name=menuView.findViewById(R.id.owner_name);//车主姓名
-                @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
-                TextView phone_num=menuView.findViewById(R.id.phone_num);//手机号码
-                TextView car_vin=menuView.findViewById(R.id.car_vin);//车架号
-                TextView car_num=menuView.findViewById(R.id.car_num);//车牌号
-                TextView car_type=menuView.findViewById(R.id.car_type);//车型
-                TextView home_address=menuView.findViewById(R.id.home_address);//家庭地址
-                TextView work_address=menuView.findViewById(R.id.work_address);//工作地址
-                TextView customer=menuView.findViewById(R.id.customer);//所属客户
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pw.dismiss();
-                    }
-                });
 //                popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
 //                popupWindow.setBackgroundDrawable(new BitmapDrawable());
 //                popupWindow.setOutsideTouchable(true);
@@ -401,6 +391,112 @@ public class CarAddressActivity extends BaseActivity {
 //                        DialogUIUtils.dismiss(dialog);
 //                    }
 //                });
+            }
+        });
+    }
+
+    private void achieveCarMessage() {
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("id",carId);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getCarMessageById+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, "onSuccess: "+jsonObject.toString());
+                carMessageBean=JSONObject.parseObject(jsonObject.toString(),CarMessageBean.class);
+                //请求设备信息（设备列表）
+                achieveDeviceMessage();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+
+            }
+        });
+    }
+
+    private void achieveDeviceMessage() {
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("id",carId);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getDeviceMessageById+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, "onSuccess: "+jsonObject.toString());
+                carDeviceBean=JSONObject.parseObject(jsonObject.toString(),CarDeviceBean.class);
+                //显示车辆弹出框
+                showPopwindow();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+
+            }
+        });
+    }
+    public void backgroundAlpha(float bgAlpha)
+    {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
+    private void showPopwindow() {
+        //显示车辆信息弹出框
+        View rootView = findViewById(R.id.root_main4); // 當前頁面的根佈局
+        zzc.setVisibility(View.VISIBLE);
+        LayoutInflater mLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup menuView = (ViewGroup) mLayoutInflater.inflate(
+                R.layout.view_alert_window, null, true);
+        final PopupWindow pw = new PopupWindow(menuView, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        pw.setBackgroundDrawable(new BitmapDrawable());//设置背景透明以便点击外部消失
+        pw.setOutsideTouchable(true); // 设置是否允许在外点击使其消失,到底有用没?
+        pw.setTouchable(true); // 设置popupwindow可点击
+        pw.setFocusable(true);
+        pw.showAtLocation(rootView, Gravity.CENTER,0,0);
+        pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                zzc.setVisibility(View.GONE);
+            }
+        });
+//        backgroundAlpha((float) 0.5);
+//                View popView = LayoutInflater.from(mContext).inflate(
+//                        R.layout.choose_window, null);
+        ImageView close=menuView.findViewById(R.id.close);
+        ListView device_list=menuView.findViewById(R.id.device_list);//显示设备列表
+        TextView owner_name=menuView.findViewById(R.id.owner_name);//车主姓名
+        @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
+        TextView phone_num=menuView.findViewById(R.id.phone_num);//手机号码
+        TextView car_vin=menuView.findViewById(R.id.car_vin);//车架号
+        TextView car_num=menuView.findViewById(R.id.car_num);//车牌号
+        TextView car_type=menuView.findViewById(R.id.car_type);//车型
+//        TextView home_address=menuView.findViewById(R.id.home_address);//家庭地址
+        TextView work_address=menuView.findViewById(R.id.work_address);//工作地址
+        TextView customer=menuView.findViewById(R.id.customer);//所属客户
+        owner_name.setText("车主姓名："+carMessageBean.getObject().getPledger().getName());
+        car_status.setText("未知没写");
+        phone_num.setText("手机号码："+carMessageBean.getObject().getPledger().getPhone());
+        car_vin.setText("车架号："+carMessageBean.getObject().getVin());
+        car_num.setText("车牌号："+carMessageBean.getObject().getCar_no());
+        car_type.setText("车型："+carMessageBean.getObject().getCar_brand());
+//        home_address.setText(carMessageBean.getObject().getCar_brand());
+        work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
+        customer.setText("所属客户："+carMessageBean.getObject().getSystemgroup().getGroup_name());
+        DeviceListAdapter adapter=new DeviceListAdapter(CarAddressActivity.this,carDeviceBean);
+        device_list.setAdapter(adapter);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
             }
         });
     }

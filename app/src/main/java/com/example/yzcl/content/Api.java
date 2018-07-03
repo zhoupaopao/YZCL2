@@ -39,5 +39,9 @@ public class Api {
     public static final String queVehicleList=MonitorUrl+"/operation/v1/monitor/queVehicleList";
     //获取车辆设备的GPS
     public static final String queCarDeviceGps=MonitorUrl+"/devicegps/v1/queCarDeviceGps";
+    //获取车辆信息
+    public static final String getCarMessageById=MonitorUrl+"/operation/v1/vehicleManage/getCarMessageById";
+    //获取设备信息
+    public static final String getDeviceMessageById=MonitorUrl+"/operation/v1/vehicleManage/getDeviceMessageById";
 
 }
