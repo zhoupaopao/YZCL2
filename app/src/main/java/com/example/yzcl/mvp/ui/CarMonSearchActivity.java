@@ -152,11 +152,16 @@ public class CarMonSearchActivity extends BaseActivity {
                                             .getCurrentFocus().getWindowToken(),
                                     InputMethodManager.HIDE_NOT_ALWAYS);
                     // 搜索，进行自己要的操作...
-                    String search_list_last=sp.getString("search_list","");
-                    SharedPreferences.Editor editor=sp.edit();
-                    editor.putString("search_list",search_list_last+et_search.getText().toString().trim()+",");
-                    editor.commit();
-                    queVehicleListForSea(et_search.getText().toString().trim());
+                    if(et_search.getText().toString().trim().equals("")){
+                        Toast.makeText(CarMonSearchActivity.this,"搜索字符不能为空",Toast.LENGTH_SHORT).show();
+                    }else{
+                        String search_list_last=sp.getString("search_list","");
+                        SharedPreferences.Editor editor=sp.edit();
+                        editor.putString("search_list",search_list_last+et_search.getText().toString().trim()+",");
+                        editor.commit();
+                        queVehicleListForSea(et_search.getText().toString().trim());
+                    }
+
                     return true;
                 }
                 return false;
@@ -184,78 +189,82 @@ public class CarMonSearchActivity extends BaseActivity {
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
-                Toast.makeText(CarMonSearchActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
                 CarMonSearchListBean carMonSearchListBean=JSONObject.parseObject(jsonObject.toString(),CarMonSearchListBean.class);
-                carSearchBeans=carMonSearchListBean.getList();
-                //当点击搜索后需要将搜索列表显示，历史记录列表需要隐藏
-                search_recycleview.setVisibility(View.VISIBLE);
-                recycleview.setVisibility(View.GONE);
-                rl_search_history.setVisibility(View.GONE);
-                SearchRecyclerAdapter searchRecyclerAdapter=new SearchRecyclerAdapter(CarMonSearchActivity.this,carSearchBeans);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(CarMonSearchActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                search_recycleview.setLayoutManager(layoutManager);
-                search_recycleview.setAdapter(searchRecyclerAdapter);
-                search_recycleview.addItemDecoration(new DividerItemDecoration(CarMonSearchActivity.this, DividerItemDecoration.VERTICAL));
-                search_recycleview.addOnItemTouchListener(new RecyclerItemClickListener(CarMonSearchActivity.this,new RecyclerItemClickListener.OnItemClickListener() {
+                if(carMonSearchListBean.isSuccess()){
+                    carSearchBeans=carMonSearchListBean.getList();
+                    //当点击搜索后需要将搜索列表显示，历史记录列表需要隐藏
+                    search_recycleview.setVisibility(View.VISIBLE);
+                    recycleview.setVisibility(View.GONE);
+                    rl_search_history.setVisibility(View.GONE);
+                    SearchRecyclerAdapter searchRecyclerAdapter=new SearchRecyclerAdapter(CarMonSearchActivity.this,carSearchBeans);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(CarMonSearchActivity.this);
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    search_recycleview.setLayoutManager(layoutManager);
+                    search_recycleview.setAdapter(searchRecyclerAdapter);
+                    search_recycleview.addItemDecoration(new DividerItemDecoration(CarMonSearchActivity.this, DividerItemDecoration.VERTICAL));
+                    search_recycleview.addOnItemTouchListener(new RecyclerItemClickListener(CarMonSearchActivity.this,new RecyclerItemClickListener.OnItemClickListener() {
 
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        CarMonSearchListBean.CarSearchBean carSearchBean= carSearchBeans.get(position);
-                        //点击具体的车辆
-                        //请求具体的车辆信息
-                        RequestParams params1=new RequestParams();
-                        //因为传递的是json数据，所以需要设置header和body
-                        params1.addHeader("Content-Type","application/json");
-                        JSONObject jsonObject1=new JSONObject();
-                        jsonObject1.put("car_id",carSearchBean.getId());
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            CarMonSearchListBean.CarSearchBean carSearchBean= carSearchBeans.get(position);
+                            //点击具体的车辆
+                            //请求具体的车辆信息
+                            RequestParams params1=new RequestParams();
+                            //因为传递的是json数据，所以需要设置header和body
+                            params1.addHeader("Content-Type","application/json");
+                            JSONObject jsonObject1=new JSONObject();
+                            jsonObject1.put("car_id",carSearchBean.getId());
 //                        jsonObject1.put("pagesize",10);
 //                        jsonObject1.put("page",1);
-                        Log.i(TAG, Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""));
-                        params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
-                        HttpRequest.post(Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
-                            @Override
-                            protected void onSuccess(Headers headers, JSONObject jsonObject) {
-                                super.onSuccess(headers, jsonObject);
-                                Log.i(TAG, jsonObject.toString());
-                                carDetailGPSBeans carDetailGPSBeans=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.class);
-                                if(carDetailGPSBeans.isSuccess()){
-                                    //请求成功
-                                    //显示点
-                                    ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
-                                    Intent intent=new Intent();
-                                    intent.setClass(CarMonSearchActivity.this,CarAddressActivity.class);
+                            Log.i(TAG, Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""));
+                            params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                            HttpRequest.post(Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                                @Override
+                                protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                                    super.onSuccess(headers, jsonObject);
+                                    Log.i(TAG, jsonObject.toString());
+                                    carDetailGPSBeans carDetailGPSBeans=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.class);
+                                    if(carDetailGPSBeans.isSuccess()){
+                                        //请求成功
+                                        //显示点
+                                        ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
+                                        Intent intent=new Intent();
+                                        intent.setClass(CarMonSearchActivity.this,CarAddressActivity.class);
 //                                    Bundle b=new Bundle();
 //                                    b.put("pose_title", pose_title);
 //                                    intent.putExtras(b);
-                                    intent.putExtra("carDetailGPS", jsonObject.get("list").toString());
-                                    startActivity(intent);
+                                        intent.putExtra("carDetailGPS", jsonObject.get("list").toString());
+                                        startActivity(intent);
 
-                                }else{
-                                    DialogUIUtils.showToast("网络异常");
+                                    }else{
+                                        Toast.makeText(CarMonSearchActivity.this,carDetailGPSBeans.getMessage(),Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onStart() {
-                                super.onStart();
-                                dialog= DialogUIUtils.showLoading(CarMonSearchActivity.this,"加载中...",true,false,false,true);
-                                dialog.show();
-                            }
+                                @Override
+                                public void onStart() {
+                                    super.onStart();
+                                    dialog= DialogUIUtils.showLoading(CarMonSearchActivity.this,"加载中...",true,false,false,true);
+                                    dialog.show();
+                                }
 
-                            @Override
-                            public void onFinish() {
-                                super.onFinish();
-                                dialog.dialog.dismiss();
-                            }
-                        });
-                    }
+                                @Override
+                                public void onFinish() {
+                                    super.onFinish();
+                                    dialog.dialog.dismiss();
+                                }
+                            });
+                        }
 
-                    @Override
-                    public void onLongClick(View view, int posotion) {
+                        @Override
+                        public void onLongClick(View view, int posotion) {
 
-                    }
-                }));
+                        }
+                    }));
+                }else{
+                    Toast.makeText(CarMonSearchActivity.this,carMonSearchListBean.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override

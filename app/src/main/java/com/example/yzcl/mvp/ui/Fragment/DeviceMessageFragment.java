@@ -20,6 +20,7 @@ import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
+import com.example.yzcl.mvp.ui.XfzlActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -156,6 +157,15 @@ public class DeviceMessageFragment extends Fragment{
                     public void onBottomBtnClick() {
                     }
                 }).show();
+            }
+        });
+        //下发指令
+        xfzl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(getActivity(), XfzlActivity.class);
+                startActivity(intent);
             }
         });
     }

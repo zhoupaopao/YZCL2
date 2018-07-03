@@ -123,6 +123,7 @@
         <activity android:name="com.example.yzcl.mvp.ui.VehicleMonitoringActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.CarMonSearchActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.CarAddressActivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.XfzlActivity"></activity>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
