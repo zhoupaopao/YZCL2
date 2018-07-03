@@ -17,8 +17,24 @@ public class XfzlActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_xfzl);
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
+        initView();
+        initData();
+        initListener();
+    }
+
+    private void initView() {
+
+    }
+
+    private void initData() {
+
+    }
+
+    private void initListener() {
+
     }
 }
