@@ -20,7 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -98,6 +101,10 @@ public class CarAddressActivity extends BaseActivity {
     private SharedPreferences sp;
     private View zzc;
     private ArrayList<carDetailGPSBeans.carDetailGPSBean>datalist=new ArrayList<>();
+    private LinearLayout singler;
+    private RelativeLayout question;
+    private int nowwarn=1;
+
 //    private RelativeLayout rl;
 
     LatLngBounds bounds = new LatLngBounds.Builder().build();
@@ -135,6 +142,8 @@ public class CarAddressActivity extends BaseActivity {
         mBaiduMap.setMapStatus(msu);
 //        rll=findViewById(R.id.rll);
         zzc=findViewById(R.id.zzc);
+        question=findViewById(R.id.question);
+        singler=findViewById(R.id.singler);
 
     }
 
@@ -366,6 +375,8 @@ public class CarAddressActivity extends BaseActivity {
     }
 
     private void initListener() {
+        final Animation mShowAction = AnimationUtils.loadAnimation(this, R.anim.alpha_in);
+        final Animation mHiddenAction = AnimationUtils.loadAnimation(this, R.anim.alpha_out);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -391,6 +402,24 @@ public class CarAddressActivity extends BaseActivity {
 //                        DialogUIUtils.dismiss(dialog);
 //                    }
 //                });
+            }
+        });
+        question.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //伸展或者收缩提醒
+                if(nowwarn==1){
+                    //展示
+                    singler.setVisibility(View.VISIBLE);
+                    singler.startAnimation(mShowAction);
+                    nowwarn=2;
+                }else{
+                    //收缩
+                    singler.setVisibility(View.GONE);
+                    singler.startAnimation(mHiddenAction);
+                    nowwarn=1;
+                }
+
             }
         });
     }

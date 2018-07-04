@@ -50,10 +50,11 @@
 
     <color name="light_green">#007500</color>
 
-
+    <color name="question">#FC6621</color>
     <color name="line_dd">#dddddd</color>
-
-
+    <color name="tv_warning">#FC361D</color>
+    <color name="tv_offline">#FD9827</color>
+    <color name="tv_online">#20B222</color>
     <color name="bg_white">#ffffff</color>
 
     <color name="text_gray">#999999</color>
