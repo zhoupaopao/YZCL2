@@ -136,6 +136,7 @@
             android:enabled="true"
             android:process=":remote" >
         </service>
+
     </application>
 
 </manifest>

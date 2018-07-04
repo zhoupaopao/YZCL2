@@ -73,7 +73,7 @@ public class AboutActivity extends BaseActivity {
         });
         bbh.setText("当前版本号：V"+getVersionName().toString());
 //        title.setText("关于我们");
-        PgyUpdateManager.register(AboutActivity.this, "com.example.yzcl.zhou",
+        PgyUpdateManager.register(AboutActivity.this,
                 new UpdateManagerListener() {
 
                     @Override
