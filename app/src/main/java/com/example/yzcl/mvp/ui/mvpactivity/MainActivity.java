@@ -68,12 +68,12 @@ public class MainActivity extends CheckPermissionsActivity {
     LoginBean loginBean;
     BuildBean dia;
     Bitmap bm;
-    final String url = "http://101.37.119.32:20200/auth/v1/imagecode";
     Handler handler1;
     String TAG="MainActivity";
     String key;
     String image;
     Context mContext;
+    private long mExitTime=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,6 +289,7 @@ public class MainActivity extends CheckPermissionsActivity {
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString(Constant.Token, loginBean.getObject().getToken());
                     editor.putString(Constant.userid, loginBean.getObject().getUserid());
+                    Log.i(TAG, "Userid: "+loginBean.getObject().getUserid());
                     if (rempwd.isChecked()) {
                             //被选中，记住账号
                             Log.i("rem", "1 ");
@@ -306,6 +307,7 @@ public class MainActivity extends CheckPermissionsActivity {
                 }else{
                     DialogUIUtils.dismiss(dia);
                     Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
+                    setpic();
                 }
 
             }
@@ -435,5 +437,17 @@ public class MainActivity extends CheckPermissionsActivity {
 //        } else {
 //            Log.i("rempwd", "不行 ");
 //        }
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if((System.currentTimeMillis()-mExitTime>2000)){ //如果两次按键时间间隔大于2000毫秒，则不退出
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();// 更新mExitTime
+            }else{
+                System.exit(0);
+            }
+        }
+        return true;
     }
 }

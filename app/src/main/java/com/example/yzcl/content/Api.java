@@ -43,5 +43,12 @@ public class Api {
     public static final String getCarMessageById=MonitorUrl+"/operation/v1/vehicleManage/getCarMessageById";
     //获取设备信息
     public static final String getDeviceMessageById=MonitorUrl+"/operation/v1/vehicleManage/getDeviceMessageById";
-
+    //获取我的信息
+    public static final String getUserGeneralInfo=MonitorUrl+"/operation/v1/init/getUserGeneralInfo";
+    //获取用户详细个人信息
+    public static final String getDetailUser=MonitorUrl+"/operation/v1/user/getDetailUser";
+    //更新用户数据
+    public static final String updateUser=MonitorUrl+"/operation/v1/user/updateUser";
+    //修改密码
+    public static final String updateUserPw=MonitorUrl+"/operation/v1/user/updateUserPw";
 }

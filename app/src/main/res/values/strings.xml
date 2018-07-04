@@ -28,7 +28,7 @@
     <string name="clear">清空</string>
     <string name="impor_care">重点关注</string>
     <string name="et_search">请输入设备名、车架号、借款人</string>
-
+    <string name="no_setting_time">未设置时间</string>
 
     <string name="mis_folder_all">All Images</string>
     <string name="mis_photo_unit">Shot</string>

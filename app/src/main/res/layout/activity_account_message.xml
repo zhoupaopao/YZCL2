@@ -21,9 +21,10 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"/>
         <TextView
+            android:id="@+id/login_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GSDASDAS001"
+            android:text=""
             android:textSize="16sp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
@@ -48,16 +49,17 @@
         <ImageView
             android:id="@+id/toright"
             android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_height="18dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_right"/>
         <TextView
+            android:id="@+id/user_name"
             android:layout_toLeftOf="@id/toright"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="老王"
+            android:text=""
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"/>
 
@@ -82,16 +84,17 @@
         <ImageView
             android:id="@+id/toright1"
             android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_height="18dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_right"/>
         <TextView
+            android:id="@+id/phone"
             android:layout_toLeftOf="@id/toright1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="110119120"
+            android:text=""
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"/>
 
@@ -116,16 +119,17 @@
         <ImageView
             android:id="@+id/toright2"
             android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_height="18dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_right"/>
         <TextView
+            android:id="@+id/tv_email"
             android:layout_toLeftOf="@id/toright2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="laowang@163.com"
+            android:text=""
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"/>
 
@@ -148,10 +152,11 @@
             android:layout_centerVertical="true"/>
 
         <TextView
+            android:id="@+id/group_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="无锡英臻车联有限公司"
+            android:text=""
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"/>
@@ -175,7 +180,7 @@
         <ImageView
             android:id="@+id/toright4"
             android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_height="18dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_right"/>

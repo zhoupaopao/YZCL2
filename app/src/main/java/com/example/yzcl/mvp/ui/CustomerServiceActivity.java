@@ -32,18 +32,18 @@ public class CustomerServiceActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customerservice);
-        ImmersionBar.with(this)
-                .statusBarColor(R.color.title_color)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarColor(R.color.title_color)
+//                .init();
         initView();
     }
 
     private void initView() {
-        title=findViewById(R.id.title);
+//        title=findViewById(R.id.title);
         back=findViewById(R.id.back);
         number=findViewById(R.id.number);
         callmobile=findViewById(R.id.callmobile);
-        title.setText("客服热线");
+//        title.setText("客服热线");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -55,12 +56,23 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
 
     @Override
     public void onClick(View view) {
+        Intent intent;
         switch (view.getId()){
+
             case R.id.nzms:
+                intent=new Intent();
+                intent.setClass(XfzlActivity.this, PatternSettingActivity.class);
+                startActivity(intent);
                 break;
             case R.id.dsms:
+                intent=new Intent();
+                intent.setClass(XfzlActivity.this,PatternSettingActivity.class);
+                startActivity(intent);
                 break;
             case R.id.xqms:
+                intent=new Intent();
+                intent.setClass(XfzlActivity.this,PatternSettingActivity.class);
+                startActivity(intent);
                 break;
             case R.id.cancel:
                 finish();

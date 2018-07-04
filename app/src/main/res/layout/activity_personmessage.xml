@@ -44,22 +44,24 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textSize="18sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/white"
-                android:text="GSDASDAS001"/>
+                android:text=""/>
 
             <TextView
+                android:id="@+id/groupname"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:gravity="center_vertical"
-                android:text="无锡英臻车联有限公司"/>
+                android:text=""/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -72,6 +74,7 @@
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:background="@color/white"
+        android:visibility="gone"
         android:padding="10dp">
         <ImageView
             android:id="@+id/account2"
@@ -106,10 +109,11 @@
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/notification"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
         android:layout_below="@id/account_balance"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="1dp"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:background="@color/white"
@@ -148,7 +152,6 @@
         android:layout_below="@id/line"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:background="@color/white"
