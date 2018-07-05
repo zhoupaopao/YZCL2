@@ -214,7 +214,8 @@ public class DeviceMessageFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();
-                intent.setClass(getActivity(), TranceActivity.class);
+                intent.putExtra("blat",datalist.getDgm().getBlat());
+                intent.putExtra("blng",datalist.getDgm().getBlng());                intent.setClass(getActivity(), TranceActivity.class);
                 startActivity(intent);
             }
         });
