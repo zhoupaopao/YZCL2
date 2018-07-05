@@ -30,19 +30,22 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         SRViewHolder srViewHolder=new SRViewHolder(view);
         return srViewHolder;
     }
-
+    /** 替换item数据 */
+    public void addData(ArrayList<CarMonSearchListBean.CarSearchBean> carSearchBeans) {
+        this.carSearchBeans=carSearchBeans;
+    }
     @Override
     public void onBindViewHolder(SRViewHolder holder, int position) {
         CarMonSearchListBean.CarSearchBean carSearchBean=carSearchBeans.get(position);
         holder.tv_name.setText(carSearchBean.getName());
         holder.vin.setText("车架号:"+carSearchBean.getVin());
-        if(carSearchBean.getCustom_team_id()!=null){
-            //假设是有设备名的
-            holder.device_names.setText(carSearchBean.getCustom_team_id());
-            holder.device_names.setVisibility(View.VISIBLE);
-        }else{
-            holder.device_names.setVisibility(View.GONE);
-        }
+//        if(carSearchBean.getCustom_team_id()!=null){
+//            //假设是有设备名的
+//            holder.device_names.setText(carSearchBean.getCustom_team_id());
+//            holder.device_names.setVisibility(View.VISIBLE);
+//        }else{
+//            holder.device_names.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -54,12 +57,12 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         private TextView tv_name;
         private TextView vin;
         //貌似设备名现在还没有数据
-        private TextView device_names;
+//        private TextView device_names;
         public SRViewHolder(View itemView) {
             super(itemView);
             tv_name=itemView.findViewById(R.id.tv_name);
             vin=itemView.findViewById(R.id.vin);
-            device_names=itemView.findViewById(R.id.device_names);
+//            device_names=itemView.findViewById(R.id.device_names);
         }
     }
 }

@@ -28,22 +28,30 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.DeviceListAdapter;
 import com.example.yzcl.adapter.DeviceMsPagerAdapter;
@@ -104,7 +112,21 @@ public class CarAddressActivity extends BaseActivity {
     private LinearLayout singler;
     private RelativeLayout question;
     private int nowwarn=1;
-
+    private ImageView refresh;
+    private ImageView loc;
+    LocationClient mLocClient;
+    boolean isFirstLoc = true; // 是否首次定位
+    private int mCurrentDirection = 0;
+    private double mCurrentLat = 0.0;
+    private double mCurrentLon = 0.0;
+    private float mCurrentAccracy;
+    private MyLocationData locData;
+    private BuildBean dialog;
+//    private String carid="";
+    public MyLocationListenner myListener = new MyLocationListenner();
+    private String nowdeviceid="";//当前显示的设备的id
+    private Boolean needrun=false;
+    private Boolean isfirst=true;//判断是否第一次进入页面，以防刚进页面定位第一个点
 //    private RelativeLayout rl;
 
     LatLngBounds bounds = new LatLngBounds.Builder().build();
@@ -131,6 +153,8 @@ public class CarAddressActivity extends BaseActivity {
         intent=getIntent();
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         car_name=findViewById(R.id.car_name);
+        refresh=findViewById(R.id.refresh);
+        loc=findViewById(R.id.loc);
         car_vin=findViewById(R.id.car_vin);
         car_detail=findViewById(R.id.car_detail);
         back=findViewById(R.id.back);
@@ -163,25 +187,28 @@ public class CarAddressActivity extends BaseActivity {
             }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())>maxlat){
                 //有经纬度后，判断大小
                 maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                Log.i(TAG, "maxlat: "+maxlat);
             }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())<minlat){
                 minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                Log.i(TAG, "minlat: "+minlat);
             }
             if(maxlon==0){
                 maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
                 minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                Log.i(TAG, "minlon: "+minlon);
             }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())>maxlon){
                 //有经纬度后，判断大小
                 maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
-            }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())<minlon){
+                Log.i(TAG, "maxlon: "+maxlon);
+            }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())<minlon){
                 minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                Log.i(TAG, "minlon: "+minlon);
             }
 
             MarkerOptions ooA;
             if(carDetailBean.getOnline_status().equals("在线")){
-
                ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(1,carDetailBean.getInternalnum()))
                         .zIndex(9).draggable(true);
-
             }else if(carDetailBean.getOnline_status().equals("离线")){
                 ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(2,carDetailBean.getInternalnum()))
                         .zIndex(9).draggable(true);
@@ -207,6 +234,7 @@ public class CarAddressActivity extends BaseActivity {
         double midlat=(maxlat+minlat)/2;
         double midlon=(maxlon+minlon)/2;
         LatLng ll = new LatLng(midlat, midlon);
+        Log.i(TAG, "initOverlay: "+ll.toString());
         //计算地图缩放度
         int jl = (int) DistanceUtil.getDistance(new LatLng(maxlat, maxlon),
                 new LatLng(minlat,minlon));
@@ -229,6 +257,7 @@ public class CarAddressActivity extends BaseActivity {
     }
 
     private void setViewpager() {
+        int posid=100;
         fs=new ArrayList<Fragment>();
         for(int i=0;i<datalist.size();i++){
             if(i==0){
@@ -239,6 +268,10 @@ public class CarAddressActivity extends BaseActivity {
             if(i==datalist.size()-1){
                 //是最后一个了
                 fs.add(new DeviceMessageFragment(datalist.get(0)));
+            }
+            if(datalist.get(i).getDevie_id().equals(nowdeviceid)){
+                //找到对应的下标，如果刷新的话，需要切换到对应的fragment
+                posid=i;
             }
             Log.i(TAG, "setViewpager: 2222");
         }
@@ -262,10 +295,19 @@ public class CarAddressActivity extends BaseActivity {
                     //0和超过位数的不做处理，是自己添加的
                 }else{
                     LatLng movell=new LatLng(Double.parseDouble(datalist.get(position-1).getDgm().getBlat()),Double.parseDouble(datalist.get(position-1).getDgm().getBlng()));
-                    MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(movell);
-                    //对地图的中心点进行更新，
+                    nowdeviceid=datalist.get(position-1).getDevie_id();
+                    Log.i(TAG, "onPageSelected: "+nowdeviceid);
+//                    MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(movell);
+                    if(isfirst){
+                        //是第一次定位就不能让地图定位到第一个点，其他时候因为有viewpager所以需要绑定
+                        isfirst=false;
+                    }else{
+                        MapStatusUpdate mapstatusupdate = MapStatusUpdateFactory.newLatLngZoom(movell, 18f);
+                        //对地图的中心点进行更新，
 //                    mBaiduMap.setMapStatus(mapstatusupdate);
-                    mBaiduMap.animateMapStatus(mapstatusupdate);
+                        mBaiduMap.animateMapStatus(mapstatusupdate);
+                    }
+
                 }
             }
 
@@ -284,7 +326,13 @@ public class CarAddressActivity extends BaseActivity {
                 }
             }
         });
-        viewPager.setCurrentItem(1,false);
+        if(needrun){
+            //需要跳转
+            viewPager.setCurrentItem(posid+1,false);
+        }else{
+            viewPager.setCurrentItem(1,false);
+        }
+
     }
 
     //类似于将一个布局变成图片
@@ -346,6 +394,7 @@ public class CarAddressActivity extends BaseActivity {
         carId=carDetailGPSBean.getCar_id();
         car_name.setText(carDetailGPSBean.getCar_no());
         car_vin.setText(carDetailGPSBean.getVin());
+//        carId=carDetailGPSBean.getCar_id();
         //显示marker覆盖物
         initOverlay();
 
@@ -356,8 +405,9 @@ public class CarAddressActivity extends BaseActivity {
                 //设置经纬度
                 int item=Integer.parseInt(marker.getTitle());
                 viewPager.setCurrentItem(item+1);
-                MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(marker.getPosition());
+//                MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(marker.getPosition());
                 //对地图的中心点进行更新，
+                MapStatusUpdate mapstatusupdate = MapStatusUpdateFactory.newLatLngZoom(marker.getPosition(), 18f);
                 mBaiduMap.setMapStatus(mapstatusupdate);
                 //显示下方的滚动列表
                 if(viewPager.getVisibility()==View.VISIBLE){
@@ -381,6 +431,33 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //刷新数据
+                //重新请求设备数据
+                needrun=true;
+                achieveDevie(carId);
+            }
+        });
+        loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //定位
+                // 开启定位图层
+                isFirstLoc=true;
+                mBaiduMap.setMyLocationEnabled(true);
+                // 定位初始化
+                mLocClient = new LocationClient(CarAddressActivity.this);
+                mLocClient.registerLocationListener(myListener);
+                LocationClientOption option = new LocationClientOption();
+                option.setOpenGps(true); // 打开gps
+                option.setCoorType("bd09ll"); // 设置坐标类型
+                option.setScanSpan(1000);
+                mLocClient.setLocOption(option);
+                mLocClient.start();
             }
         });
         car_detail.setOnClickListener(new View.OnClickListener() {
@@ -420,6 +497,48 @@ public class CarAddressActivity extends BaseActivity {
                     nowwarn=1;
                 }
 
+            }
+        });
+    }
+
+    private void achieveDevie(String carId) {
+        //刷新数据请求设备信息
+        RequestParams params1=new RequestParams();
+        //因为传递的是json数据，所以需要设置header和body
+        params1.addHeader("Content-Type","application/json");
+        JSONObject jsonObject1=new JSONObject();
+        jsonObject1.put("car_id",carId);
+        Log.i(TAG, Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""));
+        params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+        HttpRequest.post(Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                carDetailGPSBeans carDetailGPSBeans=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.class);
+                if(carDetailGPSBeans.isSuccess()){
+                    //请求成功
+                    //显示点
+                    ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
+                    arraycar=JSONArray.parseArray(jsonObject.get("list").toString());
+                    mBaiduMap.clear();
+                    initOverlay();
+                }else{
+                    Toast.makeText(CarAddressActivity.this,carDetailGPSBeans.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,false,false,true);
+                dialog.show();
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                dialog.dialog.dismiss();
             }
         });
     }
@@ -529,7 +648,39 @@ public class CarAddressActivity extends BaseActivity {
             }
         });
     }
+    /**
+     * 定位SDK监听函数
+     */
+    public class MyLocationListenner implements BDLocationListener {
 
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // map view 销毁后不在处理新接收的位置
+            if (location == null || mBaiduMap == null) {
+                return;
+            }
+            mCurrentLat = location.getLatitude();
+            mCurrentLon = location.getLongitude();
+            mCurrentAccracy = location.getRadius();
+            locData = new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(mCurrentDirection).latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+            if (isFirstLoc) {
+                isFirstLoc = false;
+                LatLng ll = new LatLng(location.getLatitude(),
+                        location.getLongitude());
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(ll).zoom(18.0f);
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            }
+        }
+
+        public void onReceivePoi(BDLocation poiLocation) {
+        }
+    }
 
     @Override
     protected void onResume() {

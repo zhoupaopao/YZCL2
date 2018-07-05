@@ -102,6 +102,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     private void initListener() {
         title.setText(R.string.car_veh);
         add.setImageResource(R.mipmap.search);
+        add.setVisibility(View.GONE);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

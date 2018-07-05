@@ -3,6 +3,7 @@ package com.example.yzcl.mvp.ui.Fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,10 +21,13 @@ import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
+import com.example.yzcl.mvp.ui.TranceActivity;
 import com.example.yzcl.mvp.ui.XfzlActivity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,11 +72,16 @@ public class DeviceMessageFragment extends Fragment{
         trajectory=view.findViewById(R.id.trajectory);//轨迹
         navigation=view.findViewById(R.id.navigation);//导航
         //给fragment页面赋值
-        giveData();
+        try {
+            giveData();
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
         return view;
     }
 
-    private void giveData() {
+    @SuppressLint("ResourceAsColor")
+    private void giveData() throws java.text.ParseException {
         device_name_type.setText(datalist.getInternalnum()+"/"+datalist.getCategory());
         if(datalist.getCategory().equals("有线设备")){
             xfzl.setVisibility(View.GONE);
@@ -82,21 +91,53 @@ public class DeviceMessageFragment extends Fragment{
         //报警类型
         if (datalist.getDgm().getAlarm().equals("-1")){
             //断电
-            warning_type.setText("断电");
+            warning_type.setVisibility(View.GONE);
 //            warning_type.setTextColor(getResources().getColor(R.color.black));
-        }else{
-            warning_type.setText("无");
+        }else if(datalist.getDgm().getAlarm().equals("1")){
+            //有线是拔除无线是光感
+            warning_type.setVisibility(View.VISIBLE);
+            warning_type.setBackgroundResource(R.drawable.bg_warning);
+
+            if(datalist.getCategory().equals("有线设备")){
+
+                warning_type.setText("拔除");
+            }else{
+                warning_type.setText("光感异常");
+            }
+
 //            warning_type.setTextColor(getResources().getColor(R.color.black));
+        }else if(datalist.getDgm().getAlarm().equals("0")){
+            warning_type.setVisibility(View.VISIBLE);
+            warning_type.setBackgroundResource(R.drawable.bg_normal);
+            warning_type.setText("正常");
         }
         //电量
         if(datalist.getDgm().getBl().equals("-1")){
             //没有电量
-            dl.setText("断电");
+            dl.setVisibility(View.GONE);
         }else{
+            dl.setVisibility(View.VISIBLE);
             dl.setText("电量"+datalist.getDgm().getBl()+"%");
         }
         //设备状态
         online_status.setText(datalist.getOnline_status());
+        if(datalist.getOnline_status().equals("在线")){
+            //判断是否在线，在线隐藏离线时间
+            offline_time.setVisibility(View.GONE);
+        }else{
+            //计算时间差
+            long endtime=System.currentTimeMillis();
+            long starttme=stringToLong(datalist.getDgm().getTime(),"yyyy-MM-dd HH:mm:ss");
+//            long starttme=datalist.getDgm().getTime();
+            long time_during=endtime-starttme;
+            long hours=time_during/(1000*60*60);//获取间隔小时
+            long mintues=time_during-(hours*(1000*60*60));//获取间隔分钟
+            mintues=mintues/(60*1000);
+            long days=hours/24;
+            hours=hours-days*24;
+            offline_time.setText("("+days+"天"+hours+"小时"+mintues+"分钟"+")");
+
+        }
         //最后定位时间
         last_loc_time.setText(datalist.getDgm().getTime());
         //定位类型
@@ -163,11 +204,47 @@ public class DeviceMessageFragment extends Fragment{
         xfzl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Intent intent=new Intent();
+//                intent.setClass(getActivity(), XfzlActivity.class);
+//                startActivity(intent);
+            }
+        });
+        //追踪
+        open_colse_loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent=new Intent();
-                intent.setClass(getActivity(), XfzlActivity.class);
+                intent.setClass(getActivity(), TranceActivity.class);
                 startActivity(intent);
             }
         });
+    }
+    // strTime要转换的String类型的时间
+    // formatType时间格式
+    // strTime的时间格式和formatType的时间格式必须相同
+    public static long stringToLong(String strTime, String formatType)
+            throws java.text.ParseException {
+        Date date = stringToDate(strTime, formatType); // String类型转成date类型
+        if (date == null) {
+            return 0;
+        } else {
+            long currentTime = dateToLong(date); // date类型转成long类型
+            return currentTime;
+        }
+    }
+    // date要转换的date类型的时间
+    public static long dateToLong(Date date) {
+        return date.getTime();
+    }
+    // strTime要转换的string类型的时间，formatType要转换的格式yyyy-MM-dd HH:mm:ss//yyyy年MM月dd日
+    // HH时mm分ss秒，
+    // strTime的时间格式必须要与formatType的时间格式相同
+    public static Date stringToDate(String strTime, String formatType)
+            throws  java.text.ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(formatType);
+        Date date = null;
+        date = formatter.parse(strTime);
+        return date;
     }
     //判断是否安装第三方软件
     public static boolean isPackageInstalled(String packageName) {

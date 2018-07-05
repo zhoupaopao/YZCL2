@@ -110,7 +110,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                     case 0:
                         //尝试使用viewpager（现）
                         //风控预警（实际）
-                        Toast.makeText(HomePage.this,R.string.car_veh,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(HomePage.this,R.string.car_veh,Toast.LENGTH_SHORT).show();
                         intent=new Intent();
 //                        intent.setClass(HomePage.this, GunDongActivity.class);
                         intent.setClass(HomePage.this, VehicleMonitoringActivity.class);
@@ -118,57 +118,63 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                         break;
                     case 1:
                         //车辆监控（实际）
-                        intent=new Intent();
-                        //风控预警（实际）
-                        intent.setClass(HomePage.this, RiskWarningActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(HomePage.this,"风控预警",Toast.LENGTH_SHORT).show();
+//                        intent=new Intent();
+//                        //风控预警（实际）
+//                        intent.setClass(HomePage.this, RiskWarningActivity.class);
+//                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         //车辆管理列表
-                         intent=new Intent();
-                        //2.0的车辆管理
-//                        intent.setClass(HomePage.this, CarManagerActivity.class);
-                        intent.setClass(HomePage.this, CarManagerRealActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(HomePage.this,"下单中心",Toast.LENGTH_SHORT).show();
+//                         intent=new Intent();
+//                        //2.0的车辆管理
+////                        intent.setClass(HomePage.this, CarManagerActivity.class);
+//                        intent.setClass(HomePage.this, CarManagerRealActivity.class);
+//                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
                     case 3:
                         //围栏功能（现）
                         //下单中心（实际）
-                        intent=new Intent();
-                        intent.setClass(HomePage.this,VPageActivity .class);
-                        startActivity(intent);
+//                        intent=new Intent();
+//                        intent.setClass(HomePage.this,VPageActivity .class);
+//                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
                         //围栏管理（实际）
-                        intent=new Intent();
-//                        intent.setClass(HomePage.this,EnclosureManagerActivity.class);
-                        intent.setClass(HomePage.this,EnclosureAllManagerActivity.class);
-                        startActivity(intent);
+//                        intent=new Intent();
+////                        intent.setClass(HomePage.this,EnclosureManagerActivity.class);
+//                        intent.setClass(HomePage.this,EnclosureAllManagerActivity.class);
+//                        startActivity(intent);
+
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+
                         break;
                     case 5:
                         //指令设置（实际）
                         //账号管理，有展开
-                        Toast.makeText(HomePage.this,"车辆管理",Toast.LENGTH_SHORT).show();
-                         intent=new Intent();
-                        intent.setClass(HomePage.this, CustomerManagementActivity.class);
-                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                         intent=new Intent();
+//                        intent.setClass(HomePage.this, CustomerManagementActivity.class);
+//                        startActivity(intent);
                         break;
                     case 6:
                         //客户管理
-                        intent=new Intent();
-//                        intent.setClass(HomePage.this, VPageActivity.class);
-//                        intent.setClass(HomePage.this, LowerAccountActivity.class);
-                        intent.setClass(HomePage.this, CustomerManagerActivity.class);
-                        startActivity(intent);
+//                        intent=new Intent();
+////                        intent.setClass(HomePage.this, VPageActivity.class);
+////                        intent.setClass(HomePage.this, LowerAccountActivity.class);
+//                        intent.setClass(HomePage.this, CustomerManagerActivity.class);
+//                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
                     case 7:
                         //更多
-                        intent=new Intent();
-//                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
-                                                intent.setClass(HomePage.this, GunDongActivity.class);
-                        startActivity(intent);
+//                        intent=new Intent();
+////                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
+//                                                intent.setClass(HomePage.this, GunDongActivity.class);
+//                        startActivity(intent);
+                        Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
 
                 }
