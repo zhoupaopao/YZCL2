@@ -48,6 +48,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     RoutePlanSearch mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     MapView mMapView = null;    // 地图View
     RouteLine route = null;
+    RouteLine ro1ute = null;
     private BaiduMap mBaiduMap;
     private PoiSearch mPoiSearch = null;
     LocationClient mLocClient;
