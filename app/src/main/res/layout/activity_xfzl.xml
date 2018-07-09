@@ -17,6 +17,7 @@
             android:layout_height="44dp"
             android:background="@color/white">
             <TextView
+                android:id="@+id/tv_nz"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -24,6 +25,15 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="13dp"
                 android:text="闹钟模式"/>
+            <TextView
+                android:id="@+id/nz_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_nz"
+                android:layout_centerVertical="true"
+                android:textSize="10dp"
+                android:visibility="gone"
+                android:text="(已开启)"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
@@ -42,6 +52,7 @@
             android:layout_height="44dp"
             android:background="@color/white">
             <TextView
+                android:id="@+id/tv_ds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -49,6 +60,15 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="13dp"
                 android:text="定时模式"/>
+            <TextView
+                android:id="@+id/ds_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_ds"
+                android:layout_centerVertical="true"
+                android:textSize="10dp"
+                android:visibility="gone"
+                android:text="(已开启)"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
@@ -67,6 +87,7 @@
             android:layout_height="44dp"
             android:background="@color/white">
             <TextView
+                android:id="@+id/tv_xq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -74,6 +95,15 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="13dp"
                 android:text="星期模式"/>
+            <TextView
+                android:id="@+id/xq_status"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_xq"
+                android:layout_centerVertical="true"
+                android:textSize="10dp"
+                android:text="(已开启)"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"

@@ -60,12 +60,14 @@ public class PatternSettingActivity extends Activity {
         time_status3=findViewById(R.id.time_status3);
         time_status4=findViewById(R.id.time_status4);
         back=findViewById(R.id.back);
+        title=findViewById(R.id.title);
         textview2=findViewById(R.id.textview2);
 
     }
 
     private void initData() {
         textview2.setText("保存");
+        title.setText("闹钟模式");
     }
 
     private void initListener() {

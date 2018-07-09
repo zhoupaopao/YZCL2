@@ -168,6 +168,7 @@ public class CarAddressActivity extends BaseActivity {
         zzc=findViewById(R.id.zzc);
         question=findViewById(R.id.question);
         singler=findViewById(R.id.singler);
+        mLocClient = new LocationClient(getApplicationContext());
 
     }
 
@@ -450,7 +451,7 @@ public class CarAddressActivity extends BaseActivity {
                 isFirstLoc=true;
                 mBaiduMap.setMyLocationEnabled(true);
                 // 定位初始化
-                mLocClient = new LocationClient(CarAddressActivity.this);
+
                 mLocClient.registerLocationListener(myListener);
                 LocationClientOption option = new LocationClientOption();
                 option.setOpenGps(true); // 打开gps
@@ -698,6 +699,8 @@ public class CarAddressActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        mLocClient.stop();
+
 //        bdA.recycle();
 //        bdB.recycle();
 //        bdC.recycle();

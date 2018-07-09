@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/c_333333"
+    android:alpha="0.3"
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <TextView
+        android:id="@+id/device_name"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="设备名称：Y123456(无线）"
+        android:textColor="@color/white"/>
+    <TextView
+        android:id="@+id/last_time"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="定位时间：2017-09-01 12:00:00（20秒刷新一次）"
+        android:textColor="@color/white"/>
+    <TextView
+        android:id="@+id/now_address"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="当前位置：深圳市软件产业基地(学府路)"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

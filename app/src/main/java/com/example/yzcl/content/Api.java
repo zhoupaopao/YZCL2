@@ -51,4 +51,9 @@ public class Api {
     public static final String updateUser=MonitorUrl+"/operation/v1/user/updateUser";
     //修改密码
     public static final String updateUserPw=MonitorUrl+"/operation/v1/user/updateUserPw";
+    //获取单个设备的信息
+    public static final String queDeviceGpsInfo=MonitorUrl+"/devicegps/v1/queDeviceGpsInfo";
+    //获取当前设备的指令状态
+    public static final String queDeviceSetting=MonitorUrl+"/device/v1/queDeviceSetting";
+
 }

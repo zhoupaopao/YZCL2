@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <include layout="@layout/first_title"/>
+    <include layout="@layout/first_title" android:id="@+id/ttile"/>
     <com.baidu.mapapi.map.MapView
         android:id="@+id/mapview"
+        android:layout_below="@id/ttile"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </com.baidu.mapapi.map.MapView>
+    <ImageView
+        android:id="@+id/refresh"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@mipmap/icon_refresh"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="47dp"/>
+    <ImageView
+        android:id="@+id/loc"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/icon_loc"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-60dp"
+        android:layout_alignBottom="@id/refresh"/>
 
-
-</LinearLayout>
+</RelativeLayout>

@@ -204,9 +204,10 @@ public class DeviceMessageFragment extends Fragment{
         xfzl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent=new Intent();
-//                intent.setClass(getActivity(), XfzlActivity.class);
-//                startActivity(intent);
+                Intent intent=new Intent();
+                intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
+                intent.setClass(getActivity(), XfzlActivity.class);
+                startActivity(intent);
             }
         });
         //追踪
@@ -215,7 +216,9 @@ public class DeviceMessageFragment extends Fragment{
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.putExtra("blat",datalist.getDgm().getBlat());
-                intent.putExtra("blng",datalist.getDgm().getBlng());                intent.setClass(getActivity(), TranceActivity.class);
+                intent.putExtra("blng",datalist.getDgm().getBlng());
+                intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
+                intent.setClass(getActivity(), TranceActivity.class);
                 startActivity(intent);
             }
         });
