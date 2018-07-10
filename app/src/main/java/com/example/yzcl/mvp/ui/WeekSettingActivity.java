@@ -14,13 +14,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.yzcl.R;
+import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 /**
  * Created by Lenovo on 2018/7/9.
  */
 //下发指令-星期模式
-public class WeekSettingActivity extends Activity implements View.OnClickListener{
+public class WeekSettingActivity extends BaseActivity implements View.OnClickListener{
     //没有使用列表，直接使用布局，点击布局触发显示隐藏
     private RelativeLayout rl1;
     private RelativeLayout rl2;

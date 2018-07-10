@@ -18,7 +18,7 @@
     <color name="red">#ff0000</color>
     <color name="text_red">#ED7161</color>
     <color name="blue">#0000ff</color>
-
+    <color name="rili">#1D76C1</color>
     <color name="newblue">#0000ff</color>
     <color name="gw_color">#F05353</color>
     <color name="lx_color">#FD7844</color>
@@ -33,7 +33,7 @@
     <color name="biankuang">#BFBFBF</color>
     <color name="cared_color">#86BEFA</color>
     <color name="warning_color">#F5F4F8</color>
-
+    <color name="gj_time">#AEAEAE</color>
     <color name="listview_gray">#cccccc</color>
     <color name="view_backgroud">#f1f1f1</color>
     <color name="back_darkgray">#f7f7f7</color>

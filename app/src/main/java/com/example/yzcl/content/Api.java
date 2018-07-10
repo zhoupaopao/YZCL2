@@ -55,5 +55,8 @@ public class Api {
     public static final String queDeviceGpsInfo=MonitorUrl+"/devicegps/v1/queDeviceGpsInfo";
     //获取当前设备的指令状态
     public static final String queDeviceSetting=MonitorUrl+"/device/v1/queDeviceSetting";
-
+    //轨迹查询
+    public static final String getTrack=MonitorUrl+"/devicegps/v1/getTrack";
+    //提交指令模式
+    public static final String saveOrUpdateDeviceSetting=MonitorUrl+"/device/v1/saveOrUpdateDeviceSetting";
 }

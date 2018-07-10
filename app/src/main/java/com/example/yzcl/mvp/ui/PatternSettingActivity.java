@@ -3,6 +3,8 @@ package com.example.yzcl.mvp.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,15 +12,31 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
+import com.example.yzcl.mvp.model.bean.XfzlBean;
+import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.fanwe.lib.switchbutton.ISDSwitchButton;
+import com.fanwe.lib.switchbutton.SDSwitchButton;
 import com.gyf.barlibrary.ImmersionBar;
+
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 
 /**
  * Created by Lenovo on 2018/7/4.
  */
 //模式设置页面，三大模式，闹钟，定时，星期
-public class PatternSettingActivity extends Activity {
+public class PatternSettingActivity extends BaseActivity {
     final int TIME_DIALOG1=1;
     final int TIME_DIALOG2=2;
     final int TIME_DIALOG3=3;
@@ -34,9 +52,24 @@ public class PatternSettingActivity extends Activity {
     TextView title;
     TextView textview2;
     ImageView back;
+    SDSwitchButton sb1;
+    SDSwitchButton sb2;
+    SDSwitchButton sb3;
+    SDSwitchButton sb4;
+
     int mYear, mMonth, mDay,mHour,mMinutes;
     int newHour,newMinutes;
+    private String wuc;
     private String TAG="PatternSettingActivity";
+    String[]wuclist;
+    BuildBean dialog;
+    //需要上传的参数
+    private StringBuffer clockModel;//4:40,5:45,
+    private StringBuffer postwuc;//0|4:40;0|5:45
+    private String deviceid;
+    private int interval=0;
+    private int type=1;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +84,10 @@ public class PatternSettingActivity extends Activity {
     }
 
     private void initView() {
+        Intent intent=getIntent();
+        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        deviceid=intent.getStringExtra("deviceid");
+        wuc=intent.getStringExtra("wuc");
         nz_time1=findViewById(R.id.nz_time1);
         nz_time2=findViewById(R.id.nz_time2);
         nz_time3=findViewById(R.id.nz_time3);
@@ -62,12 +99,54 @@ public class PatternSettingActivity extends Activity {
         back=findViewById(R.id.back);
         title=findViewById(R.id.title);
         textview2=findViewById(R.id.textview2);
+        sb1=findViewById(R.id.sb1);
+        sb2=findViewById(R.id.sb2);
+        sb3=findViewById(R.id.sb3);
+        sb4=findViewById(R.id.sb4);
 
     }
 
     private void initData() {
         textview2.setText("保存");
         title.setText("闹钟模式");
+        if(wuc.equals("")){
+            //说明当前不是这个模式
+        }else{
+            wuclist=wuc.split(";");
+            for(int i=0;i<wuclist.length;i++){
+                String[]listsp=wuclist[i].split("\\|");
+                switch (i){
+                    case 0:
+                        nz_time1.setText(listsp[1]);
+                        time_status1.setText("闹钟，每天");
+                        /**
+                         * 设置选中状态
+                         *
+                         * @param checked        true-选中，false-未选中
+                         * @param anim           是否需要动画
+                         * @param notifyCallback 是否需要通知回调
+                         */
+                        sb1.setChecked(true,false,false);
+
+                        break;
+                    case 1:
+                        nz_time2.setText(listsp[1]);
+                        time_status2.setText("闹钟，每天");
+                        sb2.setChecked(true,false,false);
+                        break;
+                    case 2:
+                        nz_time3.setText(listsp[1]);
+                        time_status3.setText("闹钟，每天");
+                        sb3.setChecked(true,false,false);
+                        break;
+                    case 3:
+                        nz_time4.setText(listsp[1]);
+                        time_status4.setText("闹钟，每天");
+                        sb4.setChecked(true,false,false);
+                        break;
+                }
+            }
+        }
     }
 
     private void initListener() {
@@ -77,7 +156,85 @@ public class PatternSettingActivity extends Activity {
                 finish();
             }
         });
+        sb1.setOnCheckedChangedCallback(new ISDSwitchButton.OnCheckedChangedCallback() {
+            @Override
+            public void onCheckedChanged(boolean checked, SDSwitchButton view) {
+                Log.i("checked", checked+"");
+            }
+        });
+        textview2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clockModel=new StringBuffer();
+                postwuc=new StringBuffer();
+//                Log.i(TAG, sb1.isChecked()+""+sb3.isChecked()+"");
+//                boolean sda=sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked();
+//                Log.i(TAG, sda+"");
+                if(sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked()){
+                    //正常情况
+                    //选择框被选中，且时间设置
+                    if(sb1.isChecked()&&time_status1.getText().toString().equals("闹钟，每天")){
+                        postwuc.append(0+"|"+nz_time1.getText().toString()+";");
+                        clockModel.append(nz_time1.getText().toString()+",");
+                    }
+                    if(sb2.isChecked()&&time_status2.getText().toString().equals("闹钟，每天")){
+                        postwuc.append(1+"|"+nz_time2.getText().toString()+";");
+                        clockModel.append(nz_time2.getText().toString()+",");
+                    }
+                    if(sb3.isChecked()&&time_status3.getText().toString().equals("闹钟，每天")){
+                        postwuc.append(2+"|"+nz_time3.getText().toString()+";");
+                        clockModel.append(nz_time3.getText().toString()+",");
+                    }
+                    if(sb4.isChecked()&&time_status4.getText().toString().equals("闹钟，每天")){
+                        postwuc.append(3+"|"+nz_time4.getText().toString()+";");
+                        clockModel.append(nz_time4.getText().toString()+",");
+                    }
+                    RequestParams params1=new RequestParams();
+                    //因为传递的是json数据，所以需要设置header和body
+                    params1.addHeader("Content-Type","application/json");
+                    JSONObject jsonObject1=new JSONObject();
+                    jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
+                    Log.i(TAG, clockModel.toString().substring(0,clockModel.toString().length()-1));
+                    jsonObject1.put("type",type);
+                    jsonObject1.put("interval",interval);
+                    jsonObject1.put("wuc",postwuc.toString());
+                    jsonObject1.put("deviceid",deviceid);
+                    params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                    HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                        @Override
+                        protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                            super.onSuccess(headers, jsonObject);
+                            Log.i(TAG, jsonObject.toString());
+                            if(jsonObject.getBoolean("success")){
+                                Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.dialog.dismiss();
+                        }
 
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
+                            dialog.show();
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+
+                        }
+                    });
+                }else{
+                    //如果都不选中
+                    Toast.makeText(PatternSettingActivity.this,"请至少选择一组并设置时间",Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        });
 
     }
 

@@ -82,7 +82,7 @@
             android:value="${applicationId}"/>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Y3aM3kYiu4h3QSLxSKVfWXvN98QiYQRH" />
+            android:value="Ywf7Flh3ew4RhCmGpITQpVVA5MiBXiNO" />
         <meta-data
             android:name="PGYER_APPID"
             android:value="22704ca5aaf9c63d60af51f9c3589adc" >
@@ -136,6 +136,7 @@
         <activity android:name="com.example.yzcl.mvp.ui.WeekSettingActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TimingSettingActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TranceActivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.TrajectoryActivity"></activity>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

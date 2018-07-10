@@ -21,6 +21,7 @@ import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
+import com.example.yzcl.mvp.ui.TrajectoryActivity;
 import com.example.yzcl.mvp.ui.TranceActivity;
 import com.example.yzcl.mvp.ui.XfzlActivity;
 
@@ -207,6 +208,19 @@ public class DeviceMessageFragment extends Fragment{
                 Intent intent=new Intent();
                 intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
                 intent.setClass(getActivity(), XfzlActivity.class);
+                startActivity(intent);
+            }
+        });
+        //轨迹回放
+        trajectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
+                intent.putExtra("Internalnum",datalist.getInternalnum());//设备名
+                intent.putExtra("Category",datalist.getCategory());//有线无线设备
+                intent.putExtra("pledge_name",datalist.getPledge_name());
+                intent.setClass(getActivity(), TrajectoryActivity.class);
                 startActivity(intent);
             }
         });
