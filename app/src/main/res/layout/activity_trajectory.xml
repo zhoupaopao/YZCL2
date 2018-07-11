@@ -96,6 +96,7 @@
             android:paddingRight="15dp"
             android:layout_weight="2">
             <ImageView
+                android:id="@+id/play"
                 android:layout_width="13dp"
                 android:layout_height="13dp"
                 android:src="@mipmap/icon_play"/>

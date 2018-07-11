@@ -177,51 +177,55 @@ public class CarAddressActivity extends BaseActivity {
             JSONObject jsonObject=arraycar.getJSONObject(i);
             carDetailGPSBeans.carDetailGPSBean carDetailBean=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.carDetailGPSBean.class);
             //给list赋值，用于显示viewpager里面的信息
-            datalist.add(carDetailBean);
-            Log.i(TAG, Double.parseDouble(carDetailBean.getDgm().getBlat())+","+Double.parseDouble(carDetailBean.getDgm().getBlng()));
-            LatLng markerll = new LatLng(Double.parseDouble(carDetailBean.getDgm().getBlat()),Double.parseDouble( carDetailBean.getDgm().getBlng()));
-            //计算最大最小经纬度
-            if(maxlat==0){
-                //一个经纬度都没有，就直接赋值
-                maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
-                minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
-            }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())>maxlat){
-                //有经纬度后，判断大小
-                maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
-                Log.i(TAG, "maxlat: "+maxlat);
-            }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())<minlat){
-                minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
-                Log.i(TAG, "minlat: "+minlat);
-            }
-            if(maxlon==0){
-                maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
-                minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
-                Log.i(TAG, "minlon: "+minlon);
-            }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())>maxlon){
-                //有经纬度后，判断大小
-                maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
-                Log.i(TAG, "maxlon: "+maxlon);
-            }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())<minlon){
-                minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
-                Log.i(TAG, "minlon: "+minlon);
+
+            if(carDetailBean.getDgm().getBlng()!=null){
+                datalist.add(carDetailBean);
+                Log.i(TAG, Double.parseDouble(carDetailBean.getDgm().getBlat())+","+Double.parseDouble(carDetailBean.getDgm().getBlng()));
+                LatLng markerll = new LatLng(Double.parseDouble(carDetailBean.getDgm().getBlat()),Double.parseDouble( carDetailBean.getDgm().getBlng()));
+                //计算最大最小经纬度
+                if(maxlat==0){
+                    //一个经纬度都没有，就直接赋值
+                    maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                    minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())>maxlat){
+                    //有经纬度后，判断大小
+                    maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                    Log.i(TAG, "maxlat: "+maxlat);
+                }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())<minlat){
+                    minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                    Log.i(TAG, "minlat: "+minlat);
+                }
+                if(maxlon==0){
+                    maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                    minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                    Log.i(TAG, "minlon: "+minlon);
+                }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())>maxlon){
+                    //有经纬度后，判断大小
+                    maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                    Log.i(TAG, "maxlon: "+maxlon);
+                }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())<minlon){
+                    minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                    Log.i(TAG, "minlon: "+minlon);
+                }
+
+                MarkerOptions ooA;
+                if(carDetailBean.getOnline_status().equals("在线")){
+                    ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(1,carDetailBean.getInternalnum()))
+                            .zIndex(9).draggable(true);
+                }else if(carDetailBean.getOnline_status().equals("离线")){
+                    ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(2,carDetailBean.getInternalnum()))
+                            .zIndex(9).draggable(true);
+                }else{
+                    ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(3,carDetailBean.getInternalnum()))
+                            .zIndex(9).draggable(true);
+                }
+                //掉落特效
+//            ooA.animateType(MarkerOptions.MarkerAnimateType.drop);
+                mMarkerA = (Marker) (mBaiduMap.addOverlay(ooA));
+                //将列表索引放在title里面
+                mMarkerA.setTitle(""+i);
             }
 
-            MarkerOptions ooA;
-            if(carDetailBean.getOnline_status().equals("在线")){
-               ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(1,carDetailBean.getInternalnum()))
-                        .zIndex(9).draggable(true);
-            }else if(carDetailBean.getOnline_status().equals("离线")){
-                ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(2,carDetailBean.getInternalnum()))
-                        .zIndex(9).draggable(true);
-            }else{
-                ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(3,carDetailBean.getInternalnum()))
-                        .zIndex(9).draggable(true);
-            }
-            //掉落特效
-//            ooA.animateType(MarkerOptions.MarkerAnimateType.drop);
-            mMarkerA = (Marker) (mBaiduMap.addOverlay(ooA));
-            //将列表索引放在title里面
-            mMarkerA.setTitle(""+i);
 //            showInfowindow(i);
 
 //                bounds.contains(markerll);

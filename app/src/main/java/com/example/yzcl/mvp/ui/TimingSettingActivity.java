@@ -201,6 +201,8 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                         Log.i(TAG, jsonObject.toString());
                         if(jsonObject.getBoolean("success")){
                             Toast.makeText(TimingSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
                         }else{
                             Toast.makeText(TimingSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
                         }

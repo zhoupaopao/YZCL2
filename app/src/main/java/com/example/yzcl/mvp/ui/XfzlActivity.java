@@ -158,28 +158,39 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
                 intent.putExtra("wuc",wuc);
                 intent.putExtra("deviceid",deviceid);
                 intent.setClass(XfzlActivity.this, PatternSettingActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
+//                startActivity(intent);
                 break;
                 //定时模式
             case R.id.dsms:
                 intent=new Intent();
-                    //当前是闹钟模式
                 intent.putExtra("interval",interval);
                 intent.putExtra("deviceid",deviceid);
                 intent.setClass(XfzlActivity.this,TimingSettingActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
+//                startActivity(intent);
                 break;
                 //星期模式
             case R.id.xqms:
                 intent=new Intent();
-                    //当前是闹钟模式
-                    intent.putExtra("wuc",wuc);
+                intent.putExtra("wuc",wuc);
+                intent.putExtra("deviceid",deviceid);
                 intent.setClass(XfzlActivity.this,WeekSettingActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
+//                startActivity(intent);
                 break;
             case R.id.cancel:
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            setResult(RESULT_OK);
+            finish();
         }
     }
 }

@@ -207,6 +207,8 @@ public class PatternSettingActivity extends BaseActivity {
                             Log.i(TAG, jsonObject.toString());
                             if(jsonObject.getBoolean("success")){
                                 Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
+                                finish();
                             }else{
                                 Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
                             }

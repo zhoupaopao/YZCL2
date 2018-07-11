@@ -3,6 +3,8 @@ package com.example.yzcl.mvp.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,10 +14,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
+
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 
 /**
  * Created by Lenovo on 2018/7/9.
@@ -39,11 +53,23 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
     private ImageView check7;
     private TextView title;
     private ImageView back;
+    private String TAG="WeekSettingActivity";
     int newHour,newMinutes;
     final int TIME_DIALOG1=1;
     private EditText nz_time1;
     //保存
     private TextView textview2;
+    String[]wuclist;
+    BuildBean dialog;
+    private String wuc;
+    //需要上传的参数
+    private StringBuffer weekModel;//2,3,4,
+    private String weekTime;//1:30
+    private StringBuffer postwuc;//1|4:40;2|4:40
+    private String deviceid;
+    private int interval=0;
+    private int type=2;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +83,10 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initView() {
+        Intent intent=getIntent();
+        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        deviceid=intent.getStringExtra("deviceid");
+        wuc=intent.getStringExtra("wuc");
         rl1=findViewById(R.id.rl1);
         rl2=findViewById(R.id.rl2);
         rl3=findViewById(R.id.rl3);
@@ -89,6 +119,41 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
     private void initData() {
         textview2.setText("保存");
         title.setText("星期模式");
+        if(wuc.equals("")){
+            //说明当前不是这个模式
+        }else{
+            wuclist=wuc.split(";");
+            for(int i=0;i<wuclist.length;i++){
+                String[]listsp=wuclist[i].split("\\|");
+                String weekday=listsp[0];
+                String daytime=listsp[1];
+                nz_time1.setText(daytime);
+                switch (Integer.parseInt(weekday)){
+                    //根据前面的数字判断是那个星期
+                    case 1:
+                        check1.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        check2.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:
+                        check3.setVisibility(View.VISIBLE);
+                        break;
+                    case 4:
+                        check4.setVisibility(View.VISIBLE);
+                        break;
+                    case 5:
+                        check5.setVisibility(View.VISIBLE);
+                        break;
+                    case 6:
+                        check6.setVisibility(View.VISIBLE);
+                        break;
+                    case 7:
+                        check7.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        }
     }
 
     private void initListener() {
@@ -124,7 +189,89 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.textview2:
+                weekTime="";
+                weekModel=new StringBuffer();
+                postwuc=new StringBuffer();
                 //保存
+                //先判断当前时间有没有填写
+                if(nz_time1.getText().toString().equals("")){
+                    Toast.makeText(WeekSettingActivity.this,"请选择时间",Toast.LENGTH_SHORT).show();
+                }else{
+                    //如果一个都没选中也提示
+                    //全是不可见的
+                    if(check1.getVisibility()==View.GONE&&check2.getVisibility()==View.GONE&&check3.getVisibility()==View.GONE&&check4.getVisibility()==View.GONE&&check5.getVisibility()==View.GONE&&check6.getVisibility()==View.GONE&&check7.getVisibility()==View.GONE){
+                        Toast.makeText(WeekSettingActivity.this,"请至少选择一个时间",Toast.LENGTH_SHORT).show();
+                    }else{
+                        weekTime=nz_time1.getText().toString();
+                        if(check1.getVisibility()==View.VISIBLE){
+                            postwuc.append(1+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(1+",");
+                        }
+                        if(check2.getVisibility()==View.VISIBLE){
+                            postwuc.append(2+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(2+",");
+                        }
+                        if(check3.getVisibility()==View.VISIBLE){
+                            postwuc.append(3+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(3+",");
+                        }
+                        if(check4.getVisibility()==View.VISIBLE){
+                            postwuc.append(4+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(4+",");
+                        }
+                        if(check5.getVisibility()==View.VISIBLE){
+                            postwuc.append(5+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(5+",");
+                        }
+                        if(check6.getVisibility()==View.VISIBLE){
+                            postwuc.append(6+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(6+",");
+                        }
+                        if(check7.getVisibility()==View.VISIBLE){
+                            postwuc.append(7+"|"+nz_time1.getText().toString()+";");
+                            weekModel.append(7+",");
+                        }
+                        RequestParams params1=new RequestParams();
+                        //因为传递的是json数据，所以需要设置header和body
+                        params1.addHeader("Content-Type","application/json");
+                        JSONObject jsonObject1=new JSONObject();
+                        jsonObject1.put("wuc",postwuc.toString().substring(0,postwuc.toString().length()-1));
+                        jsonObject1.put("weekTime",weekTime);
+                        jsonObject1.put("type",type);
+                        jsonObject1.put("interval",interval);
+                        jsonObject1.put("weekModel",weekModel.toString());
+                        jsonObject1.put("deviceid",deviceid);
+                        params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                        HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                            @Override
+                            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                                super.onSuccess(headers, jsonObject);
+                                Log.i(TAG, jsonObject.toString());
+                                if(jsonObject.getBoolean("success")){
+                                    Toast.makeText(WeekSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }else{
+                                    Toast.makeText(WeekSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                }
+                                dialog.dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onStart() {
+                                super.onStart();
+                                dialog= DialogUIUtils.showLoading(WeekSettingActivity.this,"加载中...",true,false,false,true);
+                                dialog.show();
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                super.onFinish();
+
+                            }
+                        });
+                    }
+                }
                 break;
         }
     }
