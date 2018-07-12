@@ -334,6 +334,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
             @Override
             public void onStart() {
                 super.onStart();
+                Log.i(TAG, "onStart: ");
                 dialog= DialogUIUtils.showLoading(TrajectoryActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
             }
