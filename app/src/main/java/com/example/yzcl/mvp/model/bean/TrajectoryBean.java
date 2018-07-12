@@ -40,7 +40,7 @@ public class TrajectoryBean extends BaseResponse{
 //        private int k;
 //        private int l;
 //        private int m;
-        private float n;
+        private Double n;
         private Double o;
 //        private double p;
 //        private double q;
@@ -152,11 +152,11 @@ public class TrajectoryBean extends BaseResponse{
 //            this.m = m;
 //        }
 
-        public float getN() {
+        public double getN() {
             return n;
         }
 
-        public void setN(float n) {
+        public void setN(double n) {
             this.n = n;
         }
 

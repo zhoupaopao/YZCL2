@@ -56,7 +56,8 @@
     <color name="tv_offline">#FD9827</color>
     <color name="tv_online">#20B222</color>
     <color name="bg_white">#ffffff</color>
-
+    <color name="progress_green">#42BD41</color>
+    <color name="progress_all">#3A3D3E</color>
     <color name="text_gray">#999999</color>
     <color name="text_gray_light">#B3B3B3</color>
 

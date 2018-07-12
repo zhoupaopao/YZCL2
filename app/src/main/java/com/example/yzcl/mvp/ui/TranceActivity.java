@@ -501,6 +501,9 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         }
         mMapView.onDestroy();
         mLocClient.stop();
-        timer.cancel();
+        if(timer!=null){
+            timer.cancel();
+        }
+
     }
 }
