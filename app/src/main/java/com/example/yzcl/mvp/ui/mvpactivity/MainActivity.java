@@ -96,6 +96,7 @@ public class MainActivity extends CheckPermissionsActivity {
         setonClick();
         //怎么替考啊
         //怎么替考啊
+        //不能提交啊
 
     }
     Handler handler=new Handler(){
