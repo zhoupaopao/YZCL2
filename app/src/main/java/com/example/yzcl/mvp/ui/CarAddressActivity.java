@@ -244,11 +244,12 @@ public class CarAddressActivity extends BaseActivity {
         int jl = (int) DistanceUtil.getDistance(new LatLng(maxlat, maxlon),
                 new LatLng(minlat,minlon));
         int j;
-        int[] zoomLevel = {50,100,200,500,1000,2000,5000,10000,20000,25000,50000,100000,200000,500000,1000000,2000000};//级别18到3。
+        int[] zoomLevel = {50,100,200,500,1000,2000,5000,10000,20000,25000,50000,100000,200000,500000,1000000,2000000,5000000};//级别18到3。
         for (j = 0;j < 17;j++) {
             if (zoomLevel[j] > jl) {
                 break;
             }
+
         }
         Log.i(TAG, "zoom1: "+jl);
         Log.i(TAG, "zoom: "+j);
@@ -660,7 +661,12 @@ public class CarAddressActivity extends BaseActivity {
         car_num.setText("车牌号："+carMessageBean.getObject().getCar_no());
         car_type.setText("车型："+carMessageBean.getObject().getCar_brand());
 //        home_address.setText(carMessageBean.getObject().getCar_brand());
-        work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
+        if(carMessageBean.getObject().getPledger().getPledger_loc().size()==0){
+            work_address.setText("联系地址："+"暂无");
+        }else{
+            work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
+        }
+//        work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
         customer.setText("所属客户："+carMessageBean.getObject().getSystemgroup().getGroup_name());
         DeviceListAdapter adapter=new DeviceListAdapter(CarAddressActivity.this,carDeviceBean);
         device_list.setAdapter(adapter);
