@@ -95,6 +95,7 @@ public class MainActivity extends CheckPermissionsActivity {
         //设置各控件的监听事件
         setonClick();
         //怎么替考啊
+        //怎么替考啊
 
     }
     Handler handler=new Handler(){
