@@ -64,7 +64,13 @@ public class PersonMessageActivity extends BaseActivity {
                 .init();
 
         initView();
-        initData();
+        if(!Constant.isNetworkConnected(PersonMessageActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(PersonMessageActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            initData();
+        }
+
 
     }
 

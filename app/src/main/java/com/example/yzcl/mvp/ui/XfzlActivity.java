@@ -57,7 +57,14 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
                 .statusBarColor(R.color.title_color)
                 .init();
         initView();
-        initData();
+        if(!Constant.isNetworkConnected(XfzlActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(XfzlActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+            finish();
+        }else{
+            initData();
+        }
+
         initListener();
     }
 

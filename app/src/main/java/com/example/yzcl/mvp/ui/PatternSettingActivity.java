@@ -165,74 +165,77 @@ public class PatternSettingActivity extends BaseActivity {
         textview2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clockModel=new StringBuffer();
-                postwuc=new StringBuffer();
-//                Log.i(TAG, sb1.isChecked()+""+sb3.isChecked()+"");
-//                boolean sda=sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked();
-//                Log.i(TAG, sda+"");
-                if(sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked()){
-                    //正常情况
-                    //选择框被选中，且时间设置
-                    if(sb1.isChecked()&&time_status1.getText().toString().equals("闹钟，每天")){
-                        postwuc.append(0+"|"+nz_time1.getText().toString()+";");
-                        clockModel.append(nz_time1.getText().toString()+",");
-                    }
-                    if(sb2.isChecked()&&time_status2.getText().toString().equals("闹钟，每天")){
-                        postwuc.append(1+"|"+nz_time2.getText().toString()+";");
-                        clockModel.append(nz_time2.getText().toString()+",");
-                    }
-                    if(sb3.isChecked()&&time_status3.getText().toString().equals("闹钟，每天")){
-                        postwuc.append(2+"|"+nz_time3.getText().toString()+";");
-                        clockModel.append(nz_time3.getText().toString()+",");
-                    }
-                    if(sb4.isChecked()&&time_status4.getText().toString().equals("闹钟，每天")){
-                        postwuc.append(3+"|"+nz_time4.getText().toString()+";");
-                        clockModel.append(nz_time4.getText().toString()+",");
-                    }
-                    RequestParams params1=new RequestParams();
-                    //因为传递的是json数据，所以需要设置header和body
-                    params1.addHeader("Content-Type","application/json");
-                    JSONObject jsonObject1=new JSONObject();
-                    jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
-                    Log.i(TAG, clockModel.toString().substring(0,clockModel.toString().length()-1));
-                    jsonObject1.put("type",type);
-                    jsonObject1.put("interval",interval);
-                    jsonObject1.put("wuc",postwuc.toString());
-                    jsonObject1.put("deviceid",deviceid);
-                    params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
-                    HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
-                        @Override
-                        protected void onSuccess(Headers headers, JSONObject jsonObject) {
-                            super.onSuccess(headers, jsonObject);
-                            Log.i(TAG, jsonObject.toString());
-                            if(jsonObject.getBoolean("success")){
-                                Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
-                                setResult(RESULT_OK);
-                                finish();
-                            }else{
-                                Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-                            }
-                            dialog.dialog.dismiss();
-                        }
-
-                        @Override
-                        public void onStart() {
-                            super.onStart();
-                            dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
-                            dialog.show();
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            super.onFinish();
-
-                        }
-                    });
+                if(!Constant.isNetworkConnected(PatternSettingActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(PatternSettingActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
                 }else{
-                    //如果都不选中
-                    Toast.makeText(PatternSettingActivity.this,"请至少选择一组并设置时间",Toast.LENGTH_SHORT).show();
+                    clockModel=new StringBuffer();
+                    postwuc=new StringBuffer();
+                    if(sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked()){
+                        //正常情况
+                        //选择框被选中，且时间设置
+                        if(sb1.isChecked()&&time_status1.getText().toString().equals("闹钟，每天")){
+                            postwuc.append(0+"|"+nz_time1.getText().toString()+";");
+                            clockModel.append(nz_time1.getText().toString()+",");
+                        }
+                        if(sb2.isChecked()&&time_status2.getText().toString().equals("闹钟，每天")){
+                            postwuc.append(1+"|"+nz_time2.getText().toString()+";");
+                            clockModel.append(nz_time2.getText().toString()+",");
+                        }
+                        if(sb3.isChecked()&&time_status3.getText().toString().equals("闹钟，每天")){
+                            postwuc.append(2+"|"+nz_time3.getText().toString()+";");
+                            clockModel.append(nz_time3.getText().toString()+",");
+                        }
+                        if(sb4.isChecked()&&time_status4.getText().toString().equals("闹钟，每天")){
+                            postwuc.append(3+"|"+nz_time4.getText().toString()+";");
+                            clockModel.append(nz_time4.getText().toString()+",");
+                        }
+                        RequestParams params1=new RequestParams();
+                        //因为传递的是json数据，所以需要设置header和body
+                        params1.addHeader("Content-Type","application/json");
+                        JSONObject jsonObject1=new JSONObject();
+                        jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
+                        Log.i(TAG, clockModel.toString().substring(0,clockModel.toString().length()-1));
+                        jsonObject1.put("type",type);
+                        jsonObject1.put("interval",interval);
+                        jsonObject1.put("wuc",postwuc.toString());
+                        jsonObject1.put("deviceid",deviceid);
+                        params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                        HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                            @Override
+                            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                                super.onSuccess(headers, jsonObject);
+                                Log.i(TAG, jsonObject.toString());
+                                if(jsonObject.getBoolean("success")){
+                                    Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }else{
+                                    Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                }
+                                dialog.dialog.dismiss();
+                            }
 
+                            @Override
+                            public void onStart() {
+                                super.onStart();
+                                dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
+                                dialog.show();
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                super.onFinish();
+
+                            }
+                        });
+                    }else{
+                        //如果都不选中
+                        Toast.makeText(PatternSettingActivity.this,"请至少选择一组并设置时间",Toast.LENGTH_SHORT).show();
+
+                    }
                 }
+
 
 
             }

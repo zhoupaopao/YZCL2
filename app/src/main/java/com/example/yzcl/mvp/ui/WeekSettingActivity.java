@@ -196,6 +196,9 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
                 //先判断当前时间有没有填写
                 if(nz_time1.getText().toString().equals("")){
                     Toast.makeText(WeekSettingActivity.this,"请选择时间",Toast.LENGTH_SHORT).show();
+                }else if(!Constant.isNetworkConnected(WeekSettingActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(WeekSettingActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
                 }else{
                     //如果一个都没选中也提示
                     //全是不可见的

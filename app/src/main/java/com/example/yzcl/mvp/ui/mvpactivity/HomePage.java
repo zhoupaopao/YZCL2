@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.presenter.GlideImageLoader;
+import com.example.yzcl.mvp.ui.CarAddressActivity;
 import com.example.yzcl.mvp.ui.CarManagerActivity;
 import com.example.yzcl.mvp.ui.CarManagerFragmentActivity;
 import com.example.yzcl.mvp.ui.CarManagerRealActivity;
@@ -43,6 +50,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+
 /**
  * Created by Lenovo on 2017/11/28.
  */
@@ -58,6 +70,8 @@ public class HomePage extends BaseActivity implements OnBannerListener{
     private String[]iconname;
     private long mExitTime=0;
     Intent intent;
+    private String TAG="HomePage";
+    private BuildBean jq_dia;
     private int[] icon = { R.mipmap.group1, R.mipmap.group2,
             R.mipmap.group3,R.mipmap.group4, R.mipmap.group5,
             R.mipmap.group5, R.mipmap.group7,R.mipmap.group8};
@@ -98,7 +112,13 @@ public class HomePage extends BaseActivity implements OnBannerListener{
         data_list=new ArrayList<Map<String,Object>>();
         iconname=getResources().getStringArray(R.array.grid_icon_text);
         getData();
-
+        //获取权限
+        if(!Constant.isNetworkConnected(HomePage.this)) {
+            //判断网络是否可用
+            Toast.makeText(HomePage.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            achieveJurisdiction();
+        }
         String []from={"image","text","coverimg"};
         int [] to = {R.id.image1,R.id.text1,R.id.coverimg};
         sim_adapter=new SimpleAdapter(this,data_list,R.layout.item_gridview,from,to);
@@ -181,6 +201,49 @@ public class HomePage extends BaseActivity implements OnBannerListener{
             }
         });
     }
+
+    private void achieveJurisdiction() {
+        RequestParams params=new RequestParams();
+        params.addFormDataPart("token",sp.getString(Constant.Token,""));
+        HttpRequest.get(Api.getUserGeneralInfo,params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, "onSuccess: "+jsonObject.toString());
+                if(jsonObject.getBoolean("success")){
+                    //请求成功
+                    //获取权限
+
+                    String list_Jurisdiction=jsonObject.getJSONObject("object").getString("rightstring");
+                    SharedPreferences.Editor editor=sp.edit();
+                    editor.putString("list_Jurisdiction",list_Jurisdiction);
+                    editor.commit();
+                }else{
+                    Toast.makeText(HomePage.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                }
+                DialogUIUtils.dismiss(jq_dia);
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                jq_dia = DialogUIUtils.showLoading(HomePage.this, "加载中...", false, false, false, false);
+                jq_dia.show();
+            }
+        });
+    }
+
+//    private void Handle_Jurisdiction(String[] list_j) {
+//        //循环判断有没有这个对应的参数
+//        //有设置为true，没有就false
+//
+//    }
+
     private void setStatusBarUpperAPI21() {
         Window window = getWindow();
         //设置透明状态栏,这样才能让 ContentView 向上
@@ -199,7 +262,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
 
     @Override
     public void OnBannerClick(int position) {
-        Toast.makeText(getApplicationContext(),"你点击了："+position,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"你点击了："+position,Toast.LENGTH_SHORT).show();
     }
 
     public List<Map<String,Object>> getData() {
@@ -209,11 +272,11 @@ public class HomePage extends BaseActivity implements OnBannerListener{
             Map<String,Object>map=new HashMap<String,Object>();
             map.put("image",icon[i]);
             map.put("text",iconname[i]);
-            if(i==1&&needshow){
-                map.put("coverimg",R.mipmap.u114);
-            }else{
+//            if(i==1&&needshow){
+//                map.put("coverimg",R.mipmap.u114);
+//            }else{
                 map.put("coverimg","");
-            }
+//            }
             data_list.add(map);
         }
         return data_list;

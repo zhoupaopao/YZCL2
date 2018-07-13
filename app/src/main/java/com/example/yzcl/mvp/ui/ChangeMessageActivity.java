@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +22,9 @@ import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarMessageBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.finalteam.okhttpfinal.HttpRequest;
 import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
@@ -69,6 +75,17 @@ public class ChangeMessageActivity extends BaseActivity {
         title.setText(intent.getStringExtra("title"));
         String_text.setText(intent.getStringExtra("StringText"));
         String_text.setSelection(intent.getStringExtra("StringText").length());
+        if(nowid.equals("2")){
+            //设置手机号最大位数
+            String_text.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+            //设置只能为数字
+            String_text.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
+        if(nowid.equals("1")){
+            String_text.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+            //设置只能为数字
+//            String_text.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
         if(intent.getStringExtra("prompt")==""){
             prompt.setVisibility(View.INVISIBLE);
         }else{
@@ -95,7 +112,53 @@ public class ChangeMessageActivity extends BaseActivity {
                 if(String_text.getText().toString().trim().equals("")){
                     //是空
                     Toast.makeText(ChangeMessageActivity.this,"输入框不能为空",Toast.LENGTH_SHORT).show();
+                }else if(nowid.equals("2")&&String_text.getText().toString().trim().length()!=11){
+                    Toast.makeText(ChangeMessageActivity.this,"请输入正确的手机号",Toast.LENGTH_SHORT).show();
+                }else if(nowid.equals("1")&&String_text.getText().toString().trim().length()<2){
+                    Toast.makeText(ChangeMessageActivity.this,"请输入正确的姓名",Toast.LENGTH_SHORT).show();
+                }
+                else if(nowid.equals("3")){
+                    //是邮箱的话判断邮箱格式是不是符合
+                    if(!Constant.isNetworkConnected(ChangeMessageActivity.this)) {
+                        //判断网络是否可用
+                        Toast.makeText(ChangeMessageActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                    }else{
+                        if(isEmail(String_text.getText().toString().trim())){
+                            //格式正确
+                            RequestParams params=new RequestParams();
+                            params.addHeader("Content-Type","application/json");
+                            jsonObject.put("email",String_text.getText().toString().trim());
+                            params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+                            HttpRequest.post(Api.updateUser+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+                                @Override
+                                protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                                    super.onSuccess(headers, jsonObject);
+                                    if(jsonObject.getBoolean("success")){
+                                        Toast.makeText(ChangeMessageActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }else{
+                                        Toast.makeText(ChangeMessageActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(int errorCode, String msg) {
+                                    super.onFailure(errorCode, msg);
+
+                                }
+                            });
+                        }else{
+                            Toast.makeText(ChangeMessageActivity.this,"邮箱格式不正确，请重新输入",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
                 }else{
+                    if(!Constant.isNetworkConnected(ChangeMessageActivity.this)) {
+                        //判断网络是否可用
+                        Toast.makeText(ChangeMessageActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                    }else{
                     RequestParams params=new RequestParams();
                     params.addHeader("Content-Type","application/json");
                     if(nowid.equals("1")){
@@ -130,10 +193,30 @@ public class ChangeMessageActivity extends BaseActivity {
                         }
                     });
 
-                }
+                }}
 
             }
         });
 
     }
+    public static boolean isEmail(String strEmail) {
+        String strPattern = "^[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$";
+        if (TextUtils.isEmpty(strPattern)) {
+            return false;
+        } else {
+            return strEmail.matches(strPattern);
+        }
+    }
+//    private boolean checkEmail(String s) {
+//        //判断email格式是否正确
+//        if(s.matches("\\p{Alpha}\\w{2,15}[@][a-z0-9]{3,}[.]\\p{Lower}{2,}"))
+//        {
+//            return true;
+//        }
+//        else
+//        {
+//            return false;
+//        }
+//    }
+
 }

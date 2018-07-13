@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -112,17 +114,34 @@ public class MainActivity extends CheckPermissionsActivity {
         }
     };
     private void setonClick() {
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //清空密码
+                password.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         pic_yzm.setOnClickListener(new View.OnClickListener() {
             //验证码点击事件
             @Override
             public void onClick(View view) {
-                setpic();
+//                setpic();
             }
         });
         forgetpwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogUIUtils.showAlert(MainActivity.this, null, "请联系管理员或拨打客户热线400-0000-\n0000找回密码。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
+                DialogUIUtils.showAlert(MainActivity.this, null, "请联系管理员或拨打客户热线400-0606-\n708找回密码。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
                     @Override
                     public void onPositive() {
 //                        showToast("onPositive");
@@ -140,9 +159,15 @@ public class MainActivity extends CheckPermissionsActivity {
             //登录，需要验证是否有账号密码，有看看是否记住密码，请求接口，成功切换页面
             @Override
             public void onClick(View view) {
+                if((System.currentTimeMillis()-mExitTime>2000)){ //如果两次按键时间间隔大于2000毫秒，则不退出
+                    //不能让他连续点击登录
+                    loginbtn();
+                    mExitTime = System.currentTimeMillis();// 更新mExitTime
+                }else{
+                    Toast.makeText(MainActivity.this,"请勿连续点击",Toast.LENGTH_SHORT).show();
+                    mExitTime = System.currentTimeMillis();// 更新mExitTime
+                }
 
-
-                loginbtn();
 //                DialogUIUtils.showMdLoading(MainActivity.this, "加载中...",true,true,true,true);
 //                SharedPreferences.Editor editor=sp.edit();
 //
@@ -170,7 +195,7 @@ public class MainActivity extends CheckPermissionsActivity {
             }
         });
         //键盘上面的done的点击事件
-        yzm.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if(i== EditorInfo.IME_ACTION_GO){
@@ -193,15 +218,20 @@ public class MainActivity extends CheckPermissionsActivity {
             Log.i("in", "2");
             Toast.makeText(MainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
             DialogUIUtils.dismiss(dia);
-        } else if(yzm.getText().toString().isEmpty()){
-            Log.i("in", "3");
-            Toast.makeText(MainActivity.this, "验证码不能为空", Toast.LENGTH_SHORT).show();
+        }else if(!Constant.isNetworkConnected(MainActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(MainActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
             DialogUIUtils.dismiss(dia);
-        }else {
+        } else {
             //用户名密码都有数据，请求登录接口
             Log.i("in", "3");
             login(username.getText().toString().trim(), password.getText().toString().trim(),yzm.getText().toString().trim());
         }
+//        else if(yzm.getText().toString().isEmpty()){
+//            Log.i("in", "3");
+//            Toast.makeText(MainActivity.this, "验证码不能为空", Toast.LENGTH_SHORT).show();
+//            DialogUIUtils.dismiss(dia);
+//        }
     }
 
     private void waitme() {
@@ -274,22 +304,21 @@ public class MainActivity extends CheckPermissionsActivity {
 //            }
 //        });
         RequestParams params=new RequestParams();
-        params.addFormDataPart("username",name);
+        params.addFormDataPart("userName",name);
         params.addFormDataPart("password",psd);
-        params.addFormDataPart("key",key);
-        params.addFormDataPart("code",yzm);
-        HttpRequest.get(Api.Jsonp_GetLogin,params,new JsonHttpRequestCallback(){
+//        params.addFormDataPart("key",key);
+//        params.addFormDataPart("code",yzm);
+        HttpRequest.get(Api.loginRbn,params,new JsonHttpRequestCallback(){
             @Override
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
-                LoginBean loginBean=JSONObject.parseObject(jsonObject.toString(),LoginBean.class);
-                if(loginBean.isSuccess()){
+
+                if(jsonObject.getInteger("Result")==0){
                     //登录成功
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString(Constant.Token, loginBean.getObject().getToken());
-                    editor.putString(Constant.userid, loginBean.getObject().getUserid());
-                    Log.i(TAG, "Userid: "+loginBean.getObject().getUserid());
+                    editor.putString(Constant.Token, jsonObject.getString("Token"));
+                    editor.putString(Constant.userid, jsonObject.getString("UserID"));
                     if (rempwd.isChecked()) {
                             //被选中，记住账号
                             Log.i("rem", "1 ");
@@ -303,12 +332,37 @@ public class MainActivity extends CheckPermissionsActivity {
                         editor.commit();
                     handler.sendEmptyMessage(1);
                         Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-
                 }else{
-                    DialogUIUtils.dismiss(dia);
-                    Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
-                    setpic();
+                    dia.dialog.dismiss();
+                    Toast.makeText(MainActivity.this, jsonObject.getString("ErrorMsg"), Toast.LENGTH_SHORT).show();
+
                 }
+//                LoginBean loginBean=JSONObject.parseObject(jsonObject.toString(),LoginBean.class);
+//                if(loginBean.isSuccess()){
+//                    //登录成功
+//                    SharedPreferences.Editor editor = sp.edit();
+//                    editor.putString(Constant.Token, loginBean.getObject().getToken());
+//                    editor.putString(Constant.userid, loginBean.getObject().getUserid());
+//                    Log.i(TAG, "Userid: "+loginBean.getObject().getUserid());
+//                    if (rempwd.isChecked()) {
+//                            //被选中，记住账号
+//                            Log.i("rem", "1 ");
+//                            editor.putString(Constant.username,name);
+//                            editor.putString(Constant.password,psd);
+//                            editor.putBoolean("rempwd", true);
+//                        } else {
+//                            editor.putBoolean("rempwd", false);
+//                            Log.i("rem", "0 ");
+//                        }
+//                        editor.commit();
+//                    handler.sendEmptyMessage(1);
+//                        Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+//
+//                }else{
+//                    DialogUIUtils.dismiss(dia);
+//                    Toast.makeText(MainActivity.this, loginBean.getMessage(), Toast.LENGTH_SHORT).show();
+////                    setpic();
+//                }
 
             }
 
@@ -339,104 +393,98 @@ public class MainActivity extends CheckPermissionsActivity {
         pic_yzm=findViewById(R.id.pic_yzm);
         //创建属于主线程的handler
         handler1=new Handler();
-        setpic();
+//        setpic();
         final String TAG="async";
 
         sp = getSharedPreferences("YZCL", MODE_PRIVATE);
     }
     // 构建Runnable对象，在runnable中更新界面
     //必须在这里面处理不然会报错
-    Runnable   runnableUi=new  Runnable(){
-        @Override
-        public void run() {
-            //更新界面
-            pic_yzm.setImageBitmap(bm);
-            dia.dialog.dismiss();
-        }
-
-    };
-    public void setpic(){
-        //请求图片
-        dia=DialogUIUtils.showLoading(MainActivity.this, "请求中...",false,false,false,false);
-        dia.show();
-        RequestParams paramss=new RequestParams();
-        paramss.addFormDataPart("username","");
-        paramss.addFormDataPart("password","");
-        HttpRequest.get(Api.Jsonp_GetLogin,paramss,new JsonHttpRequestCallback(){
-            @Override
-            protected void onSuccess(Headers headers, JSONObject jsonObject) {
-                super.onSuccess(headers, jsonObject);
-                String jsonString=jsonObject.toString();
-                LoginBean loginBean=JSONObject.parseObject(jsonString,LoginBean.class);
-                key=loginBean.getObject().getKey();
-                image=loginBean.getObject().getImage();
-                Log.i(TAG, key+"/"+image);
-                bm=stringToBitmap(image);
-                handler1.post(runnableUi);
-            }
-        });
-//        new Thread(new Runnable() {
+//    Runnable   runnableUi=new  Runnable(){
+//        @Override
+//        public void run() {
+//            //更新界面
+//            pic_yzm.setImageBitmap(bm);
+//            dia.dialog.dismiss();
+//        }
+//
+//    };
+//    public void setpic(){
+//        //请求图片
+//        dia=DialogUIUtils.showLoading(MainActivity.this, "请求中...",false,false,false,false);
+//        dia.show();
+//        RequestParams paramss=new RequestParams();
+//        paramss.addFormDataPart("username","");
+//        paramss.addFormDataPart("password","");
+//        HttpRequest.get(Api.Jsonp_GetLogin,paramss,new JsonHttpRequestCallback(){
 //            @Override
-//            public void run() {
-//                bm=getHttpBitmap(url);
+//            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+//                super.onSuccess(headers, jsonObject);
+//                String jsonString=jsonObject.toString();
+//                LoginBean loginBean=JSONObject.parseObject(jsonString,LoginBean.class);
+//                key=loginBean.getObject().getKey();
+//                image=loginBean.getObject().getImage();
+//                Log.i(TAG, key+"/"+image);
+//                bm=stringToBitmap(image);
 //                handler1.post(runnableUi);
 //            }
-//        }).start();
-    }
+//        });
+//    }
 
 
-    public Bitmap stringToBitmap(String string) {
-        Bitmap bitmap = null;
-        try {
-            byte[] bitmapArray = Base64.decode(string, Base64.DEFAULT);
-            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-
-    public static Bitmap getHttpBitmap(String url) {
-        URL myFileUrl = null;
-        Bitmap bitmap = null;
-        try {
-            myFileUrl = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
-            HttpURLConnection conn = (HttpURLConnection) myFileUrl.openConnection();
-            conn.setConnectTimeout(0);
-            conn.setDoInput(true);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
+//    public Bitmap stringToBitmap(String string) {
+//        Bitmap bitmap = null;
+//        try {
+//            byte[] bitmapArray = Base64.decode(string, Base64.DEFAULT);
+//            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return bitmap;
+//    }
+//
+//    public static Bitmap getHttpBitmap(String url) {
+//        URL myFileUrl = null;
+//        Bitmap bitmap = null;
+//        try {
+//            myFileUrl = new URL(url);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            HttpURLConnection conn = (HttpURLConnection) myFileUrl.openConnection();
+//            conn.setConnectTimeout(0);
+//            conn.setDoInput(true);
+//            conn.connect();
+//            InputStream is = conn.getInputStream();
+//            bitmap = BitmapFactory.decodeStream(is);
+//            is.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return bitmap;
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
         //自动登录写在这里
 
-//        if (sp.getBoolean("rempwd",false)) {
+        if (sp.getBoolean("rempwd",false)) {
             //给用户名赋值
             username.setText(sp.getString(Constant.username,""));
             password.setText(sp.getString(Constant.password,""));
             //将光标移动到最后
-        username.setSelection(username.length());
+            username.setSelection(username.length());
             rempwd.setChecked(true);
 //            Intent intent = new Intent();
 //            intent.setClass(MainActivity.this, HomePage.class);
 //            startActivity(intent);
 //            finish();
-//        } else {
-//            Log.i("rempwd", "不行 ");
-//        }
+        } else {
+            username.setText(sp.getString(Constant.username,""));
+            Log.i("rempwd", "不行 ");
+        }
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

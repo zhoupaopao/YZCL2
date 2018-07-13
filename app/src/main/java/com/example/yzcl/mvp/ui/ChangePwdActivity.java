@@ -72,7 +72,14 @@ public class ChangePwdActivity extends BaseActivity {
         sure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(newpsd.getText().toString().equals(surepsd.getText().toString())){
+                if(newpsd.getText().toString().trim().equals("")||oldpsd.getText().toString().trim().equals("")||surepsd.getText().toString().trim().equals("")){
+                    Toast.makeText(ChangePwdActivity.this, "密码不能为空，请输入", Toast.LENGTH_SHORT).show();
+                }else if(newpsd.getText().toString().trim().length()<6||oldpsd.getText().toString().trim().length()<6||surepsd.getText().toString().trim().length()<6){
+                    Toast.makeText(ChangePwdActivity.this, "密码不能少于6位，请重新输入输入", Toast.LENGTH_SHORT).show();
+                }else if(!Constant.isNetworkConnected(ChangePwdActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(ChangePwdActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else if(newpsd.getText().toString().equals(surepsd.getText().toString())){
                     //密码确认
                     RequestParams params=new RequestParams();
                     params.addHeader("Content-Type","application/json");

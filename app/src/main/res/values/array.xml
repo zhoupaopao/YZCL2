@@ -12,13 +12,13 @@
     </array>
     <array name="grid_icon_text">
         <item>车辆监控</item>
-        <item>风控预警</item>
-        <item>车辆管理</item>
-        <item>下单中心</item>
-        <item>围栏管理</item>
-        <item>指令设置</item>
-        <item>客户管理</item>
-        <item>更多...</item>
+        <!--<item>风控预警</item>-->
+        <!--<item>车辆管理</item>-->
+        <!--<item>下单中心</item>-->
+        <!--<item>围栏管理</item>-->
+        <!--<item>指令设置</item>-->
+        <!--<item>客户管理</item>-->
+        <!--<item>更多...</item>-->
     </array>
     <string-array name="city_description_list">
         <item>北京首都</item>

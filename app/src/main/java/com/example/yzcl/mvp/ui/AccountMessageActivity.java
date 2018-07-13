@@ -44,6 +44,7 @@ public class AccountMessageActivity extends BaseActivity {
     TextView phone;
     TextView tv_email;
     TextView group_name;
+    String list_Jurisdiction;//权限设置
     private String TAG="AccountMessageActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +60,13 @@ public class AccountMessageActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
+        if(!Constant.isNetworkConnected(AccountMessageActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(AccountMessageActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            initData();
+        }
+
     }
 
     private void initData() {
@@ -114,6 +121,14 @@ public class AccountMessageActivity extends BaseActivity {
         phone=findViewById(R.id.phone);
         tv_email=findViewById(R.id.tv_email);
         group_name=findViewById(R.id.group_name);
+        list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("146")){
+                changepwd.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

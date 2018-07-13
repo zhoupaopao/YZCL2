@@ -444,7 +444,13 @@ public class CarAddressActivity extends BaseActivity {
                 //刷新数据
                 //重新请求设备数据
                 needrun=true;
-                achieveDevie(carId);
+                if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveDevie(carId);
+                }
+
             }
         });
         loc.setOnClickListener(new View.OnClickListener() {
@@ -469,7 +475,13 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //获取车辆信息
-                achieveCarMessage();
+                if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveCarMessage();
+                }
+
 
 //                popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
 //                popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -561,7 +573,13 @@ public class CarAddressActivity extends BaseActivity {
                 Log.i(TAG, "onSuccess: "+jsonObject.toString());
                 carMessageBean=JSONObject.parseObject(jsonObject.toString(),CarMessageBean.class);
                 //请求设备信息（设备列表）
-                achieveDeviceMessage();
+                if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveDeviceMessage();
+                }
+
             }
 
             @Override

@@ -58,6 +58,7 @@ import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 import java.util.ArrayList;
@@ -110,6 +111,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     private String interestPoint = "停车场,加油站,维修厂";
     private int totalintrer = 0;
     private Boolean isfirst=true;
+    private long mExitTime=0;
 //计时用
     private int runtime = 10000;
     Timer timer;
@@ -202,7 +204,13 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==0){
-                achieveDeviceLL();
+                if(!Constant.isNetworkConnected(TranceActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(TranceActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveDeviceLL();
+                }
+
             }
             super.handleMessage(msg);
         }
@@ -211,12 +219,26 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if((System.currentTimeMillis()-mExitTime>1000)){ //如果两次按键时间间隔大于2000毫秒，则不退出
+                    //不能让他连续点击登录
+                    if(!Constant.isNetworkConnected(TranceActivity.this)) {
+                        //判断网络是否可用
+                        Toast.makeText(TranceActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                    }else{
+                        achieveDeviceLL();
+                    }
+                    mExitTime = System.currentTimeMillis();// 更新mExitTime
+                }else{
+                    Toast.makeText(TranceActivity.this,"请勿连续点击",Toast.LENGTH_SHORT).show();
+                    mExitTime = System.currentTimeMillis();// 更新mExitTime
+                }
                 //刷新数据
                 //重新请求设备数据
 //                needrun=true;
 //                achieveDevie(carId);
                 //获取单个设备的经纬度
-                achieveDeviceLL();
+
+
             }
         });
         loc.setOnClickListener(new View.OnClickListener() {
@@ -225,16 +247,16 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                 //定位
                 // 开启定位图层
                 isfirst=true;
-//                mBaiduMap.setMyLocationEnabled(true);
-//                // 定位初始化
-//                mLocClient = new LocationClient(TranceActivity.this);
-//                mLocClient.registerLocationListener(myListener);
-//                LocationClientOption option = new LocationClientOption();
-//                option.setOpenGps(true); // 打开gps
-//                option.setCoorType("bd09ll"); // 设置坐标类型
-//                option.setScanSpan(1000);
-//                mLocClient.setLocOption(option);
-//                mLocClient.start();
+                mBaiduMap.setMyLocationEnabled(true);
+                // 定位初始化
+                mLocClient = new LocationClient(TranceActivity.this);
+                mLocClient.registerLocationListener(myListener);
+                LocationClientOption option = new LocationClientOption();
+                option.setOpenGps(true); // 打开gps
+                option.setCoorType("bd09ll"); // 设置坐标类型
+                option.setScanSpan(1000);
+                mLocClient.setLocOption(option);
+                mLocClient.start();
             }
         });
     }
@@ -251,13 +273,14 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
             @Override
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
+                Log.i("onSuccess: ", jsonObject.toString());
                 if(jsonObject.getBoolean("success")){
                     longitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blng"));
                     latitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blat"));
                     isfirst=true;
 //                    BitmapDescriptor adasd=getBitmapDescriptor(jsonObject.getJSONObject("object").getString("internalnum"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime"));
 
-                    dev_name="设备名称："+jsonObject.getJSONObject("object").getString("internalnum");
+                    dev_name="设备名称："+jsonObject.getJSONObject("object").getString("internalnum")+"("+jsonObject.getJSONObject("object").getString("category")+")";
                     dev_last_time="定位时间："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime")+"（20秒刷新一次）";
                     dev_address="当前位置："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion");
                     dialog.dialog.dismiss();
@@ -400,7 +423,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
         if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(TranceActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TranceActivity.this, "定位服务未开启", Toast.LENGTH_SHORT).show();
         }
         if (drivingRouteResult.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
@@ -476,8 +499,8 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
 //            Log.i("getTerminalMarker: ", "getTerminalMarker: ");
             BitmapDescriptor adasd=getBitmapDescriptor(dev_name,dev_address,dev_last_time);
             //调整图片的透明度
-            BitmapDescriptor adasd1=BitmapDescriptorFactory.fromBitmap(getTransparentBitmap(adasd.getBitmap(),60));
-            return adasd1;
+//            BitmapDescriptor adasd1=BitmapDescriptorFactory.fromBitmap(getTransparentBitmap(adasd.getBitmap(),60));
+            return adasd;
 
         }
     }

@@ -183,46 +183,53 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.textview2:
                 //保存
-                RequestParams params1=new RequestParams();
-                //因为传递的是json数据，所以需要设置header和body
-                params1.addHeader("Content-Type","application/json");
-                JSONObject jsonObject1=new JSONObject();
-                jsonObject1.put("clockModel","");
+                if(!Constant.isNetworkConnected(TimingSettingActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(TimingSettingActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                    break;
+                }else{
+                    RequestParams params1=new RequestParams();
+                    //因为传递的是json数据，所以需要设置header和body
+                    params1.addHeader("Content-Type","application/json");
+                    JSONObject jsonObject1=new JSONObject();
+                    jsonObject1.put("clockModel","");
 //                Log.i(TAG, clockModel.toString().substring(0,clockModel.toString().length()-1));
-                jsonObject1.put("type",type);
-                jsonObject1.put("interval",interval);
-                jsonObject1.put("wuc","");
-                jsonObject1.put("deviceid",deviceid);
-                params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
-                HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
-                    @Override
-                    protected void onSuccess(Headers headers, JSONObject jsonObject) {
-                        super.onSuccess(headers, jsonObject);
-                        Log.i(TAG, jsonObject.toString());
-                        if(jsonObject.getBoolean("success")){
-                            Toast.makeText(TimingSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
-                            finish();
-                        }else{
-                            Toast.makeText(TimingSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                    jsonObject1.put("type",type);
+                    jsonObject1.put("interval",interval);
+                    jsonObject1.put("wuc","");
+                    jsonObject1.put("deviceid",deviceid);
+                    params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                    HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                        @Override
+                        protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                            super.onSuccess(headers, jsonObject);
+                            Log.i(TAG, jsonObject.toString());
+                            if(jsonObject.getBoolean("success")){
+                                Toast.makeText(TimingSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
+                                finish();
+                            }else{
+                                Toast.makeText(TimingSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.dialog.dismiss();
                         }
-                        dialog.dialog.dismiss();
-                    }
 
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        dialog= DialogUIUtils.showLoading(TimingSettingActivity.this,"加载中...",true,false,false,true);
-                        dialog.show();
-                    }
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            dialog= DialogUIUtils.showLoading(TimingSettingActivity.this,"加载中...",true,false,false,true);
+                            dialog.show();
+                        }
 
-                    @Override
-                    public void onFinish() {
-                        super.onFinish();
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
 
-                    }
-                });
-                break;
+                        }
+                    });
+                    break;
+                }
+
         }
     }
 

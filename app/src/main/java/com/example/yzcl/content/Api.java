@@ -8,6 +8,8 @@ public class Api {
     public  static  String GPSURL="http://101.37.119.32:20204/";
     //登录接口
     public  static  String Jsonp_GetLogin=GPSURL+"v1/login";
+
+
     //用户管理所有下属客户
     public  static  String GetCustomer=GPSURL+"operation/v1/customer/getCustomer";
     //围栏批量开启
@@ -59,4 +61,8 @@ public class Api {
     public static final String getTrack=MonitorUrl+"/devicegps/v1/getTrack";
     //提交指令模式
     public static final String saveOrUpdateDeviceSetting=MonitorUrl+"/device/v1/saveOrUpdateDeviceSetting";
+    //不用验证码的登录接口
+    public  static  String loginRbn=MonitorUrl+"auth/v1/loginRbn";
+    //权限设置
+//    public  static  String getUserGeneralInfo=MonitorUrl+"operation/v1/init/getUserGeneralInfo";
 }

@@ -144,7 +144,7 @@ public class DeviceMessageFragment extends Fragment{
         //定位类型
         loc_type.setText(datalist.getDgm().getType());
         //最后定位地址
-        loc_address.setText("最后定位地址:"+datalist.getDgm().getPostion());
+        loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
         //导航
         navigation.setOnClickListener(new View.OnClickListener() {
             @Override

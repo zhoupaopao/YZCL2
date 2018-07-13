@@ -101,6 +101,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
     List<LatLng> points;
     List<HashMap<String,String>>time_distance;//存放当前点的时间和距离
 
+    private long mExitTime=0;//记录时间用，防止dialog连续弹出两次
     MapView mapview;
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private BaiduMap mBaiduMap;
@@ -174,7 +175,13 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
         mMinutes=ca.get(Calendar.MINUTE);
         display(0);
         //获取轨迹信息
-        achieveGj();
+
+        if(!Constant.isNetworkConnected(TrajectoryActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(TrajectoryActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            achieveGj();
+        }
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -319,9 +326,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                         Log.i(TAG, allmileage+"");
                         stop_num.setText(tlcs+"次");
                         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(points.get(0)));
-                        if(dialog.dialog.isShowing()){
-                            dialog.dialog.dismiss();
-                        }
+                        dialog.dialog.dismiss();
                     }
 
 
@@ -335,14 +340,19 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
             public void onStart() {
                 super.onStart();
                 Log.i(TAG, "onStart: ");
-                dialog= DialogUIUtils.showLoading(TrajectoryActivity.this,"加载中...",true,true,false,true);
-                dialog.show();
+                if((System.currentTimeMillis()-mExitTime>1000)){ //如果两次按键时间间隔大于2000毫秒，则不退出
+                    dialog= DialogUIUtils.showLoading(TrajectoryActivity.this,"加载中...",true,true,false,true);
+                    dialog.show();
+                }else{
+                }
+                mExitTime = System.currentTimeMillis();// 更新mExitTime
+
             }
 
             @Override
             public void onFinish() {
                 super.onFinish();
-                dialog.dialog.dismiss();
+
 //                dialog.dialog.cancel();
             }
         });
@@ -534,7 +544,12 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                 play.setImageResource(R.mipmap.shape);
                 playStatus=0;
                 mBaiduMap.clear();
-                achieveGj();
+                if(!Constant.isNetworkConnected(TrajectoryActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(TrajectoryActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveGj();
+                }
             }
 
     }
@@ -566,7 +581,10 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
     protected void onDestroy() {
         mapview.onDestroy();
         mSearch.destroy();
-        timer.cancel();
+        if(timer!=null){
+            timer.cancel();
+        }
+
         super.onDestroy();
     }
 }
