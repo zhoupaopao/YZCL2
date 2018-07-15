@@ -500,12 +500,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
 
         @Override
         public BitmapDescriptor getTerminalMarker() {
-//            Log.i("getTerminalMarker: ", dev_name+"/"+dev_address+"/"+dev_last_time);
-//            BitmapDescriptor adasd=getBitmapDescriptor(dev_name,dev_address,dev_last_time);
-//            adasd.getBitmap().setHasAlpha(true);
-//            adasd.getBitmap().ge
             Log.i("getTerminalMarker: ", dev_name+"/"+dev_address+"/"+dev_last_time);
-//            Log.i("getTerminalMarker: ", "getTerminalMarker: ");
             BitmapDescriptor adasd=getBitmapDescriptor(dev_name,dev_address,dev_last_time);
             //调整图片的透明度
 //            BitmapDescriptor adasd1=BitmapDescriptorFactory.fromBitmap(getTransparentBitmap(adasd.getBitmap(),60));

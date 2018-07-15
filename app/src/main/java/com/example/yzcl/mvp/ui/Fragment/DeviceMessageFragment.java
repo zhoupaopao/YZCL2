@@ -3,6 +3,7 @@ package com.example.yzcl.mvp.ui.Fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,12 +54,18 @@ public class DeviceMessageFragment extends Fragment{
     private TextView trajectory;//轨迹
     private TextView navigation;//导航
     private TextView waring;//显示低电报警用
+    //可以下发指令
+    private Boolean canxfzl=false;
+    private SharedPreferences sp;
     @SuppressLint("ValidFragment")
     public DeviceMessageFragment(carDetailGPSBeans.carDetailGPSBean datalist){
         this.datalist=datalist;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        //判断是否有权限
+        sp=getActivity().getSharedPreferences("YZCL",Context.MODE_PRIVATE);
+
         Log.i(TAG, "onCreateView");
         View view=inflater.inflate(R.layout.fragment_device_message,null);
         device_name_type=view.findViewById(R.id.device_name_type);//设备名和设备类型
@@ -74,13 +81,35 @@ public class DeviceMessageFragment extends Fragment{
         xfzl=view.findViewById(R.id.xfzl);//下发指令
         trajectory=view.findViewById(R.id.trajectory);//轨迹
         navigation=view.findViewById(R.id.navigation);//导航
+        checkqx();
         //给fragment页面赋值
         try {
             giveData();
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
+
         return view;
+    }
+
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("100")){
+                canxfzl=true;
+
+            }
+            if (list_jur[i].equals("165")){
+                open_colse_loc.setVisibility(View.VISIBLE);
+
+            }
+            if (list_jur[i].equals("222")){
+                trajectory.setVisibility(View.VISIBLE);
+                break;
+            }
+
+        }
     }
 
     @SuppressLint("ResourceAsColor")
@@ -91,7 +120,12 @@ public class DeviceMessageFragment extends Fragment{
             dl.setVisibility(View.GONE);
             sblx="有线";
         }else{
-            xfzl.setVisibility(View.VISIBLE);
+            if(canxfzl){
+                xfzl.setVisibility(View.VISIBLE);
+            }else{
+                xfzl.setVisibility(View.GONE);
+            }
+
             dl.setVisibility(View.VISIBLE);
             sblx="无线";
         }

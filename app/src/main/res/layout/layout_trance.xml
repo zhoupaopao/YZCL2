@@ -11,8 +11,7 @@
     android:paddingTop="5dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingBottom="15dp"
-    android:alpha="0.5">
+    android:paddingBottom="15dp">
     <TextView
         android:id="@+id/device_name"
         android:layout_width="210dp"

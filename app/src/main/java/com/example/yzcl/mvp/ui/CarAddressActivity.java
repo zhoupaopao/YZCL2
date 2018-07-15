@@ -94,6 +94,7 @@ public class CarAddressActivity extends BaseActivity {
     private int currentPosition = 0;
     String carlist;
     String sign_status;
+    String danger_type;
     private carDetailGPSBeans.carDetailGPSBean carDetailGPSBean;
     private JSONArray arraycar;
     private JSONArray newjsArray;
@@ -546,7 +547,8 @@ public class CarAddressActivity extends BaseActivity {
                                 //判断网络是否可用
                                 Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
                             }else{
-                                achieveCarMessage();
+                                //再请求车辆是否有高危异常
+                                achieveDangerType();
                             }
 
                         }
@@ -593,6 +595,40 @@ public class CarAddressActivity extends BaseActivity {
                     nowwarn=1;
                 }
 
+            }
+        });
+    }
+
+    private void achieveDangerType() {
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("search",carDetailGPSBean.getVin());
+        jsonObject.put("pagesize",11);
+        jsonObject.put("page",1);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.queryHighAlarmList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, "onSuccess1: "+jsonObject.toString());
+                JSONArray jsonArray=jsonObject.getJSONArray("list");
+                JSONObject sign_statusLLIST= (JSONObject) jsonArray.get(0);
+                danger_type=sign_statusLLIST.getString("typename");
+                //请求设备信息（设备列表）
+                if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
+                    //判断网络是否可用
+                    Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                }else{
+                    achieveCarMessage();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                dialog.dialog.dismiss();
             }
         });
     }
@@ -729,6 +765,7 @@ public class CarAddressActivity extends BaseActivity {
         TextView owner_name=menuView.findViewById(R.id.owner_name);//车主姓名
 //        @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
         TextView car_yuqi_status=menuView.findViewById(R.id.car_yuqi_status);
+        TextView car_danger=menuView.findViewById(R.id.car_danger);//显示屏蔽和拆除报警
         TextView phone_num=menuView.findViewById(R.id.phone_num);//手机号码
         TextView car_vin=menuView.findViewById(R.id.car_vin);//车架号
         TextView car_num=menuView.findViewById(R.id.car_num);//车牌号
@@ -745,6 +782,15 @@ public class CarAddressActivity extends BaseActivity {
             car_yuqi_status.setText("重点关注");
         }else{
             car_yuqi_status.setVisibility(View.GONE);
+        }
+        if(danger_type.equals("屏蔽")){
+            car_danger.setVisibility(View.VISIBLE);
+            car_danger.setText("屏蔽");
+        }else if(danger_type.equals("拆除")){
+            car_danger.setVisibility(View.VISIBLE);
+            car_danger.setText("拆除");
+        }else{
+            car_danger.setVisibility(View.GONE);
         }
         phone_num.setText("手机号码："+carMessageBean.getObject().getPledger().getPhone());
         car_vin.setText("车架号："+carMessageBean.getObject().getVin());

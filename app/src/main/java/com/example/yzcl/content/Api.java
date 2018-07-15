@@ -26,8 +26,8 @@ public class Api {
     public static  String cancelSettleById="https://lbstec.cn/yzcl/operation/v1/settleReport/cancelSettleById";
     //获取各预警数量
     public static  String queAlarmStati="https://lbstec.cn/yzcldevice/v1/queAlarmStati";
-    //获取高危预警列表
-    public static  String queryHighAlarmList="https://lbstec.cn/yzcl/operation/v1/highAlarmReport/queryHighAlarmList";
+//    //获取高危预警列表
+//    public static  String queryHighAlarmList="https://lbstec.cn/yzcl/operation/v1/highAlarmReport/queryHighAlarmList";
     //警情明细即设备预警
     public static  String getAlarmInfo="https://lbstec.cn/yzcl/alarm/v1/alert/getAlarmInfo";
     public static String Jsonp_GetDevicePositionByUserID="http://m1api.chetxt.com:8083/customer.asmx/Jsonp_GetDevicePositionByUserID";
@@ -65,6 +65,8 @@ public class Api {
     public  static  String loginRbn=MonitorUrl+"auth/v1/loginRbn";
     //获取车辆报警类型
     public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
+    //获取高危报警类型
+    public static final String queryHighAlarmList=MonitorUrl+"/operation/v1/highAlarmReport/queryHighAlarmList";
     //权限设置
 //    public  static  String getUserGeneralInfo=MonitorUrl+"operation/v1/init/getUserGeneralInfo";
 }

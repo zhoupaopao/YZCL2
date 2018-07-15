@@ -81,7 +81,7 @@
             android:value="${applicationId}"/>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Ywf7Flh3ew4RhCmGpITQpVVA5MiBXiNO" />
+            android:value="Y3aM3kYiu4h3QSLxSKVfWXvN98QiYQRH" />
         <meta-data
             android:name="PGYER_APPID"
             android:value="22704ca5aaf9c63d60af51f9c3589adc" >
@@ -125,7 +125,8 @@
         <activity android:name="com.example.yzcl.mvp.ui.WarningGWActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.VehicleMonitoringActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.CarMonSearchActivity"></activity>
-        <activity android:name="com.example.yzcl.mvp.ui.CarAddressActivity"></activity>
+        //用于关闭硬件加速的，硬件加速会导致屏幕白屏
+        <activity android:name="com.example.yzcl.mvp.ui.CarAddressActivity" android:hardwareAccelerated="false"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.XfzlActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.PatternSettingActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.WeekSettingActivity"></activity>
