@@ -418,7 +418,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                     play.setImageResource(R.mipmap.pause);
                     playStatus=1;
                     //设置不可点击
-                    play.setClickable(false);
+//                    play.setClickable(false);
                     //从头开始播放
                     //画点
 //                    for(int i=0;i<points.size();i++){
@@ -444,6 +444,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                             },0,500);
                         }
                 }else{
+                    timer.cancel();
                     play.setImageResource(R.mipmap.shape);
                     playStatus=0;
                 }
