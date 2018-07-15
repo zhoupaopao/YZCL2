@@ -99,8 +99,8 @@ public class HomePage extends BaseActivity implements OnBannerListener{
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         grid=findViewById(R.id.grid);
         List<Integer>images=new ArrayList<>();
-        images.add(R.mipmap.u34);
-        images.add(R.mipmap.u36);
+        images.add(R.mipmap.banner);
+        images.add(R.mipmap.banner);
         banner.setImages(images)
                 .setImageLoader(new GlideImageLoader())
                 .setOnBannerListener(this)

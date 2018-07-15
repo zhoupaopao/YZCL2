@@ -82,7 +82,7 @@ public class ChangeMessageActivity extends BaseActivity {
             String_text.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
         if(nowid.equals("1")){
-            String_text.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+            String_text.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
             //设置只能为数字
 //            String_text.setInputType(InputType.TYPE_CLASS_NUMBER);
         }

@@ -327,7 +327,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                         Log.i(TAG, allmileage+"");
                         stop_num.setText(tlcs+"次");
                         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(points.get(0)));
-
+                        dialog.dialog.dismiss();
                     }
 
 

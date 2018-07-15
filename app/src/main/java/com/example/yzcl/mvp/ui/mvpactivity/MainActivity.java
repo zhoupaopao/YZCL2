@@ -144,7 +144,7 @@ public class MainActivity extends CheckPermissionsActivity {
         forgetpwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogUIUtils.showAlert(MainActivity.this, null, "请联系管理员或拨打客户热线400-0606-\n708找回密码。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
+                DialogUIUtils.showAlert(MainActivity.this, null, "请联系管理员或拨打客服热线400-0606-\n708找回密码。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
                     @Override
                     public void onPositive() {
 //                        showToast("onPositive");

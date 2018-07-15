@@ -52,6 +52,7 @@ import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
+import com.dou361.dialogui.listener.DialogUIListener;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.DeviceListAdapter;
 import com.example.yzcl.adapter.DeviceMsPagerAdapter;
@@ -63,6 +64,7 @@ import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.presenter.AnimationUtil;
 import com.example.yzcl.mvp.ui.Fragment.DeviceMessageFragment;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 import java.util.ArrayList;
@@ -94,6 +96,7 @@ public class CarAddressActivity extends BaseActivity {
     String sign_status;
     private carDetailGPSBeans.carDetailGPSBean carDetailGPSBean;
     private JSONArray arraycar;
+    private JSONArray newjsArray;
     private String TAG="CarAddressActivity";
     private MapView mapView;
     private BaiduMap mBaiduMap;
@@ -182,7 +185,6 @@ public class CarAddressActivity extends BaseActivity {
             JSONObject jsonObject=arraycar.getJSONObject(i);
             carDetailGPSBeans.carDetailGPSBean carDetailBean=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.carDetailGPSBean.class);
             //给list赋值，用于显示viewpager里面的信息
-
             if(carDetailBean.getDgm().getBlng()!=null){
                 datalist.add(carDetailBean);
 //                Log.i(TAG, Double.parseDouble(carDetailBean.getDgm().getBlat())+","+Double.parseDouble(carDetailBean.getDgm().getBlng()));
@@ -257,6 +259,24 @@ public class CarAddressActivity extends BaseActivity {
 
 //            }
         }
+        if(datalist.size()==0){
+            DialogUIUtils.showAlert(CarAddressActivity.this, null, "暂无车辆位置信息，原因可能是：\n" +
+                    "\n" +
+                    "     1、无法获取车辆位置信息，请检查设备是否正常安装。" +
+                    "\n" +
+                    "     2、可能因为车辆在隧道内，大桥下，GPS天线被遮挡等原因造成定位延迟。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
+                @Override
+                public void onPositive() {
+//                        showToast("onPositive");
+                }
+
+                @Override
+                public void onNegative() {
+
+                }
+
+            }).show();
+             }
         //计算地图中心点
         double midlat=(maxlat+minlat)/2;
         double midlon=(maxlon+minlon)/2;
@@ -416,6 +436,7 @@ public class CarAddressActivity extends BaseActivity {
 
         carlist= intent.getStringExtra("carDetailGPS");
         arraycar=JSONArray.parseArray(carlist);
+        newjsArray=new JSONArray();
         JSONObject JOdevice=arraycar.getJSONObject(0);
         carDetailGPSBean=JSONObject.parseObject(JOdevice.toString(),carDetailGPSBeans.carDetailGPSBean.class);
         carId=carDetailGPSBean.getCar_id();

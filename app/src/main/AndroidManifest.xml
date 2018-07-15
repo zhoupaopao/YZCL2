@@ -62,8 +62,8 @@
         android:name=".mvp.ui.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
         <!-- 适配 android 7.0 文件操作 -->
         <provider
@@ -86,12 +86,9 @@
             android:name="PGYER_APPID"
             android:value="22704ca5aaf9c63d60af51f9c3589adc" >
         </meta-data>
-
-        <activity android:name=".mvp.ui.mvpactivity.MainActivity"
-            >
+        <activity android:name=".mvp.ui.mvpactivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
