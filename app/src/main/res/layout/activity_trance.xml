@@ -13,18 +13,20 @@
     </com.baidu.mapapi.map.MapView>
     <ImageView
         android:id="@+id/refresh"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@mipmap/icon_refresh"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="47dp"/>
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="5dp"/>
     <ImageView
         android:id="@+id/loc"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@mipmap/icon_loc"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="-60dp"
+        android:layout_marginRight="5dp"
         android:layout_alignBottom="@id/refresh"/>
 
 </RelativeLayout>

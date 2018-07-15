@@ -91,6 +91,7 @@ public class CarAddressActivity extends BaseActivity {
     private Marker mMarkerD;
     private int currentPosition = 0;
     String carlist;
+    String sign_status;
     private carDetailGPSBeans.carDetailGPSBean carDetailGPSBean;
     private JSONArray arraycar;
     private String TAG="CarAddressActivity";
@@ -173,6 +174,10 @@ public class CarAddressActivity extends BaseActivity {
     }
 
     private void initOverlay() {
+        maxlat=0;
+        minlat=0;
+        maxlon=0;
+        minlon=0;
         for(int i=0;i<arraycar.size();i++){
             JSONObject jsonObject=arraycar.getJSONObject(i);
             carDetailGPSBeans.carDetailGPSBean carDetailBean=JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.carDetailGPSBean.class);
@@ -180,13 +185,15 @@ public class CarAddressActivity extends BaseActivity {
 
             if(carDetailBean.getDgm().getBlng()!=null){
                 datalist.add(carDetailBean);
-                Log.i(TAG, Double.parseDouble(carDetailBean.getDgm().getBlat())+","+Double.parseDouble(carDetailBean.getDgm().getBlng()));
+//                Log.i(TAG, Double.parseDouble(carDetailBean.getDgm().getBlat())+","+Double.parseDouble(carDetailBean.getDgm().getBlng()));
                 LatLng markerll = new LatLng(Double.parseDouble(carDetailBean.getDgm().getBlat()),Double.parseDouble( carDetailBean.getDgm().getBlng()));
                 //计算最大最小经纬度
                 if(maxlat==0){
                     //一个经纬度都没有，就直接赋值
                     maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
                     minlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
+                    Log.i(TAG, "maxlat: "+maxlat);
+                    Log.i(TAG, "minlat: "+minlat);
                 }else if(Double.parseDouble(carDetailBean.getDgm().getBlat())>maxlat){
                     //有经纬度后，判断大小
                     maxlat=Double.parseDouble(carDetailBean.getDgm().getBlat());
@@ -198,6 +205,7 @@ public class CarAddressActivity extends BaseActivity {
                 if(maxlon==0){
                     maxlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
                     minlon=Double.parseDouble(carDetailBean.getDgm().getBlng());
+                    Log.i(TAG, "maxlat: "+maxlon);
                     Log.i(TAG, "minlon: "+minlon);
                 }else if(Double.parseDouble(carDetailBean.getDgm().getBlng())>maxlon){
                     //有经纬度后，判断大小
@@ -210,11 +218,25 @@ public class CarAddressActivity extends BaseActivity {
 
                 MarkerOptions ooA;
                 if(carDetailBean.getOnline_status().equals("在线")){
-                    ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(1,carDetailBean.getInternalnum()))
-                            .zIndex(9).draggable(true);
+                    if(carDetailBean.getDgm().getAlarm().equals("1")){
+                        //是 有报警
+                        ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(3,carDetailBean.getInternalnum()))
+                                .zIndex(9).draggable(true);
+                    }else{
+                        //正常显示在线
+                        ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(1,carDetailBean.getInternalnum()))
+                                .zIndex(9).draggable(true);
+                    }
                 }else if(carDetailBean.getOnline_status().equals("离线")){
-                    ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(2,carDetailBean.getInternalnum()))
-                            .zIndex(9).draggable(true);
+                    if(carDetailBean.getDgm().getAlarm().equals("1")){
+                        //是 有报警
+                        ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(3,carDetailBean.getInternalnum()))
+                                .zIndex(9).draggable(true);
+                    }else {
+                        //正常显示离线
+                        ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(2, carDetailBean.getInternalnum()))
+                                .zIndex(9).draggable(true);
+                    }
                 }else{
                     ooA = new MarkerOptions().position(markerll).icon(getBitmapDescriptor(3,carDetailBean.getInternalnum()))
                             .zIndex(9).draggable(true);
@@ -279,7 +301,6 @@ public class CarAddressActivity extends BaseActivity {
                 //找到对应的下标，如果刷新的话，需要切换到对应的fragment
                 posid=i;
             }
-            Log.i(TAG, "setViewpager: 2222");
         }
         FragmentManager fm=getSupportFragmentManager();
         DeviceMsPagerAdapter adapter=new DeviceMsPagerAdapter(fm,fs,datalist);
@@ -398,7 +419,7 @@ public class CarAddressActivity extends BaseActivity {
         JSONObject JOdevice=arraycar.getJSONObject(0);
         carDetailGPSBean=JSONObject.parseObject(JOdevice.toString(),carDetailGPSBeans.carDetailGPSBean.class);
         carId=carDetailGPSBean.getCar_id();
-        car_name.setText(carDetailGPSBean.getCar_no());
+        car_name.setText(carDetailGPSBean.getPledge_name());
         car_vin.setText(carDetailGPSBean.getVin());
 //        carId=carDetailGPSBean.getCar_id();
         //显示marker覆盖物
@@ -475,12 +496,48 @@ public class CarAddressActivity extends BaseActivity {
         car_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,false,false,true);
+                dialog.show();
                 //获取车辆信息
                 if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
                     //判断网络是否可用
                     Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
                 }else{
-                    achieveCarMessage();
+                    //获取车辆的报警类型
+                    //通过vin获取车辆信息
+                    RequestParams params=new RequestParams();
+                    params.addHeader("Content-Type","application/json");
+                    JSONObject jsonObject=new JSONObject();
+                    jsonObject.put("vin",carDetailGPSBean.getVin());
+                    jsonObject.put("pagesize",11);
+                    jsonObject.put("page",1);
+                    params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+                    HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+                        @Override
+                        protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                            super.onSuccess(headers, jsonObject);
+                            Log.i(TAG, "onSuccess: "+jsonObject.toString());
+                            JSONArray jsonArray=jsonObject.getJSONArray("list");
+                            JSONObject sign_statusLLIST= (JSONObject) jsonArray.get(0);
+                            sign_status=sign_statusLLIST.getString("sign_status");
+                            //请求设备信息（设备列表）
+                            if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
+                                //判断网络是否可用
+                                Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                            }else{
+                                achieveCarMessage();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(int errorCode, String msg) {
+                            super.onFailure(errorCode, msg);
+                            dialog.dialog.dismiss();
+                        }
+                    });
+
+
                 }
 
 
@@ -540,6 +597,7 @@ public class CarAddressActivity extends BaseActivity {
                     ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
                     arraycar=JSONArray.parseArray(jsonObject.get("list").toString());
                     mBaiduMap.clear();
+                    isfirst=true;
                     initOverlay();
                 }else{
                     Toast.makeText(CarAddressActivity.this,carDetailGPSBeans.getMessage(),Toast.LENGTH_SHORT).show();
@@ -586,7 +644,7 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
-
+                dialog.dialog.dismiss();
             }
         });
     }
@@ -605,11 +663,13 @@ public class CarAddressActivity extends BaseActivity {
                 carDeviceBean=JSONObject.parseObject(jsonObject.toString(),CarDeviceBean.class);
                 //显示车辆弹出框
                 showPopwindow();
+                dialog.dialog.dismiss();
             }
 
             @Override
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
+                dialog.dialog.dismiss();
 
             }
         });
@@ -646,7 +706,8 @@ public class CarAddressActivity extends BaseActivity {
         ImageView close=menuView.findViewById(R.id.close);
         ListView device_list=menuView.findViewById(R.id.device_list);//显示设备列表
         TextView owner_name=menuView.findViewById(R.id.owner_name);//车主姓名
-        @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
+//        @SuppressLint("WrongViewCast") TextView car_status=menuView.findViewById(R.id.car_status);//车辆报警情况
+        TextView car_yuqi_status=menuView.findViewById(R.id.car_yuqi_status);
         TextView phone_num=menuView.findViewById(R.id.phone_num);//手机号码
         TextView car_vin=menuView.findViewById(R.id.car_vin);//车架号
         TextView car_num=menuView.findViewById(R.id.car_num);//车牌号
@@ -655,7 +716,15 @@ public class CarAddressActivity extends BaseActivity {
         TextView work_address=menuView.findViewById(R.id.work_address);//工作地址
         TextView customer=menuView.findViewById(R.id.customer);//所属客户
         owner_name.setText("车主姓名："+carMessageBean.getObject().getPledger().getName());
-        car_status.setText("未知没写");
+        if(sign_status.equals("逾期")){
+            car_yuqi_status.setVisibility(View.VISIBLE);
+            car_yuqi_status.setText("逾期");
+        }else if(sign_status.equals("重点关注")){
+            car_yuqi_status.setVisibility(View.VISIBLE);
+            car_yuqi_status.setText("重点关注");
+        }else{
+            car_yuqi_status.setVisibility(View.GONE);
+        }
         phone_num.setText("手机号码："+carMessageBean.getObject().getPledger().getPhone());
         car_vin.setText("车架号："+carMessageBean.getObject().getVin());
         car_num.setText("车牌号："+carMessageBean.getObject().getCar_no());
@@ -699,11 +768,60 @@ public class CarAddressActivity extends BaseActivity {
             mBaiduMap.setMyLocationData(locData);
             if (isFirstLoc) {
                 isFirstLoc = false;
-                LatLng ll = new LatLng(location.getLatitude(),
-                        location.getLongitude());
-                MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(18.0f);
-                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+//                LatLng ll = new LatLng(location.getLatitude(),
+//                        location.getLongitude());
+//                MapStatus.Builder builder = new MapStatus.Builder();
+//                builder.target(ll).zoom(18.0f);
+                //不移动到当前定位点
+                if(maxlat==0){
+                    //一个经纬度都没有，就直接赋值
+                    maxlat=location.getLatitude();
+                    minlat=location.getLatitude();
+                }else if(location.getLatitude()>maxlat){
+                    //有经纬度后，判断大小
+                    maxlat=location.getLatitude();
+                    Log.i(TAG, "maxlat: "+maxlat);
+                }else if(location.getLatitude()<minlat){
+                    minlat=location.getLatitude();
+                    Log.i(TAG, "minlat: "+minlat);
+                }
+                if(maxlon==0){
+                    maxlon=location.getLongitude();
+                    minlon=location.getLongitude();
+                    Log.i(TAG, "minlon: "+minlon);
+                }else if(location.getLongitude()>maxlon){
+                    //有经纬度后，判断大小
+                    maxlon=location.getLongitude();
+                    Log.i(TAG, "maxlon: "+maxlon);
+                }else if(location.getLongitude()<minlon){
+                    minlon=location.getLongitude();
+                    Log.i(TAG, "minlon: "+minlon);
+                }
+
+                //计算地图中心点
+                double midlat=(maxlat+minlat)/2;
+                double midlon=(maxlon+minlon)/2;
+                LatLng llllll = new LatLng(midlat, midlon);
+                Log.i(TAG, "initOverlay: "+llllll.toString());
+                //计算地图缩放度
+                int jl = (int) DistanceUtil.getDistance(new LatLng(maxlat, maxlon),
+                        new LatLng(minlat,minlon));
+                int j;
+                int[] zoomLevel = {50,100,200,500,1000,2000,5000,10000,20000,25000,50000,100000,200000,500000,1000000,2000000,5000000};//级别18到3。
+                for (j = 0;j < 17;j++) {
+                    if (zoomLevel[j] > jl) {
+                        break;
+                    }
+
+                }
+                Log.i(TAG, "zoom1: "+jl);
+                Log.i(TAG, "zoom: "+j);
+                //可以适当的减1
+                float zoom = 18-j+3 ;
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(llllll, zoom);
+                mBaiduMap.setMapStatus(u);
+                mBaiduMap.animateMapStatus(u);
+//                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
 

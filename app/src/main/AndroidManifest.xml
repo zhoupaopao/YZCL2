@@ -88,8 +88,7 @@
         </meta-data>
 
         <activity android:name=".mvp.ui.mvpactivity.MainActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

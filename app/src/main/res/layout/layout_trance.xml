@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="260dp"
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<LinearLayout android:layout_width="230dp"
+    android:id="@+id/ll"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/icons_txtbg_tr"
@@ -7,25 +12,31 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingBottom="15dp"
-    android:alpha="0.5"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:alpha="0.5">
     <TextView
         android:id="@+id/device_name"
-        android:layout_width="240dp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:text="设备名称：Y123456(无线）"
         android:textColor="@color/white"/>
     <TextView
         android:id="@+id/last_time"
-        android:layout_width="240dp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:text="定位时间：2017-09-01 12:00:00（20秒刷新一次）"
         android:textColor="@color/white"/>
     <TextView
         android:id="@+id/now_address"
-        android:layout_width="240dp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:text="当前位置：深圳市软件产业基地(学府路)"
         android:textColor="@color/white"/>
 
+</LinearLayout>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@mipmap/img_end"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-15dp"/>
 </LinearLayout>

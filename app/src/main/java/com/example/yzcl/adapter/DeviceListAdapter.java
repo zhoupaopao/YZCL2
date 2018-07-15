@@ -51,9 +51,16 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder= (ViewHolder) view.getTag();
         }
         String bindtime=carDeviceBean.getList().get(i).getBindtime();
-        String[]aaa=bindtime.split(" ");
-        viewHolder.bind_time.setText("绑车时间:"+aaa[0]);
-        viewHolder.device_name.setText(carDeviceBean.getList().get(i).getInternalnum()+"/"+carDeviceBean.getList().get(i).getDevicetypename());
+//        String[]aaa=bindtime.split(" ");
+        String aaatime=bindtime.substring(0,bindtime.length()-3);
+        viewHolder.bind_time.setText("绑车时间:"+aaatime);
+        String sblx="";
+        if(carDeviceBean.getList().get(i).getDevicetypename().equals("有线设备")){
+            sblx="有线";
+        }else{
+            sblx="无线";
+        }
+        viewHolder.device_name.setText(carDeviceBean.getList().get(i).getInternalnum()+"/"+sblx);
         viewHolder.install_loc.setText("安装位置："+carDeviceBean.getList().get(i).getInstall_part());
         return view;
     }

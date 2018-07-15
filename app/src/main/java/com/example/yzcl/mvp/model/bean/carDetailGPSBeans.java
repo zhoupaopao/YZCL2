@@ -168,6 +168,15 @@ public class carDetailGPSBeans extends BaseResponse{
             private boolean analysis;
             private String type;
             private String alarm;
+            private String speed;
+
+            public String getSpeed() {
+                return speed;
+            }
+
+            public void setSpeed(String speed) {
+                this.speed = speed;
+            }
 
             public String getDeviceId() {
                 return deviceId;

@@ -195,7 +195,6 @@ public class PatternSettingActivity extends BaseActivity {
                         params1.addHeader("Content-Type","application/json");
                         JSONObject jsonObject1=new JSONObject();
                         jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
-                        Log.i(TAG, clockModel.toString().substring(0,clockModel.toString().length()-1));
                         jsonObject1.put("type",type);
                         jsonObject1.put("interval",interval);
                         jsonObject1.put("wuc",postwuc.toString());

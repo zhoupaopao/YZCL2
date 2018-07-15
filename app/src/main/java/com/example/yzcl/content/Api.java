@@ -18,8 +18,8 @@ public class Api {
     public static  String batchClose=GPSURL+"fence/v1/batchClose";
     //删除围栏
     public static  String delFence=GPSURL+"fence/v1/delFence";
-    //查询车辆列表
-    public static  String getCar="http://yzapi.chetxt.com:82/yzcl/operation/v1/vehicleManage/getCar";
+//    //查询车辆列表
+//    public static  String getCar="http://yzapi.chetxt.com:82/yzcl/operation/v1/vehicleManage/getCar";
     //查询结清列表
     public static  String querySettleList="https://lbstec.cn/yzcl/operation/v1/settleReport/querySettleList";
     //取消结清
@@ -63,6 +63,8 @@ public class Api {
     public static final String saveOrUpdateDeviceSetting=MonitorUrl+"/device/v1/saveOrUpdateDeviceSetting";
     //不用验证码的登录接口
     public  static  String loginRbn=MonitorUrl+"auth/v1/loginRbn";
+    //获取车辆报警类型
+    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
     //权限设置
 //    public  static  String getUserGeneralInfo=MonitorUrl+"operation/v1/init/getUserGeneralInfo";
 }

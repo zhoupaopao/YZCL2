@@ -265,7 +265,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                     float nowlon=0;
                     long nowtime=0;
                     int tlcs=0;
-                    Toast.makeText(TrajectoryActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TrajectoryActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
 //                    dialog.dialog.dismiss();
                     for(int i=0;i<trajectoryBean.getList().size();i++){
                         allmileage=allmileage+trajectoryBean.getList().get(i).getS();
@@ -308,6 +308,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                     //如果点少于2个的话不能划线
                     if(points.size()<2){
                         Toast.makeText(TrajectoryActivity.this, "暂无轨迹", Toast.LENGTH_SHORT).show();
+                        dialog.dialog.dismiss();
                     }else{
                         //划线和添加起始点和终止点
                         MarkerOptions ooC;
@@ -326,12 +327,13 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                         Log.i(TAG, allmileage+"");
                         stop_num.setText(tlcs+"次");
                         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(points.get(0)));
-                        dialog.dialog.dismiss();
+
                     }
 
 
                 }else{
                     Toast.makeText(TrajectoryActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                    dialog.dialog.dismiss();
                 }
 
             }

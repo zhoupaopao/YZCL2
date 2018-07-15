@@ -9,12 +9,15 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +67,7 @@ public class CarMonSearchActivity extends BaseActivity {
     private RelativeLayout rl_search_history;
     private ArrayList<CarMonSearchListBean.CarSearchBean>carSearchBeans=new ArrayList<>();
     private String TAG="CarMonSearchActivity";
+    private ImageView delete;
     SearchRecyclerAdapter searchRecyclerAdapter;
 
     @Override
@@ -87,6 +91,7 @@ public class CarMonSearchActivity extends BaseActivity {
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         search_recycleview=findViewById(R.id.search_recycleview);
         rl_search_history=findViewById(R.id.rl_search_history);
+        delete=findViewById(R.id.delete);
     }
 
     private void initData() {
@@ -235,6 +240,32 @@ public class CarMonSearchActivity extends BaseActivity {
                     }
 
                 }).show();
+
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                et_search.setText("");
+            }
+        });
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0){
+                    delete.setVisibility(View.VISIBLE);
+                }else{
+                    delete.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });

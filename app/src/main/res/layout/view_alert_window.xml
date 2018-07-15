@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="500dp"
     android:background="#00000000"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
@@ -31,7 +35,7 @@
             android:paddingRight="10dp"
             android:orientation="vertical">
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1">
                 <TextView
@@ -41,15 +45,25 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="车主姓名：赵丽丽"/>
-                <TextView
-                    android:id="@+id/car_status"
-                    android:visibility="gone"
+                <LinearLayout
+                    android:gravity="right"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/owner_name"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/dl_radius"
-                    android:text="@string/impor_care"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/car_yuqi_status"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/dl_radius"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/device_msg"
+                        android:text="@string/impor_care"/>
+                </LinearLayout>
+
             </RelativeLayout>
             <TextView
                 android:id="@+id/phone_num"
@@ -104,10 +118,11 @@
                 android:id="@+id/customer"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:textColor="@color/color_car"
                 android:gravity="center_vertical"
-                android:text="所属客户：瓜子二手车"/>
+                android:maxLines="2"
+                android:text=""/>
 
 
         </LinearLayout>
@@ -139,3 +154,4 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </RelativeLayout>
+</LinearLayout>

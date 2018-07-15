@@ -26,9 +26,12 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -197,7 +200,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                 handler.sendMessage(mm);
 
             }
-        },0,20000);
+        },0,60000);
 
     }
     Handler handler=new Handler(){
@@ -279,8 +282,13 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                     latitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blat"));
                     isfirst=true;
 //                    BitmapDescriptor adasd=getBitmapDescriptor(jsonObject.getJSONObject("object").getString("internalnum"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime"));
-
-                    dev_name="设备名称："+jsonObject.getJSONObject("object").getString("internalnum")+"("+jsonObject.getJSONObject("object").getString("category")+")";
+                    String sblx="";
+                    if(jsonObject.getJSONObject("object").getString("category").equals("有线设备")){
+                        sblx="有线";
+                    }else{
+                        sblx="无线";
+                    }
+                    dev_name="设备名称："+jsonObject.getJSONObject("object").getString("internalnum")+"("+sblx+")";
                     dev_last_time="定位时间："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime")+"（20秒刷新一次）";
                     dev_address="当前位置："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion");
                     dialog.dialog.dismiss();
@@ -359,25 +367,26 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
             latitude1=location.getLatitude();
             longitude1=location.getLongitude();
             if(isfirst){
-                searchRoute();
-                isfirst=false;
+
             }
             Log.i("onReceiveLocation: ", latitude1+"--"+longitude1);
-//            MyLocationData locData = new MyLocationData.Builder()
-//                    .accuracy(location.getRadius())
-//                            // 此处设置开发者获取到的方向信息，顺时针0-360
-//                    .direction(100).latitude(location.getLatitude())
-//                    .longitude(location.getLongitude()).build();
-//            mBaiduMap.setMyLocationData(locData);
-//            if (isFirstLoc) {
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                            // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(100).latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+            if (isfirst) {
 //                searchRoute();
-//                isFirstLoc = false;
-//                LatLng ll = new LatLng(location.getLatitude(),
-//                        location.getLongitude());
-//                MapStatus.Builder builder = new MapStatus.Builder();
-//                builder.target(ll).zoom(18.0f);
-//                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-//            }
+                isfirst = false;
+                LatLng ll = new LatLng(location.getLatitude(),
+                        location.getLongitude());
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(ll).zoom(18.0f);
+                searchRoute();
+                isfirst=false;
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            }
         }
 
         public void onReceivePoi(BDLocation poiLocation) {

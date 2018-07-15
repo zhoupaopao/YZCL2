@@ -52,6 +52,7 @@ public class DeviceMessageFragment extends Fragment{
     private TextView xfzl;//下发指令
     private TextView trajectory;//轨迹
     private TextView navigation;//导航
+    private TextView waring;//显示低电报警用
     @SuppressLint("ValidFragment")
     public DeviceMessageFragment(carDetailGPSBeans.carDetailGPSBean datalist){
         this.datalist=datalist;
@@ -62,6 +63,7 @@ public class DeviceMessageFragment extends Fragment{
         View view=inflater.inflate(R.layout.fragment_device_message,null);
         device_name_type=view.findViewById(R.id.device_name_type);//设备名和设备类型
         warning_type=view.findViewById(R.id.warning_type);//报警类型
+        waring=view.findViewById(R.id.waring);//低电报警
         dl=view.findViewById(R.id.dl);//电量
         online_status=view.findViewById(R.id.online_status);//设备状态
         offline_time=view.findViewById(R.id.offline_time);//离线时间
@@ -83,12 +85,18 @@ public class DeviceMessageFragment extends Fragment{
 
     @SuppressLint("ResourceAsColor")
     private void giveData() throws java.text.ParseException {
-        device_name_type.setText(datalist.getInternalnum()+"/"+datalist.getCategory());
+        String sblx="";
         if(datalist.getCategory().equals("有线设备")){
             xfzl.setVisibility(View.GONE);
+            dl.setVisibility(View.GONE);
+            sblx="有线";
         }else{
             xfzl.setVisibility(View.VISIBLE);
+            dl.setVisibility(View.VISIBLE);
+            sblx="无线";
         }
+        device_name_type.setText(datalist.getInternalnum()+"/"+sblx);
+
         //报警类型
         if (datalist.getDgm().getAlarm().equals("-1")){
             //断电
@@ -101,7 +109,7 @@ public class DeviceMessageFragment extends Fragment{
 
             if(datalist.getCategory().equals("有线设备")){
 
-                warning_type.setText("拔除");
+                warning_type.setText("断电报警");
             }else{
                 warning_type.setText("光感异常");
             }
@@ -117,18 +125,49 @@ public class DeviceMessageFragment extends Fragment{
             //没有电量
             dl.setVisibility(View.GONE);
         }else{
-            dl.setVisibility(View.VISIBLE);
+            if(Integer.parseInt(datalist.getDgm().getBl())>30){
+                //电量高于30%
+                dl.setBackgroundResource(R.drawable.green_dl_radius);
+                waring.setVisibility(View.GONE);
+                dl.setTextColor(getContext().getResources().getColor(R.color.tv_online));
+            }else{
+                //电量低于30%
+                //显示低电报警
+                if(datalist.getDgm().getAlarm().equals("0")){
+                    //如果之前显示报警状态是正常的话，就在状态里面改
+                    warning_type.setBackgroundResource(R.drawable.bg_warning);
+                    warning_type.setText("低电报警");
+                    waring.setVisibility(View.GONE);
+                }else{
+//                    waring.setText("低电报警");
+//                    waring.setVisibility(View.VISIBLE);
+                }
+
+                dl.setBackgroundResource(R.drawable.dl_radius);
+                dl.setTextColor(getContext().getResources().getColor(R.color.device_msg));
+            }
             dl.setText("电量"+datalist.getDgm().getBl()+"%");
+//            dl.setVisibility(View.VISIBLE);
+
         }
-        //设备状态
-        online_status.setText(datalist.getOnline_status());
+
         if(datalist.getOnline_status().equals("在线")){
             //判断是否在线，在线隐藏离线时间
             offline_time.setVisibility(View.GONE);
+            if(datalist.getDgm().getSpeed().equals("0")){
+                //在线的话速度为0状态就是静止
+                //设备状态
+                online_status.setText("静止");
+
+            }else{
+                online_status.setText("行驶中");
+            }
+            online_status.setTextColor(getContext().getResources().getColor(R.color.tv_online));
         }else{
+            online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
             //计算时间差
             long endtime=System.currentTimeMillis();
-            long starttme=stringToLong(datalist.getDgm().getTime(),"yyyy-MM-dd HH:mm:ss");
+            long starttme=stringToLong(datalist.getDgm().getStime(),"yyyy-MM-dd HH:mm:ss");
 //            long starttme=datalist.getDgm().getTime();
             long time_during=endtime-starttme;
             long hours=time_during/(1000*60*60);//获取间隔小时
