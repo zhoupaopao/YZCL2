@@ -1,6 +1,8 @@
 package com.example.yzcl.mvp.ui.mvpactivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -35,12 +37,16 @@ import com.example.yzcl.R;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.LoginBean;
+import com.example.yzcl.mvp.ui.AboutActivity;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.mvp.ui.baseactivity.CheckPermissionsActivity;
 import com.example.yzcl.utils.StatusBarUtil;
 import com.gyf.barlibrary.ImmersionBar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
 
 
 import org.apache.http.Header;
@@ -80,6 +86,11 @@ public class MainActivity extends CheckPermissionsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_main);
         mContext = getApplication();
         DialogUIUtils.init(mContext);
@@ -400,6 +411,53 @@ public class MainActivity extends CheckPermissionsActivity {
         final String TAG="async";
 
         sp = getSharedPreferences("YZCL", MODE_PRIVATE);
+        //判断是否要升级
+        checkupdata();
+    }
+
+    private void checkupdata() {
+        PgyUpdateManager.register(MainActivity.this,
+                new UpdateManagerListener() {
+
+                    @Override
+                    public void onUpdateAvailable(final String result) {
+
+                        // 将新版本信息封装到AppBean中
+                        final AppBean appBean = getAppBeanFromString(result);
+                        Log.i("resultresult",result);
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("更新")
+                                .setMessage("系统检测到您的版本过低，请更新")
+                                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+
+                                    @Override
+
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+
+                                })
+                                .setNegativeButton(
+                                        "确定",
+                                        new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int which) {
+                                                startDownloadTask(
+                                                        MainActivity.this,
+                                                        appBean.getDownloadURL());
+
+                                            }
+                                        }).show();
+                    }
+
+                    @Override
+                    public void onNoUpdateAvailable() {
+//                        Toast.makeText(MainActivity.this, "已经是最新的版本", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     // 构建Runnable对象，在runnable中更新界面
     //必须在这里面处理不然会报错

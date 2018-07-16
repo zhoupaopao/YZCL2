@@ -3,7 +3,10 @@ package com.example.yzcl.mvp.ui;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,9 +24,13 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.mvp.ui.baseactivity.CheckPermissionsActivity;
+import com.example.yzcl.mvp.ui.mvpactivity.HomePage;
+import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 /**
@@ -51,6 +58,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     private float mCurrentAccracy;
     private MyLocationData locData;
     private SensorManager mSensorManager;
+    private BuildBean dialog;
 
 
     @Override
@@ -60,6 +68,8 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
+//        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
+//        dialog.show();
         initView();
         initData();
         initListener();
@@ -117,8 +127,32 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
                 startActivity(intent);
             }
         });
-    }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                handler.sendEmptyMessage(0);
+//            }
+//        }).start();
 
+    }
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0:
+                    dialog.dialog.dismiss();
+                    break;
+                case 1:
+
+                    break;
+            }
+        }
+    };
     /**
      * 定位SDK监听函数
      */
@@ -151,5 +185,23 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
 
         public void onReceivePoi(BDLocation poiLocation) {
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bmapview.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bmapview.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bmapview.onResume();
     }
 }

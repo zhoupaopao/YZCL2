@@ -41,6 +41,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
@@ -112,7 +113,7 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
     private ArrayList<String>stop_address_list;
     private int playStatus=0;//点击0播放，点击1暂停
     BitmapDescriptor bdB = BitmapDescriptorFactory
-            .fromResource(R.mipmap.interestpoint_spot);
+            .fromResource(R.mipmap.ico_car_on);
     BitmapDescriptor bdstart = BitmapDescriptorFactory
             .fromResource(R.mipmap.img_start);
     BitmapDescriptor bdend = BitmapDescriptorFactory
@@ -124,6 +125,10 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
     String tl_starttime;
     String tl_endtime;
     String tlsc;
+    private double maxlat=0;
+    private double maxlon=0;
+    private double minlat=0;
+    private double minlon=0;
     private int playnum=0;//当前播放进度
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -227,12 +232,20 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
         TextView marker_stopendtime=linear.findViewById(R.id.marker_stopendtime);
         TextView marker_stoptime=linear.findViewById(R.id.marker_stoptime);
         TextView marker_address=linear.findViewById(R.id.marker_address);
+        ImageView delete_mark=linear.findViewById(R.id.delete_mark);
         marker_stopstarttime.setText("停留开始时间："+tl_starttime);
         marker_stopendtime.setText("停留结束时间："+tl_endtime);
         marker_stoptime.setText("停留时长："+tlsc);
         marker_address.setText("地址："+jx_stop_address);
+
         mInfoWindow = new InfoWindow(linear, ll, -40);
         mBaiduMap.showInfoWindow(mInfoWindow);
+        delete_mark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBaiduMap.hideInfoWindow();// 隐藏infowindow
+            }
+        });
     }
 
     private void achieveGj() {
@@ -271,6 +284,31 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                         allmileage=allmileage+trajectoryBean.getList().get(i).getS();
 //                        String nowtime=gshtime(trajectoryBean.getList().get(i).getH());
                         points.add(new LatLng(trajectoryBean.getList().get(i).getO(),trajectoryBean.getList().get(i).getN()));
+                        double latt=trajectoryBean.getList().get(i).getO();
+                        double lngg=trajectoryBean.getList().get(i).getN();
+                        if(maxlat==0){
+                            //一个经纬度都没有，就直接赋值
+                            maxlat=latt;
+                            minlat=latt;
+                        }else if(latt>maxlat){
+                            //有经纬度后，判断大小
+                            maxlat=latt;
+                        }else if(latt<minlat){
+                            minlat=latt;
+                        }
+                        if(maxlon==0){
+                            maxlon=lngg;
+                            minlon=lngg;
+                        }else if(lngg>maxlon){
+                            //有经纬度后，判断大小
+                            maxlon=lngg;
+                            Log.i(TAG, "maxlon: "+maxlon);
+                        }else if(lngg<minlon){
+                            minlon=lngg;
+                            Log.i(TAG, "minlon: "+minlon);
+                        }
+
+
                         HashMap<String,String>ti_dis=new HashMap<>();
                         ti_dis.put("time",gshtime(trajectoryBean.getList().get(i).getH()));
                         ti_dis.put("distance",allmileage+"");
@@ -303,8 +341,15 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
 //                        Log.i(TAG, nowtime);
 //                        Log.i(TAG, trajectoryBean.getList().get(i).getO()+"");
                     }
-                    all_number.setText("/"+m2(allmileage/1000)+"Km");
-                    mileage.setText(m2(allmileage/1000)+"Km");
+
+                    if(allmileage/1000<1){
+                        mileage.setText(0+m2(allmileage/1000)+"Km");
+                        all_number.setText("/"+0+m2(allmileage/1000)+"Km");
+                    }else{
+                        mileage.setText(m2(allmileage/1000)+"Km");
+                        all_number.setText("/"+m2(allmileage/1000)+"Km");
+                    }
+                    now_number.setText(0.00+"Km");
                     //如果点少于2个的话不能划线
                     if(points.size()<2){
                         Toast.makeText(TrajectoryActivity.this, "暂无轨迹", Toast.LENGTH_SHORT).show();
@@ -326,7 +371,30 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                         mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         Log.i(TAG, allmileage+"");
                         stop_num.setText(tlcs+"次");
-                        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(points.get(0)));
+                        //定位点为所有点的中间
+                        //计算地图中心点
+                        double midlat=(maxlat+minlat)/2;
+                        double midlon=(maxlon+minlon)/2;
+                        LatLng llllll = new LatLng(midlat, midlon);
+                        //计算地图缩放度
+                        int jl = (int) DistanceUtil.getDistance(new LatLng(maxlat, maxlon),
+                                new LatLng(minlat,minlon));
+                        int j;
+                        int[] zoomLevel = {50,100,200,500,1000,2000,5000,10000,20000,25000,50000,100000,200000,500000,1000000,2000000,5000000};//级别18到3。
+                        for (j = 0;j < 17;j++) {
+                            if (zoomLevel[j] > jl) {
+                                break;
+                            }
+
+                        }
+                        Log.i(TAG, "zoom1: "+jl);
+                        Log.i(TAG, "zoom: "+j);
+                        //可以适当的减1
+                        float zoom = 18-j+3 ;
+                        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(llllll, zoom);
+                        mBaiduMap.setMapStatus(u);
+                        mBaiduMap.animateMapStatus(u);
+
                         dialog.dialog.dismiss();
                     }
 
@@ -476,8 +544,11 @@ public class TrajectoryActivity extends BaseActivity implements OnGetGeoCoderRes
                     isinmap(points.get(msg.arg1));//判断当前点是否在可视区域
                     progressBarHorizontal.setProgress(playnum+1);
                     current_time.setText(time_distance.get(playnum).get("time"));
-
-                    now_number.setText(m2(Double.parseDouble(time_distance.get(playnum).get("distance"))/1000)+"Km");
+                    if(Double.parseDouble(time_distance.get(playnum).get("distance"))/1000<1){
+                        now_number.setText(0+m2(Double.parseDouble(time_distance.get(playnum).get("distance"))/1000)+"Km");
+                    }else{
+                        now_number.setText(m2(Double.parseDouble(time_distance.get(playnum).get("distance"))/1000)+"Km");
+                    }
                     playnum=playnum+1;
                 }
 

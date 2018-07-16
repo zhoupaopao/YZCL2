@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 允许程序录制音频 -->
@@ -63,6 +62,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:persistent="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <!-- 适配 android 7.0 文件操作 -->
@@ -81,12 +81,13 @@
             android:value="${applicationId}"/>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Y3aM3kYiu4h3QSLxSKVfWXvN98QiYQRH" />
+            android:value="Ywf7Flh3ew4RhCmGpITQpVVA5MiBXiNO" />
         <meta-data
             android:name="PGYER_APPID"
             android:value="22704ca5aaf9c63d60af51f9c3589adc" >
         </meta-data>
-        <activity android:name=".mvp.ui.mvpactivity.MainActivity">
+        <activity android:name=".mvp.ui.mvpactivity.MainActivity"
+            android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -138,7 +139,7 @@
             android:enabled="true"
             android:process=":remote" >
         </service>
-
+        <uses-library android:name="com.google.android.maps" android:required="false"/>
     </application>
 
 </manifest>

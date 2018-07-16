@@ -38,11 +38,17 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
     private RelativeLayout rl3;
     private RelativeLayout rl4;
     private RelativeLayout rl5;
+    private RelativeLayout rl6;
+    private RelativeLayout rl7;
+    private RelativeLayout rl8;
     private ImageView check1;
     private ImageView check2;
     private ImageView check3;
     private ImageView check4;
     private ImageView check5;
+    private ImageView check6;
+    private ImageView check7;
+    private ImageView check8;
     //当前选中的item
     private int nowid=0;
     private TextView title;
@@ -81,11 +87,17 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
         rl3=findViewById(R.id.rl3);
         rl4=findViewById(R.id.rl4);
         rl5=findViewById(R.id.rl5);
+        rl6=findViewById(R.id.rl6);
+        rl7=findViewById(R.id.rl7);
+        rl8=findViewById(R.id.rl8);
         check1=findViewById(R.id.check1);
         check2=findViewById(R.id.check2);
         check3=findViewById(R.id.check3);
         check4=findViewById(R.id.check4);
         check5=findViewById(R.id.check5);
+        check6=findViewById(R.id.check6);
+        check7=findViewById(R.id.check7);
+        check8=findViewById(R.id.check8);
         title=findViewById(R.id.title);
         back=findViewById(R.id.back);
         textview2=findViewById(R.id.textview2);
@@ -94,6 +106,9 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
         rl3.setOnClickListener(this);
         rl4.setOnClickListener(this);
         rl5.setOnClickListener(this);
+        rl6.setOnClickListener(this);
+        rl7.setOnClickListener(this);
+        rl8.setOnClickListener(this);
         back.setOnClickListener(this);
         textview2.setOnClickListener(this);
     }
@@ -107,6 +122,18 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                 //之前不是默认选项
                 nowid=4;
                 check4.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                nowid=6;
+                check6.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                nowid=7;
+                check7.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                nowid=8;
+                check8.setVisibility(View.VISIBLE);
                 break;
             case 15:
                 nowid=1;
@@ -177,6 +204,27 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                 VisibleChange(nowid,5);
                 check5.setVisibility(View.VISIBLE);
                 interval=180;
+                break;
+            case R.id.rl6:
+                //切换当前显示和隐藏
+                //用方法执行，第一个参数是之前选中的项，后一个参数是需要选中的项
+                VisibleChange(nowid,6);
+                check6.setVisibility(View.VISIBLE);
+                interval=1;
+                break;
+            case R.id.rl7:
+                //切换当前显示和隐藏
+                //用方法执行，第一个参数是之前选中的项，后一个参数是需要选中的项
+                VisibleChange(nowid,7);
+                check7.setVisibility(View.VISIBLE);
+                interval=3;
+                break;
+            case R.id.rl8:
+                //切换当前显示和隐藏
+                //用方法执行，第一个参数是之前选中的项，后一个参数是需要选中的项
+                VisibleChange(nowid,8);
+                check8.setVisibility(View.VISIBLE);
+                interval=5;
                 break;
             case R.id.back:
                 finish();
@@ -260,6 +308,15 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                 break;
             case 5:
                 check5.setVisibility(View.GONE);
+                break;
+            case 6:
+                check6.setVisibility(View.GONE);
+                break;
+            case 7:
+                check7.setVisibility(View.GONE);
+                break;
+            case 8:
+                check8.setVisibility(View.GONE);
                 break;
         }
     }

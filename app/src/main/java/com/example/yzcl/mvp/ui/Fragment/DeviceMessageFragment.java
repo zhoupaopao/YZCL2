@@ -132,162 +132,205 @@ public class DeviceMessageFragment extends Fragment{
         device_name_type.setText(datalist.getInternalnum()+"/"+sblx);
 
         //报警类型
-        if (datalist.getDgm().getAlarm().equals("-1")){
-            //断电
-            warning_type.setVisibility(View.GONE);
+        if(datalist.getDgm().getAlarm()!=null){
+            if (datalist.getDgm().getAlarm().equals("-1")){
+                //断电
+                warning_type.setVisibility(View.GONE);
 //            warning_type.setTextColor(getResources().getColor(R.color.black));
-        }else if(datalist.getDgm().getAlarm().equals("1")){
-            //有线是拔除无线是光感
-            warning_type.setVisibility(View.VISIBLE);
-            warning_type.setBackgroundResource(R.drawable.bg_warning);
+            }else if(datalist.getDgm().getAlarm().equals("1")){
+                //有线是拔除无线是光感
+                warning_type.setVisibility(View.VISIBLE);
+                warning_type.setBackgroundResource(R.drawable.bg_warning);
 
-            if(datalist.getCategory().equals("有线设备")){
+                if(datalist.getCategory().equals("有线设备")){
 
-                warning_type.setText("断电报警");
-            }else{
-                warning_type.setText("光感异常");
-            }
-
-//            warning_type.setTextColor(getResources().getColor(R.color.black));
-        }else if(datalist.getDgm().getAlarm().equals("0")){
-            warning_type.setVisibility(View.VISIBLE);
-            warning_type.setBackgroundResource(R.drawable.bg_normal);
-            warning_type.setText("正常");
-        }
-        //电量
-        if(datalist.getDgm().getBl().equals("-1")){
-            //没有电量
-            dl.setVisibility(View.GONE);
-        }else{
-            if(Integer.parseInt(datalist.getDgm().getBl())>30){
-                //电量高于30%
-                dl.setBackgroundResource(R.drawable.green_dl_radius);
-                waring.setVisibility(View.GONE);
-                dl.setTextColor(getContext().getResources().getColor(R.color.tv_online));
-            }else{
-                //电量低于30%
-                //显示低电报警
-                if(datalist.getDgm().getAlarm().equals("0")){
-                    //如果之前显示报警状态是正常的话，就在状态里面改
-                    warning_type.setBackgroundResource(R.drawable.bg_warning);
-                    warning_type.setText("低电报警");
-                    waring.setVisibility(View.GONE);
+                    warning_type.setText("断电报警");
                 }else{
-//                    waring.setText("低电报警");
-//                    waring.setVisibility(View.VISIBLE);
+                    warning_type.setText("光感异常");
                 }
 
-                dl.setBackgroundResource(R.drawable.dl_radius);
-                dl.setTextColor(getContext().getResources().getColor(R.color.device_msg));
+//            warning_type.setTextColor(getResources().getColor(R.color.black));
+            }else if(datalist.getDgm().getAlarm().equals("0")){
+                warning_type.setVisibility(View.VISIBLE);
+                warning_type.setBackgroundResource(R.drawable.bg_normal);
+                warning_type.setText("正常");
             }
-            dl.setText("电量"+datalist.getDgm().getBl()+"%");
+            //电量
+            if(datalist.getDgm().getBl().equals("-1")){
+                //没有电量
+                dl.setVisibility(View.GONE);
+            }else{
+                if(Integer.parseInt(datalist.getDgm().getBl())>30){
+                    //电量高于30%
+                    dl.setBackgroundResource(R.drawable.green_dl_radius);
+                    waring.setVisibility(View.GONE);
+                    dl.setTextColor(getContext().getResources().getColor(R.color.tv_online));
+                }else{
+                    //电量低于30%
+                    //显示低电报警
+                    if(datalist.getDgm().getAlarm().equals("0")){
+                        //如果之前显示报警状态是正常的话，就在状态里面改
+                        warning_type.setBackgroundResource(R.drawable.bg_warning);
+                        warning_type.setText("低电报警");
+                        waring.setVisibility(View.GONE);
+                    }else{
+//                    waring.setText("低电报警");
+//                    waring.setVisibility(View.VISIBLE);
+                    }
+
+                    dl.setBackgroundResource(R.drawable.dl_radius);
+                    dl.setTextColor(getContext().getResources().getColor(R.color.device_msg));
+                }
+                dl.setText("电量"+datalist.getDgm().getBl()+"%");
 //            dl.setVisibility(View.VISIBLE);
 
+            }
+        }else{
+            //设备没定位
+            dl.setVisibility(View.GONE);
         }
 
-        if(datalist.getOnline_status().equals("在线")){
-            //判断是否在线，在线隐藏离线时间
-            offline_time.setVisibility(View.GONE);
-            if(datalist.getDgm().getSpeed().equals("0")){
-                //在线的话速度为0状态就是静止
-                //设备状态
-                online_status.setText("静止");
+
+
+            if(datalist.getOnline_status().equals("在线")){
+                //判断是否在线，在线隐藏离线时间
+                offline_time.setVisibility(View.GONE);
+                if(datalist.getDgm().getSpeed()!=null){
+                    if(datalist.getDgm().getSpeed().equals("0")){
+                        //在线的话速度为0状态就是静止
+                        //设备状态
+                        online_status.setText("静止");
+
+                    }else{
+                        online_status.setText("行驶中");
+                    }
+                    online_status.setTextColor(getContext().getResources().getColor(R.color.tv_online));
+                }else{
+                    online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
+                    online_status.setText("暂无定位信息");
+                }
+
 
             }else{
-                online_status.setText("行驶中");
-            }
-            online_status.setTextColor(getContext().getResources().getColor(R.color.tv_online));
-        }else{
-            online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
-            //计算时间差
-            long endtime=System.currentTimeMillis();
-            long starttme=stringToLong(datalist.getDgm().getStime(),"yyyy-MM-dd HH:mm:ss");
+                if(datalist.getDgm().getStime()!=null){
+                    online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
+                    //计算时间差
+                    long endtime=System.currentTimeMillis();
+                    long starttme=stringToLong(datalist.getDgm().getStime(),"yyyy-MM-dd HH:mm:ss");
 //            long starttme=datalist.getDgm().getTime();
-            long time_during=endtime-starttme;
-            long hours=time_during/(1000*60*60);//获取间隔小时
-            long mintues=time_during-(hours*(1000*60*60));//获取间隔分钟
-            mintues=mintues/(60*1000);
-            long days=hours/24;
-            hours=hours-days*24;
-            offline_time.setText("("+days+"天"+hours+"小时"+mintues+"分钟"+")");
+                    long time_during=endtime-starttme;
+                    long hours=time_during/(1000*60*60);//获取间隔小时
+                    long mintues=time_during-(hours*(1000*60*60));//获取间隔分钟
+                    mintues=mintues/(60*1000);
+                    long days=hours/24;
+                    hours=hours-days*24;
+                    offline_time.setText("("+days+"天"+hours+"小时"+mintues+"分钟"+")");
+                }else{
+                    online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
+                    online_status.setText("暂无定位信息");
+                    offline_time.setVisibility(View.GONE);
+                }
 
-        }
+
+            }
+
+
         //最后定位时间
-        last_loc_time.setText(datalist.getDgm().getTime());
-        //定位类型
-        loc_type.setText(datalist.getDgm().getType());
-        //最后定位地址
-        loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
+        if(datalist.getDgm().getTime()!=null){
+            last_loc_time.setText(datalist.getDgm().getTime());
+            //定位类型
+            loc_type.setText(datalist.getDgm().getType());
+            //最后定位地址
+            loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
+        }else{
+            last_loc_time.setText("");
+            //定位类型
+            loc_type.setText("");
+            //最后定位地址
+            loc_address.setText("最后定位地址:   "+"");
+        }
+
         //导航
         navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //召唤弹出框
-                List<TieBean> strings = new ArrayList<TieBean>();
-                strings.add(new TieBean("百度地图"));
-                strings.add(new TieBean("高德地图"));
-                strings.add(new TieBean("腾讯地图"));
-                DialogUIUtils.showSheet(getActivity(), strings, "取消", Gravity.BOTTOM, true, true, new DialogUIItemListener() {
-                    @Override
-                    public void onItemClick(CharSequence text, int position) {
-                        switch (position){
-                            case 0:
-                                //先判断是否安装了第三方地图软件
-                                if(isPackageInstalled("com.baidu.BaiduMap")){
-                                    Toast.makeText(getActivity(),"正在为你打开百度地图",Toast.LENGTH_SHORT).show();
-                                    // 百度地图
-                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("baidumap://map/geocoder?location=" + datalist.getDgm().getBlat() + "," +datalist.getDgm().getBlng() ));
-                                    getContext().startActivity(naviIntent);
-                                }else{
-                                    Toast.makeText(getActivity(),"您未安装百度地图",Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 1:
-                                if(isPackageInstalled("com.autonavi.minimap")){
-                                    Toast.makeText(getActivity(),"正在为你打开高德地图",Toast.LENGTH_SHORT).show();
-                                    // 高德地图
-                                    Log.i(TAG, "onItemClick: "+ datalist.getDgm().getBlat() +","+datalist.getDgm().getBlng());
-                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("androidamap://route?sourceApplication=appName&slat=&slon=&sname=我的位置&dlat="+ datalist.getDgm().getBlat() +"&dlon="+datalist.getDgm().getBlng() +"&dname=目的地&dev=0&t=2"));
-                                    getContext().startActivity(naviIntent);
-                                }else{
-                                    Toast.makeText(getActivity(),"您未安装高德地图",Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 2:
-                                if(isPackageInstalled("com.tencent.map")){
-                                    // 腾讯地图
+                if(datalist.getDgm().getBlat()!=null){
+                    //召唤弹出框
+                    List<TieBean> strings = new ArrayList<TieBean>();
+                    strings.add(new TieBean("百度地图"));
+                    strings.add(new TieBean("高德地图"));
+                    strings.add(new TieBean("腾讯地图"));
+                    DialogUIUtils.showSheet(getActivity(), strings, "取消", Gravity.BOTTOM, true, true, new DialogUIItemListener() {
+                        @Override
+                        public void onItemClick(CharSequence text, int position) {
+                            switch (position){
+                                case 0:
+                                    //先判断是否安装了第三方地图软件
+                                    if(isPackageInstalled("com.baidu.BaiduMap")){
+                                        Toast.makeText(getActivity(),"正在为你打开百度地图",Toast.LENGTH_SHORT).show();
+                                        // 百度地图
+                                        Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("baidumap://map/geocoder?location=" + datalist.getDgm().getBlat() + "," +datalist.getDgm().getBlng() ));
+                                        getContext().startActivity(naviIntent);
+                                    }else{
+                                        Toast.makeText(getActivity(),"您未安装百度地图",Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 1:
+                                    if(isPackageInstalled("com.autonavi.minimap")){
+                                        Toast.makeText(getActivity(),"正在为你打开高德地图",Toast.LENGTH_SHORT).show();
+                                        // 高德地图
+                                        Log.i(TAG, "onItemClick: "+ datalist.getDgm().getBlat() +","+datalist.getDgm().getBlng());
+                                        Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("androidamap://route?sourceApplication=appName&slat=&slon=&sname=我的位置&dlat="+ datalist.getDgm().getBlat() +"&dlon="+datalist.getDgm().getBlng() +"&dname=目的地&dev=0&t=2"));
+                                        getContext().startActivity(naviIntent);
+                                    }else{
+                                        Toast.makeText(getActivity(),"您未安装高德地图",Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 2:
+                                    if(isPackageInstalled("com.tencent.map")){
+                                        // 腾讯地图
 
-                                    Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("qqmap://map/routeplan?type=drive&from=&fromcoord=&to=目的地&tocoord=" + datalist.getDgm().getBlat() + "," + datalist.getDgm().getBlng() + "&policy=0&referer=appName"));
-                                    getContext().startActivity(naviIntent);
-                                    Toast.makeText(getActivity(),"正在为你打开腾讯地图",Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(getActivity(),"您未安装腾讯地图",Toast.LENGTH_SHORT).show();
-                                }
-                                break;
+                                        Intent naviIntent = new Intent("android.intent.action.VIEW", Uri.parse("qqmap://map/routeplan?type=drive&from=&fromcoord=&to=目的地&tocoord=" + datalist.getDgm().getBlat() + "," + datalist.getDgm().getBlng() + "&policy=0&referer=appName"));
+                                        getContext().startActivity(naviIntent);
+                                        Toast.makeText(getActivity(),"正在为你打开腾讯地图",Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(getActivity(),"您未安装腾讯地图",Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
 
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onBottomBtnClick() {
-                    }
-                }).show();
+                        @Override
+                        public void onBottomBtnClick() {
+                        }
+                    }).show();
+                }else{
+                    Toast.makeText(getActivity(),"暂无定位",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         //下发指令
         xfzl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
-                intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
-                intent.setClass(getActivity(), XfzlActivity.class);
-                startActivity(intent);
+                if(datalist.getDgm().getDeviceId()!=null){
+                    Intent intent=new Intent();
+                    intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
+                    intent.setClass(getActivity(), XfzlActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity(),"暂无定位",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         //轨迹回放
         trajectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(datalist.getDgm().getDeviceId()!=null){
                 Intent intent=new Intent();
                 intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
                 intent.putExtra("Internalnum",datalist.getInternalnum());//设备名
@@ -295,18 +338,25 @@ public class DeviceMessageFragment extends Fragment{
                 intent.putExtra("pledge_name",datalist.getPledge_name());
                 intent.setClass(getActivity(), TrajectoryActivity.class);
                 startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity(),"暂无定位",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         //追踪
         open_colse_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(datalist.getDgm().getDeviceId()!=null){
                 Intent intent=new Intent();
                 intent.putExtra("blat",datalist.getDgm().getBlat());
                 intent.putExtra("blng",datalist.getDgm().getBlng());
                 intent.putExtra("deviceid",datalist.getDgm().getDeviceId());
                 intent.setClass(getActivity(), TranceActivity.class);
                 startActivity(intent);
+            }else{
+                Toast.makeText(getActivity(),"暂无定位",Toast.LENGTH_SHORT).show();
+            }
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.yzcl.mvp.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -159,9 +160,44 @@ public class PatternSettingActivity extends BaseActivity {
         sb1.setOnCheckedChangedCallback(new ISDSwitchButton.OnCheckedChangedCallback() {
             @Override
             public void onCheckedChanged(boolean checked, SDSwitchButton view) {
-                Log.i("checked", checked+"");
+                if(checked){
+                    time_status1.setText("闹钟，每天");
+                }else{
+                    time_status1.setText("未设置时间");
+                }
             }
         });
+        sb2.setOnCheckedChangedCallback(new ISDSwitchButton.OnCheckedChangedCallback() {
+            @Override
+            public void onCheckedChanged(boolean checked, SDSwitchButton view) {
+                if(checked){
+                    time_status2.setText("闹钟，每天");
+                }else{
+                    time_status2.setText("未设置时间");
+                }
+            }
+        });
+        sb3.setOnCheckedChangedCallback(new ISDSwitchButton.OnCheckedChangedCallback() {
+            @Override
+            public void onCheckedChanged(boolean checked, SDSwitchButton view) {
+                if(checked){
+                    time_status3.setText("闹钟，每天");
+                }else{
+                    time_status3.setText("未设置时间");
+                }
+            }
+        });
+        sb4.setOnCheckedChangedCallback(new ISDSwitchButton.OnCheckedChangedCallback() {
+            @Override
+            public void onCheckedChanged(boolean checked, SDSwitchButton view) {
+                if(checked){
+                    time_status4.setText("闹钟，每天");
+                }else{
+                    time_status4.setText("未设置时间");
+                }
+            }
+        });
+
         textview2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,60 +210,68 @@ public class PatternSettingActivity extends BaseActivity {
                     if(sb1.isChecked()||sb2.isChecked()||sb3.isChecked()||sb4.isChecked()){
                         //正常情况
                         //选择框被选中，且时间设置
-                        if(sb1.isChecked()&&time_status1.getText().toString().equals("闹钟，每天")){
+                        if(sb1.isChecked()){
                             postwuc.append(0+"|"+nz_time1.getText().toString()+";");
                             clockModel.append(nz_time1.getText().toString()+",");
                         }
-                        if(sb2.isChecked()&&time_status2.getText().toString().equals("闹钟，每天")){
+                        if(sb2.isChecked()){
                             postwuc.append(1+"|"+nz_time2.getText().toString()+";");
                             clockModel.append(nz_time2.getText().toString()+",");
                         }
-                        if(sb3.isChecked()&&time_status3.getText().toString().equals("闹钟，每天")){
+                        if(sb3.isChecked()){
                             postwuc.append(2+"|"+nz_time3.getText().toString()+";");
                             clockModel.append(nz_time3.getText().toString()+",");
                         }
-                        if(sb4.isChecked()&&time_status4.getText().toString().equals("闹钟，每天")){
+                        if(sb4.isChecked()){
                             postwuc.append(3+"|"+nz_time4.getText().toString()+";");
                             clockModel.append(nz_time4.getText().toString()+",");
                         }
-                        RequestParams params1=new RequestParams();
-                        //因为传递的是json数据，所以需要设置header和body
-                        params1.addHeader("Content-Type","application/json");
-                        JSONObject jsonObject1=new JSONObject();
-                        jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
-                        jsonObject1.put("type",type);
-                        jsonObject1.put("interval",interval);
-                        jsonObject1.put("wuc",postwuc.toString());
-                        jsonObject1.put("deviceid",deviceid);
-                        params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
-                        HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
-                            @Override
-                            protected void onSuccess(Headers headers, JSONObject jsonObject) {
-                                super.onSuccess(headers, jsonObject);
-                                Log.i(TAG, jsonObject.toString());
-                                if(jsonObject.getBoolean("success")){
-                                    Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
-                                    setResult(RESULT_OK);
-                                    finish();
-                                }else{
-                                    Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                        if(checkrepeat(clockModel)){
+                            //有重复的
+                            Toast.makeText(PatternSettingActivity.this,"不能选择相同的时间",Toast.LENGTH_SHORT).show();
+                        }else{
+                            RequestParams params1=new RequestParams();
+                            //因为传递的是json数据，所以需要设置header和body
+                            params1.addHeader("Content-Type","application/json");
+                            JSONObject jsonObject1=new JSONObject();
+                            jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
+                            jsonObject1.put("type",type);
+                            jsonObject1.put("interval",interval);
+                            jsonObject1.put("wuc",postwuc.toString());
+                            jsonObject1.put("deviceid",deviceid);
+                            params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+                            HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                                @Override
+                                protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                                    super.onSuccess(headers, jsonObject);
+                                    Log.i(TAG, jsonObject.toString());
+                                    if(jsonObject.getBoolean("success")){
+                                        Toast.makeText(PatternSettingActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                                        setResult(RESULT_OK);
+                                        finish();
+                                    }else{
+                                        Toast.makeText(PatternSettingActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialog.dialog.dismiss();
                                 }
-                                dialog.dialog.dismiss();
-                            }
 
-                            @Override
-                            public void onStart() {
-                                super.onStart();
-                                dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
-                                dialog.show();
-                            }
+                                @Override
+                                public void onStart() {
+                                    super.onStart();
+                                    dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
+                                    dialog.show();
+                                }
 
-                            @Override
-                            public void onFinish() {
-                                super.onFinish();
+                                @Override
+                                public void onFinish() {
+                                    super.onFinish();
 
-                            }
-                        });
+                                }
+                            });
+                        }
+
+
+
                     }else{
                         //如果都不选中
                         Toast.makeText(PatternSettingActivity.this,"请至少选择一组并设置时间",Toast.LENGTH_SHORT).show();
@@ -240,6 +284,19 @@ public class PatternSettingActivity extends BaseActivity {
             }
         });
 
+    }
+//判断是否有重复的
+    private boolean checkrepeat(StringBuffer clockModel) {
+        String []clockModellist=clockModel.toString().split(",");
+        for(int i=0;i<clockModellist.length;i++){
+            for(int j=i+1;j<clockModellist.length;j++){
+                if(clockModellist[i].equals(clockModellist[j])){
+                    return true;
+                }
+            }
+
+        }
+        return false;
     }
 
     @Override
