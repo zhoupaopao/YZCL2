@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -421,7 +423,21 @@ public class MainActivity extends CheckPermissionsActivity {
         //判断是否要升级
         checkupdata();
     }
-
+    /**
+     * 获取本地软件版本号
+     */
+    public static int getLocalVersion(Context ctx) {
+        int localVersion = 0;
+        try {
+            PackageInfo packageInfo = ctx.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(ctx.getPackageName(), 0);
+            localVersion = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return localVersion;
+    }
     private void checkupdata() {
         PgyUpdateManager.register(MainActivity.this,"com.example.yzcl.fileprovider",
                 new UpdateManagerListener() {
@@ -432,33 +448,38 @@ public class MainActivity extends CheckPermissionsActivity {
                         // 将新版本信息封装到AppBean中
                         final AppBean appBean = getAppBeanFromString(result);
                         Log.i("resultresult",result);
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("更新")
-                                .setMessage("系统检测到您的版本过低，请更新")
-                                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                        if(Integer.parseInt(appBean.getVersionCode())>getLocalVersion(MainActivity.this)){
+                            Log.i("resultresult",Integer.parseInt(appBean.getVersionCode())+"|"+getLocalVersion(MainActivity.this));
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("更新")
+                                    .setMessage("系统检测到您的版本过低，请更新")
+                                    .setPositiveButton("取消", new DialogInterface.OnClickListener() {
 
-                                    @Override
+                                        @Override
 
-                                    public void onClick(DialogInterface dialog, int which) {
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    }
+                                        }
 
-                                })
-                                .setNegativeButton(
-                                        "确定",
-                                        new DialogInterface.OnClickListener() {
+                                    })
+                                    .setNegativeButton(
+                                            "确定",
+                                            new DialogInterface.OnClickListener() {
 
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int which) {
-                                                downLoadApk(appBean.getDownloadURL());
+                                                @Override
+                                                public void onClick(
+                                                        DialogInterface dialog,
+                                                        int which) {
+                                                    downLoadApk(appBean.getDownloadURL());
 //                                                startDownloadTask(
 //                                                        MainActivity.this,
 //                                                        appBean.getDownloadURL());
 
-                                            }
-                                        }).show();
+                                                }
+                                            }).show();
+                        }
+
+
                     }
 
                     @Override

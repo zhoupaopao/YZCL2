@@ -3,6 +3,7 @@ package com.example.yzcl.mvp.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
@@ -95,33 +97,35 @@ public class AboutActivity extends BaseActivity {
                         // 将新版本信息封装到AppBean中
                         final AppBean appBean = getAppBeanFromString(result);
                         Log.i("resultresult",result);
-                        new AlertDialog.Builder(AboutActivity.this)
-                                .setTitle("更新")
-                                .setMessage("系统检测到您的版本过低，请更新")
-                                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                        if(Integer.parseInt(appBean.getVersionCode())>getLocalVersion(AboutActivity.this)) {
+                            new AlertDialog.Builder(AboutActivity.this)
+                                    .setTitle("更新")
+                                    .setMessage("系统检测到您的版本过低，请更新")
+                                    .setPositiveButton("取消", new DialogInterface.OnClickListener() {
 
-                                    @Override
+                                        @Override
 
-                                    public void onClick(DialogInterface dialog, int which) {
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    }
+                                        }
 
-                                })
-                                .setNegativeButton(
-                                        "确定",
-                                        new DialogInterface.OnClickListener() {
+                                    })
+                                    .setNegativeButton(
+                                            "确定",
+                                            new DialogInterface.OnClickListener() {
 
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int which) {
+                                                @Override
+                                                public void onClick(
+                                                        DialogInterface dialog,
+                                                        int which) {
 //                                                startDownloadTask(
 //                                                        AboutActivity.this,
 //                                                        appBean.getDownloadURL());
-                                                downLoadApk(appBean.getDownloadURL());
+                                                    downLoadApk(appBean.getDownloadURL());
 
-                                            }
-                                        }).show();
+                                                }
+                                            }).show();
+                        }
                     }
 
                     @Override
@@ -129,6 +133,21 @@ public class AboutActivity extends BaseActivity {
                         Toast.makeText(AboutActivity.this, "已经是最新的版本", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    /**
+     * 获取本地软件版本号
+     */
+    public static int getLocalVersion(Context ctx) {
+        int localVersion = 0;
+        try {
+            PackageInfo packageInfo = ctx.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(ctx.getPackageName(), 0);
+            localVersion = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return localVersion;
     }
     protected void downLoadApk(final String ppath) {
         //进度条
