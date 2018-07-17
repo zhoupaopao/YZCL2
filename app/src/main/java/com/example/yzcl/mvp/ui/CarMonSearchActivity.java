@@ -319,7 +319,6 @@ public class CarMonSearchActivity extends BaseActivity {
         params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
 //        params.addFormDataPart("token",sp.getString(Constant.Token,""));
 //        params.addFormDataPart("search",et_search.getText().toString().trim());
-        Log.i(TAG, Api.queVehicleListForSea+"?token="+sp.getString(Constant.Token,""));
 
         HttpRequest.post(Api.queVehicleListForSea+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override

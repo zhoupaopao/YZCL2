@@ -95,6 +95,7 @@ public class CarAddressActivity extends BaseActivity {
     String carlist;
     String sign_status;
     String danger_type;
+    int d_type;//报警类型
     Boolean isfirstdialog=true;//地图无定位，第一次提示
     private carDetailGPSBeans.carDetailGPSBean carDetailGPSBean;
     private JSONArray arraycar;
@@ -267,9 +268,9 @@ public class CarAddressActivity extends BaseActivity {
         if(datalist.size()==0){
             DialogUIUtils.showAlert(CarAddressActivity.this, null, "暂无车辆位置信息，原因可能是：\n" +
                     "\n" +
-                    "     1、无法获取车辆位置信息，请检查设备是否正常安装。" +
+                    "1、无法获取车辆位置信息，请检查设备是否正常安装。" +
                     "\n" +
-                    "     2、可能因为车辆在隧道内，大桥下，GPS天线被遮挡等原因造成定位延迟。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
+                    "2、可能因为车辆在隧道内，大桥下，GPS天线被遮挡等原因造成定位延迟。", "", "", "知道了", "", true, true, true, new DialogUIListener() {
                 @Override
                 public void onPositive() {
 //                        showToast("onPositive");
@@ -571,25 +572,55 @@ public class CarAddressActivity extends BaseActivity {
                     RequestParams params=new RequestParams();
                     params.addHeader("Content-Type","application/json");
                     JSONObject jsonObject=new JSONObject();
-                    jsonObject.put("vin",carDetailGPSBean.getVin());
+                    jsonObject.put("carid",carDetailGPSBean.getCar_id());
                     jsonObject.put("pagesize",11);
                     jsonObject.put("page",1);
                     params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
-                    HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+                    HttpRequest.post(Api.queVehicleList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
                         @Override
                         protected void onSuccess(Headers headers, JSONObject jsonObject) {
                             super.onSuccess(headers, jsonObject);
                             Log.i(TAG, "onSuccess: "+jsonObject.toString());
-                            JSONArray jsonArray=jsonObject.getJSONArray("list");
-                            JSONObject sign_statusLLIST= (JSONObject) jsonArray.get(0);
-                            sign_status=sign_statusLLIST.getString("sign_status");
+//                            JSONArray jsonArray=jsonObject.getJSONArray("list");
+//                            JSONObject sign_statusLLIST= (JSONObject) jsonArray.get(0);
+//                            d_type=jsonObject.getJSONArray("list").getJSONObject(0).getInteger("type");
+                            if(jsonObject.getJSONArray("list").getJSONObject(0).getInteger("sign_status")!=null){
+                                //有数据的
+                                sign_status=jsonObject.getJSONArray("list").getJSONObject(0).getString("sign_status");
+
+                                if(sign_status.equals("3")||sign_status.equals("重点关注")){
+                                    sign_status="重点关注";
+                                }else if(sign_status.equals("2")||sign_status.equals("逾期")){
+                                    sign_status="逾期";
+                                }else{
+                                    sign_status="";
+                                }
+                            }else{
+                                sign_status="";
+                            }
+                            if(jsonObject.getJSONArray("list").getJSONObject(0).getString("type")!=null){
+                                d_type=jsonObject.getJSONArray("list").getJSONObject(0).getInteger("type");
+                                if(d_type==1){
+                                    danger_type="拆除";
+                                }else if(d_type==2){
+                                    danger_type="屏蔽";
+                                }else{
+                                    danger_type="";
+                                }
+                            }else {
+                                danger_type="";
+                            }
+
+
+
                             //请求设备信息（设备列表）
                             if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
                                 //判断网络是否可用
                                 Toast.makeText(CarAddressActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
                             }else{
                                 //再请求车辆是否有高危异常
-                                achieveDangerType();
+//                                achieveDangerType();
+                                achieveCarMessage();
                             }
 
                         }

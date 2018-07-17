@@ -237,7 +237,7 @@ public class PatternSettingActivity extends BaseActivity {
                             jsonObject1.put("clockModel",clockModel.toString().substring(0,clockModel.toString().length()-1));
                             jsonObject1.put("type",type);
                             jsonObject1.put("interval",interval);
-                            jsonObject1.put("wuc",postwuc.toString());
+                            jsonObject1.put("wuc",postwuc.toString().substring(0,postwuc.toString().length()-1));
                             jsonObject1.put("deviceid",deviceid);
                             params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
                             HttpRequest.post(Api.saveOrUpdateDeviceSetting+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
@@ -358,11 +358,13 @@ public class PatternSettingActivity extends BaseActivity {
     private void display(int i, int hourOfDay, int minute) {
         String hour="";
         String minu="";
-        if(hourOfDay<10){
-            hour="0"+hourOfDay;
-        }else{
-            hour=""+hourOfDay;
-        }
+        hour=""+hourOfDay;
+//        minu=""+minute;
+//        if(hourOfDay<10){
+//            hour="0"+hourOfDay;
+//        }else{
+//            hour=""+hourOfDay;
+//        }
         if(minute<10){
             minu="0"+minute;
         }else{

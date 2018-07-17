@@ -1,16 +1,20 @@
 package com.example.yzcl.mvp.ui.mvpactivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -51,6 +55,9 @@ import com.pgyersdk.update.UpdateManagerListener;
 
 import org.apache.http.Header;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -416,7 +423,7 @@ public class MainActivity extends CheckPermissionsActivity {
     }
 
     private void checkupdata() {
-        PgyUpdateManager.register(MainActivity.this,
+        PgyUpdateManager.register(MainActivity.this,"com.example.yzcl.fileprovider",
                 new UpdateManagerListener() {
 
                     @Override
@@ -445,9 +452,10 @@ public class MainActivity extends CheckPermissionsActivity {
                                             public void onClick(
                                                     DialogInterface dialog,
                                                     int which) {
-                                                startDownloadTask(
-                                                        MainActivity.this,
-                                                        appBean.getDownloadURL());
+                                                downLoadApk(appBean.getDownloadURL());
+//                                                startDownloadTask(
+//                                                        MainActivity.this,
+//                                                        appBean.getDownloadURL());
 
                                             }
                                         }).show();
@@ -525,7 +533,84 @@ public class MainActivity extends CheckPermissionsActivity {
 //        }
 //        return bitmap;
 //    }
+protected void downLoadApk(final String ppath) {
+    //进度条
+    Log.i(TAG, "ppath "+ppath);
+    final ProgressDialog pd;
+    pd = new ProgressDialog(this);
+    pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+    pd.setMessage("正在下载更新");
+    pd.show();
+    new Thread(){
+        @Override
+        public void run() {
+            try {
+                File file = getFileFromServer(ppath, pd);
+                //安装APK
+                installApk(file);
+                pd.dismiss(); //结束掉进度条对话框
+            } catch (Exception e) {
+            }
+        }}.start();
+}
+    public static File getFileFromServer(String path, ProgressDialog pd) throws Exception{
+        //如果相等的话表示当前的sdcard挂载在手机上并且是可用的
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            //获取到文件的大小
+            pd.setMax(100);
+            double beishu=conn.getContentLength()/100;
+//            pd.setMax(conn.getContentLength());
+            InputStream is = conn.getInputStream();
+            File file = new File(Environment.getExternalStorageDirectory(), "updata.apk");
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(is);
+            byte[] buffer = new byte[1024];
+            int len ;
+            int total=0;
+            while((len =bis.read(buffer))!=-1){
+                fos.write(buffer, 0, len);
+                total+= len;
+                //获取当前下载量
+                pd.setProgress((int) (total/beishu));
+            }
+            fos.close();
+            bis.close();
+            is.close();
+            return file;
+        }
+        else{
+            return null;
+        }
+    }
+    protected void installApk(File file) {
+        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        //执行动作
+//        intent.setAction(Intent.ACTION_VIEW);
+//        //执行的数据类型
+//        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
 
+            Uri apkUri = FileProvider.getUriForFile(this, "com.example.yzcl.fileprovider", file);  //包名.fileprovider
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+//            Uri apkUri = FileProvider.getUriForFile(this, "com.example.yzcl.fileprovider", file);  //包名.fileprovider
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
+
+
+
+//        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, Uri.fromFile(file));
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        startActivity(intent);
+    }
     @Override
     protected void onResume() {
         super.onResume();

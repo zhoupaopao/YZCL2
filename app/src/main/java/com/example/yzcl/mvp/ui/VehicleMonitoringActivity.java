@@ -71,7 +71,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
 //        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
 //        dialog.show();
         initView();
-        initData();
+//        initData();
         initListener();
 
     }

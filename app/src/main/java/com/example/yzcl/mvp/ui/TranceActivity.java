@@ -27,11 +27,15 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Polyline;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -51,6 +55,7 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.bumptech.glide.Glide;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
@@ -65,6 +70,7 @@ import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -95,6 +101,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     private TextView title;
     private SharedPreferences sp;
     private String deviceid="";
+    private boolean isfff=true;
     private double longitude1=120;//人经度
     private double latitude1=30;//人纬度
     private double longitude2=120;//车经度
@@ -108,6 +115,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     OverlayManager routeOverlay = null;
     LocationClient mLocClient;
     String[] intraPoint;
+    Polyline mPolyline;
     String dev_name="";
     String dev_last_time="";
     String dev_address="";
@@ -115,8 +123,17 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     private int totalintrer = 0;
     private Boolean isfirst=true;
     private long mExitTime=0;
+    private double maxlat=0;
+    private double maxlon=0;
+    private double minlat=0;
+    private double minlon=0;
+    BitmapDescriptor bdstart = BitmapDescriptorFactory
+            .fromResource(R.mipmap.img_start);
+//    BitmapDescriptor bdend = BitmapDescriptorFactory
+//            .fromResource(R.mipmap.img_end);
 //计时用
     private int runtime = 10000;
+    ArrayList<LatLng>list_device;//存放设备坐标列表
     Timer timer;
     public MyLocationListenner myListener = new MyLocationListenner();
 //    PoiOverlay poiOverlay;
@@ -134,7 +151,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
     }
 
     private void initView() {
-
+        list_device=new ArrayList<>();
         back=findViewById(R.id.back);
         title=findViewById(R.id.title);
         mMapView = (MapView) findViewById(R.id.mapview);
@@ -143,20 +160,20 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         mBaiduMap = mMapView.getMap();
 //        poiOverlay = new MyPoiOverlay(mBaiduMap);
-        // 开启定位图层
-        mBaiduMap.setMyLocationEnabled(true);
-        // 定位初始化
-        mLocClient = new LocationClient(this);
-        mLocClient.registerLocationListener(myListener);
-        LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setScanSpan(1000);
-        mLocClient.setLocOption(option);
-        mLocClient.start();
+//        // 开启定位图层
+//        mBaiduMap.setMyLocationEnabled(true);
+//        // 定位初始化
+//        mLocClient = new LocationClient(this);
+//        mLocClient.registerLocationListener(myListener);
+//        LocationClientOption option = new LocationClientOption();
+//        option.setOpenGps(true); // 打开gps
+//        option.setCoorType("bd09ll"); // 设置坐标类型
+//        option.setScanSpan(1000);
+//        mLocClient.setLocOption(option);
+//        mLocClient.start();
         // 初始化搜索模块，注册事件监听
-        mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener(this);
+//        mSearch = RoutePlanSearch.newInstance();
+//        mSearch.setOnGetRoutePlanResultListener(this);
         refresh=findViewById(R.id.refresh);
         loc=findViewById(R.id.loc);
         //根据坐标添加覆盖物
@@ -188,6 +205,10 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         Intent intent=getIntent();
         longitude2=Double.valueOf(intent.getStringExtra("blng"));
         latitude2=Double.valueOf(intent.getStringExtra("blat"));
+//        HashMap<String,Double>hm_device=new HashMap<>();
+//        hm_device.put("blat",latitude2);
+//        hm_device.put("blng",longitude2);
+        list_device.add(new LatLng(latitude2,longitude2));
         deviceid=intent.getStringExtra("deviceid");
         //获取设备定位
          timer=new Timer();
@@ -200,7 +221,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                 handler.sendMessage(mm);
 
             }
-        },0,60000);
+        },0,20000);
 
     }
     Handler handler=new Handler(){
@@ -278,10 +299,6 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                 super.onSuccess(headers, jsonObject);
                 Log.i("onSuccess: ", jsonObject.toString());
                 if(jsonObject.getBoolean("success")){
-                    longitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blng"));
-                    latitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blat"));
-                    isfirst=true;
-//                    BitmapDescriptor adasd=getBitmapDescriptor(jsonObject.getJSONObject("object").getString("internalnum"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime"));
                     String sblx="";
                     if(jsonObject.getJSONObject("object").getString("category").equals("有线设备")){
                         sblx="有线";
@@ -291,6 +308,47 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                     dev_name="设备名称："+jsonObject.getJSONObject("object").getString("internalnum")+"("+sblx+")";
                     dev_last_time="定位时间："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime")+"（20秒刷新一次）";
                     dev_address="当前位置："+jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion");
+                    if(longitude2==Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blng"))&&Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blat"))==latitude2){
+                        //经纬度与上一次的相同
+                        //不做处理
+                        //只有一个点
+                        if(isfff){
+                            //第一次请求位置
+                            isfff=false;
+                            Log.i("onSuccess: ", "相同1: ");
+                            MarkerOptions ooD;
+                            ooD = new MarkerOptions().position(list_device.get(0)).icon(getBitmapDescriptor(dev_name,dev_address,dev_last_time))
+                                    .zIndex(9).draggable(true);
+                            mMarkerA = (Marker) (mBaiduMap.addOverlay(ooD));
+                            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(list_device.get(0), 13);
+                            mBaiduMap.setMapStatus(u);
+                            mBaiduMap.animateMapStatus(u);
+                        }else{
+                            Log.i("onSuccess: ", "相同: ");
+                        }
+
+
+                    }else{
+                        //不同，首先将最新的坐标赋值
+                        mBaiduMap.clear();
+                        longitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blng"));
+                        latitude2=Double.parseDouble(jsonObject.getJSONObject("object").getJSONObject("dgm").getString("blat"));
+                        list_device.add(new LatLng(latitude2,longitude2));
+
+                        //绘制路线
+                        if(list_device.size()==1){
+                            //只有一个点
+                            MarkerOptions ooD;
+                            ooD = new MarkerOptions().position(list_device.get(0)).icon(getBitmapDescriptor(dev_name,dev_address,dev_last_time))
+                                    .zIndex(9).draggable(true);
+                            mMarkerA = (Marker) (mBaiduMap.addOverlay(ooD));
+                        }else{
+                            //规划路线
+                            ghlx();
+                        }
+                    }
+//                    BitmapDescriptor adasd=getBitmapDescriptor(jsonObject.getJSONObject("object").getString("internalnum"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("postion"),jsonObject.getJSONObject("object").getJSONObject("dgm").getString("stime"));
+
                     dialog.dialog.dismiss();
                 }else{
                     Toast.makeText(TranceActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
@@ -319,19 +377,34 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         });
     }
 
-    void searchRoute()
-    {
-
-        PlanNode stNode = PlanNode.withLocation(new LatLng(latitude1,longitude1));
-
-//        System.out.println("searchroute-->" + lat + "," + lon);
-        PlanNode enNode = PlanNode.withLocation(new LatLng(latitude2,longitude2));
-        Log.i("searchRoute: ", latitude1+"---"+longitude1);
-        System.out.println("------------------lol"+latitude1+"---"+longitude1+"---"+latitude2+"----"+longitude2);
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(stNode).to(
-                enNode));// 发起驾车路线规划
-
+    private void ghlx() {
+        //划线和添加起始点和终止点
+        MarkerOptions ooC;
+        MarkerOptions ooD;
+        ooC = new MarkerOptions().position(list_device.get(0)).icon(bdstart)
+                .zIndex(9).draggable(true);
+        mMarkerA = (Marker) (mBaiduMap.addOverlay(ooC));
+        ooD = new MarkerOptions().position(list_device.get(list_device.size()-1)).icon(getBitmapDescriptor(dev_name,dev_address,dev_last_time))
+                .zIndex(9).draggable(true);
+        mMarkerA = (Marker) (mBaiduMap.addOverlay(ooD));
+        OverlayOptions ooPolyline = new PolylineOptions().width(10)
+                .color(0xAAFF0000).points(list_device);
+        mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
     }
+
+//    void searchRoute()
+//    {
+//
+//        PlanNode stNode = PlanNode.withLocation(new LatLng(latitude1,longitude1));
+//
+////        System.out.println("searchroute-->" + lat + "," + lon);
+//        PlanNode enNode = PlanNode.withLocation(new LatLng(latitude2,longitude2));
+//        Log.i("searchRoute: ", latitude1+"---"+longitude1);
+//        System.out.println("------------------lol"+latitude1+"---"+longitude1+"---"+latitude2+"----"+longitude2);
+//        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(stNode).to(
+//                enNode));// 发起驾车路线规划
+//
+//    }
 //    //倒计时显示在textview中
 //    class TimeCount extends CountDownTimer {
 //        public TimeCount(long millisInFuture,
@@ -366,9 +439,6 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
 
             latitude1=location.getLatitude();
             longitude1=location.getLongitude();
-            if(isfirst){
-
-            }
             Log.i("onReceiveLocation: ", latitude1+"--"+longitude1);
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -381,11 +451,55 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
                 isfirst = false;
                 LatLng ll = new LatLng(location.getLatitude(),
                         location.getLongitude());
-                MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(18.0f);
-                searchRoute();
-                isfirst=false;
-                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                maxlat=location.getLatitude();
+                minlat=location.getLatitude();
+                maxlon=location.getLongitude();
+                minlon=location.getLongitude();
+                //计算地图中心点和缩放
+                for(int i=0;i<list_device.size();i++){
+                    if(maxlat==0){
+                        //一个经纬度都没有，就直接赋值
+                        maxlat=list_device.get(i).latitude;
+                        minlat=list_device.get(i).latitude;
+                    }else if(list_device.get(i).latitude>maxlat){
+                        //有经纬度后，判断大小
+                        maxlat=list_device.get(i).latitude;
+                    }else if(list_device.get(i).latitude<minlat){
+                        minlat=list_device.get(i).latitude;
+                    }
+                    if(maxlon==0){
+                        maxlon=list_device.get(i).longitude;
+                        minlon=list_device.get(i).longitude;
+                    }else if(list_device.get(i).longitude>maxlon){
+                        //有经纬度后，判断大小
+                        maxlon=list_device.get(i).longitude;
+                    }else if(list_device.get(i).longitude<minlon){
+                        minlon=list_device.get(i).longitude;
+                    }
+                }
+                double midlat=(maxlat+minlat)/2;
+                double midlon=(maxlon+minlon)/2;
+                LatLng llllll = new LatLng(midlat, midlon);
+                //计算地图缩放度
+                int jl = (int) DistanceUtil.getDistance(new LatLng(maxlat, maxlon),
+                        new LatLng(minlat,minlon));
+                int j;
+                int[] zoomLevel = {50,100,200,500,1000,2000,5000,10000,20000,25000,50000,100000,200000,500000,1000000,2000000,5000000};//级别18到3。
+                for (j = 0;j < 17;j++) {
+                    if (zoomLevel[j] > jl) {
+                        break;
+                    }
+
+                }
+                //可以适当的减1
+                float zoom = 18-j+3 ;
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(llllll, zoom);
+                mBaiduMap.setMapStatus(u);
+                mBaiduMap.animateMapStatus(u);
+//                MapStatus.Builder builder = new MapStatus.Builder();
+//                builder.target(ll).zoom(18.0f);
+//                isfirst=false;
+//                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
 
