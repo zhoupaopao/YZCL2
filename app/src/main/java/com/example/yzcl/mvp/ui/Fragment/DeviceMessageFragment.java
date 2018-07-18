@@ -155,36 +155,41 @@ public class DeviceMessageFragment extends Fragment{
                 warning_type.setBackgroundResource(R.drawable.bg_normal);
                 warning_type.setText("正常");
             }
-            //电量
-            if(datalist.getDgm().getBl().equals("-1")){
-                //没有电量
-                dl.setVisibility(View.GONE);
+            if(sblx.equals("有线")){
+
             }else{
-                if(Integer.parseInt(datalist.getDgm().getBl())>30){
-                    //电量高于30%
-                    dl.setBackgroundResource(R.drawable.green_dl_radius);
-                    waring.setVisibility(View.GONE);
-                    dl.setTextColor(getContext().getResources().getColor(R.color.tv_online));
+                //电量
+                if(datalist.getDgm().getBl().equals("-1")){
+                    //没有电量
+                    dl.setVisibility(View.GONE);
                 }else{
-                    //电量低于30%
-                    //显示低电报警
-                    if(datalist.getDgm().getAlarm().equals("0")){
-                        //如果之前显示报警状态是正常的话，就在状态里面改
-                        warning_type.setBackgroundResource(R.drawable.bg_warning);
-                        warning_type.setText("低电报警");
+                    if(Integer.parseInt(datalist.getDgm().getBl())>30){
+                        //电量高于30%
+                        dl.setBackgroundResource(R.drawable.green_dl_radius);
                         waring.setVisibility(View.GONE);
+                        dl.setTextColor(getContext().getResources().getColor(R.color.tv_online));
                     }else{
+                        //电量低于30%
+                        //显示低电报警
+                        if(datalist.getDgm().getAlarm().equals("0")){
+                            //如果之前显示报警状态是正常的话，就在状态里面改
+                            warning_type.setBackgroundResource(R.drawable.bg_warning);
+                            warning_type.setText("低电报警");
+                            waring.setVisibility(View.GONE);
+                        }else{
 //                    waring.setText("低电报警");
 //                    waring.setVisibility(View.VISIBLE);
-                    }
+                        }
 
-                    dl.setBackgroundResource(R.drawable.dl_radius);
-                    dl.setTextColor(getContext().getResources().getColor(R.color.device_msg));
-                }
-                dl.setText("电量"+datalist.getDgm().getBl()+"%");
+                        dl.setBackgroundResource(R.drawable.dl_radius);
+                        dl.setTextColor(getContext().getResources().getColor(R.color.device_msg));
+                    }
+                    dl.setText("电量"+datalist.getDgm().getBl()+"%");
 //            dl.setVisibility(View.VISIBLE);
 
+                }
             }
+
         }else{
             //设备没定位
             dl.setVisibility(View.GONE);
@@ -241,7 +246,12 @@ public class DeviceMessageFragment extends Fragment{
             //定位类型
             loc_type.setText(datalist.getDgm().getType());
             //最后定位地址
-            loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
+            if(datalist.getDgm().getPostion()!=null){
+                loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
+            }else{
+                loc_address.setText("最后定位地址:   "+"当前无位置信息");
+            }
+
         }else{
             last_loc_time.setText("");
             //定位类型

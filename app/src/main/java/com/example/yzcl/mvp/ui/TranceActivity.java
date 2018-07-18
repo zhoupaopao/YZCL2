@@ -390,6 +390,9 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
         OverlayOptions ooPolyline = new PolylineOptions().width(10)
                 .color(0xAAFF0000).points(list_device);
         mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
+        MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(list_device.get(list_device.size()-1));
+        mBaiduMap.setMapStatus(u);
+        mBaiduMap.animateMapStatus(u);
     }
 
 //    void searchRoute()
@@ -641,7 +644,9 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
             mSearch.destroy();
         }
         mMapView.onDestroy();
-        mLocClient.stop();
+        if(mLocClient!=null){
+            mLocClient.stop();
+        }
         if(timer!=null){
             timer.cancel();
         }

@@ -313,9 +313,11 @@ public class CarAddressActivity extends BaseActivity {
     private void setViewpager() {
         int posid=100;
         fs=new ArrayList<Fragment>();
-        if(datalist.size()==1){
+        if(arraycar.size()==1){
             onlyone=true;
-            fs.add(new DeviceMessageFragment(datalist.get(0)));
+            JSONObject JOdevice=arraycar.getJSONObject(0);
+            carDetailGPSBean=JSONObject.parseObject(JOdevice.toString(),carDetailGPSBeans.carDetailGPSBean.class);
+            fs.add(new DeviceMessageFragment(carDetailGPSBean));
         }else{
 
             for(int i=0;i<arraycar.size();i++){
@@ -870,9 +872,9 @@ public class CarAddressActivity extends BaseActivity {
         car_type.setText("车型："+carMessageBean.getObject().getCar_brand());
 //        home_address.setText(carMessageBean.getObject().getCar_brand());
         if(carMessageBean.getObject().getPledger().getPledger_loc().size()==0){
-            work_address.setText("联系地址："+"暂无");
+            work_address.setText("家庭地址："+"暂无");
         }else{
-            work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
+            work_address.setText("家庭地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
         }
 //        work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
         customer.setText("所属客户："+carMessageBean.getObject().getSystemgroup().getGroup_name());

@@ -122,7 +122,7 @@
                 android:ellipsize="end"
                 android:textColor="@color/color_car"
                 android:gravity="center_vertical"
-                android:text="联系地址：深圳市罗湖区莲湖路"/>
+                android:text="家庭地址：深圳市罗湖区莲湖路"/>
             <TextView
                 android:id="@+id/customer"
                 android:layout_width="wrap_content"

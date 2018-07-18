@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">英臻车联</string>
+    <string name="app_name">英臻车联3.0</string>
     <string name="btn_login">登录</string>
     <string name="btn_forgetpwd">忘记密码?</string>
     <string name="login_number">登录账号</string>
