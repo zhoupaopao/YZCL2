@@ -258,7 +258,7 @@ public class PatternSettingActivity extends BaseActivity {
                                 @Override
                                 public void onStart() {
                                     super.onStart();
-                                    dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,false,false,true);
+                                    dialog= DialogUIUtils.showLoading(PatternSettingActivity.this,"加载中...",true,true,false,true);
                                     dialog.show();
                                 }
 

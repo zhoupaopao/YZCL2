@@ -138,7 +138,7 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
             @Override
             public void onStart() {
                 super.onStart();
-                dialog= DialogUIUtils.showLoading(XfzlActivity.this,"加载中...",true,false,false,true);
+                dialog= DialogUIUtils.showLoading(XfzlActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
             }
 

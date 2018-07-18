@@ -562,7 +562,7 @@ public class CarAddressActivity extends BaseActivity {
         car_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,false,false,true);
+                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
                 //获取车辆信息
                 if(!Constant.isNetworkConnected(CarAddressActivity.this)) {
@@ -738,7 +738,7 @@ public class CarAddressActivity extends BaseActivity {
             @Override
             public void onStart() {
                 super.onStart();
-                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,false,false,true);
+                dialog= DialogUIUtils.showLoading(CarAddressActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
             }
 

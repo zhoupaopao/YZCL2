@@ -231,7 +231,7 @@ public class MainActivity extends CheckPermissionsActivity {
     }
 
     private void loginbtn() {
-        dia=DialogUIUtils.showLoading(MainActivity.this, "登录中...",false,false,false,false);
+        dia=DialogUIUtils.showLoading(MainActivity.this, "登录中...",false,true,false,false);
         dia.show();
         if (username.getText().toString().isEmpty()) {
             Log.i("in", "1");

@@ -95,7 +95,7 @@ public class AccountMessageActivity extends BaseActivity {
             @Override
             public void onStart() {
                 super.onStart();
-                dia= DialogUIUtils.showLoading(AccountMessageActivity.this, "加载中...", false, false, false, false);
+                dia= DialogUIUtils.showLoading(AccountMessageActivity.this, "加载中...", false, true, false, false);
                 dia.show();
             }
 

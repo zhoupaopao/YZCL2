@@ -265,7 +265,7 @@ public class TimingSettingActivity extends BaseActivity implements View.OnClickL
                         @Override
                         public void onStart() {
                             super.onStart();
-                            dialog= DialogUIUtils.showLoading(TimingSettingActivity.this,"加载中...",true,false,false,true);
+                            dialog= DialogUIUtils.showLoading(TimingSettingActivity.this,"加载中...",true,true,false,true);
                             dialog.show();
                         }
 

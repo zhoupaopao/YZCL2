@@ -263,7 +263,7 @@ public class WeekSettingActivity extends BaseActivity implements View.OnClickLis
                             @Override
                             public void onStart() {
                                 super.onStart();
-                                dialog= DialogUIUtils.showLoading(WeekSettingActivity.this,"加载中...",true,false,false,true);
+                                dialog= DialogUIUtils.showLoading(WeekSettingActivity.this,"加载中...",true,true,false,true);
                                 dialog.show();
                             }
 

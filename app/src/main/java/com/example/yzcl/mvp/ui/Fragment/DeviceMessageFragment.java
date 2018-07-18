@@ -357,7 +357,7 @@ public class DeviceMessageFragment extends Fragment{
         open_colse_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(datalist.getDgm().getDeviceId()!=null){
+                if(datalist.getDgm().getBlng()!=null&&datalist.getDgm().getDeviceId()!=null){
                 Intent intent=new Intent();
                 intent.putExtra("blat",datalist.getDgm().getBlat());
                 intent.putExtra("blng",datalist.getDgm().getBlng());

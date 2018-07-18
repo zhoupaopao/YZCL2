@@ -101,7 +101,7 @@ public class PersonMessageActivity extends BaseActivity {
             @Override
             public void onStart() {
                 super.onStart();
-                jq_dia = DialogUIUtils.showLoading(PersonMessageActivity.this, "加载中...", false, false, false, false);
+                jq_dia = DialogUIUtils.showLoading(PersonMessageActivity.this, "加载中...", false, true, false, false);
                 jq_dia.show();
             }
         });

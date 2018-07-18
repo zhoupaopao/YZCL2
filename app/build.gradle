@@ -6,7 +6,7 @@ android {
         applicationId "com.example.yzcl"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 32
+        versionCode 36
         versionName "3.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

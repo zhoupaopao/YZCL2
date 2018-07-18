@@ -365,7 +365,7 @@ public class TranceActivity extends BaseActivity implements OnGetRoutePlanResult
             @Override
             public void onStart() {
                 super.onStart();
-                dialog= DialogUIUtils.showLoading(TranceActivity.this,"加载中...",true,false,false,true);
+                dialog= DialogUIUtils.showLoading(TranceActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
             }
 
