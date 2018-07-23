@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.GridViewAdapter;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.presenter.GlideImageLoader;
@@ -67,7 +68,9 @@ public class HomePage extends BaseActivity implements OnBannerListener{
     private SimpleAdapter sim_adapter;
     private List<Map<String,Object>>data_list;
     SharedPreferences sp=null;
+    GridViewAdapter gridViewAdapter;
     private ArrayList<String>iconname;
+    private ArrayList<Boolean>needshow;
     private long mExitTime=0;
     Intent intent;
     private String TAG="HomePage";
@@ -111,7 +114,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
 //                .start();
         data_list=new ArrayList<Map<String,Object>>();
         iconname=new ArrayList<>();
-
+        needshow=new ArrayList<>();
 
         //获取权限
         if(!Constant.isNetworkConnected(HomePage.this)) {
@@ -134,6 +137,14 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                 if(jsonObject.getBoolean("success")){
                     //请求成功
                     //获取权限
+                    HashMap<String,Boolean>hashMap=new HashMap<>();
+                    hashMap.put("qx_jk",false);
+                    hashMap.put("qx_fk",false);
+                    hashMap.put("qx_clgl",false);
+                    hashMap.put("qx_xdzx",false);
+                    hashMap.put("qx_wlgl",false);
+                    hashMap.put("qx_zlsz",false);
+                    hashMap.put("qx_khgl",false);
                     String list_Jurisdiction=jsonObject.getJSONObject("object").getString("rightstring");
                     SharedPreferences.Editor editor=sp.edit();
                     editor.putString("list_Jurisdiction",list_Jurisdiction);
@@ -142,91 +153,93 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                     for(int i=0;i<list_jur.length;i++){
                         if (list_jur[i].equals("218")){
                             //有车辆监控权限
-
-                            String []from={"image","text","coverimg"};
-                            int [] to = {R.id.image1,R.id.text1,R.id.coverimg};
-                            sim_adapter=new SimpleAdapter(HomePage.this,getData(0),R.layout.item_gridview,from,to);
-                            grid.setAdapter(sim_adapter);
-                            grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    switch (i){
-                                        case 0:
-                                            //尝试使用viewpager（现）
-                                            //风控预警（实际）
-//                        Toast.makeText(HomePage.this,R.string.car_veh,Toast.LENGTH_SHORT).show();
-                                            intent=new Intent();
-//                        intent.setClass(HomePage.this, GunDongActivity.class);
-                                            intent.setClass(HomePage.this, VehicleMonitoringActivity.class);
-                                            startActivity(intent);
-                                            break;
-                                        case 1:
-                                            //车辆监控（实际）
-//                        intent=new Intent();
-//                        //风控预警（实际）
-//                        intent.setClass(HomePage.this, RiskWarningActivity.class);
-//                        startActivity(intent);
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 2:
-                                            //车辆管理列表
-//                         intent=new Intent();
-//                        //2.0的车辆管理
-////                        intent.setClass(HomePage.this, CarManagerActivity.class);
-//                        intent.setClass(HomePage.this, CarManagerRealActivity.class);
-//                        startActivity(intent);
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 3:
-                                            //围栏功能（现）
-                                            //下单中心（实际）
-//                        intent=new Intent();
-//                        intent.setClass(HomePage.this,VPageActivity .class);
-//                        startActivity(intent);
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 4:
-                                            //围栏管理（实际）
-//                        intent=new Intent();
-////                        intent.setClass(HomePage.this,EnclosureManagerActivity.class);
-//                        intent.setClass(HomePage.this,EnclosureAllManagerActivity.class);
-//                        startActivity(intent);
-
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-
-                                            break;
-                                        case 5:
-                                            //指令设置（实际）
-                                            //账号管理，有展开
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-//                         intent=new Intent();
-//                        intent.setClass(HomePage.this, CustomerManagementActivity.class);
-//                        startActivity(intent);
-                                            break;
-                                        case 6:
-                                            //客户管理
-//                        intent=new Intent();
-////                        intent.setClass(HomePage.this, VPageActivity.class);
-////                        intent.setClass(HomePage.this, LowerAccountActivity.class);
-//                        intent.setClass(HomePage.this, CustomerManagerActivity.class);
-//                        startActivity(intent);
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 7:
-                                            //更多
-//                        intent=new Intent();
-////                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
-//                                                intent.setClass(HomePage.this, GunDongActivity.class);
-//                        startActivity(intent);
-                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
-                                            break;
-
-                                    }
-                                }
-                            });
-                            break;
+                            hashMap.put("qx_jk",true);
                         }
                     }
+//                    String []from={"image","text","coverimg"};
+//                    int [] to = {R.id.image1,R.id.text1,R.id.coverimg};
+                    gridViewAdapter=new GridViewAdapter(HomePage.this,getData(hashMap));
+//                    sim_adapter=new SimpleAdapter(HomePage.this,getData(0),R.layout.item_gridview,from,to);
+                    grid.setAdapter(gridViewAdapter);
+//                    grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                                    switch (i){
+//                                        case 0:
+//                                            //尝试使用viewpager（现）
+//                                            //风控预警（实际）
+////                        Toast.makeText(HomePage.this,R.string.car_veh,Toast.LENGTH_SHORT).show();
+//                                            intent=new Intent();
+////                        intent.setClass(HomePage.this, GunDongActivity.class);
+//                                            intent.setClass(HomePage.this, VehicleMonitoringActivity.class);
+//                                            startActivity(intent);
+//                                            break;
+//                                        case 1:
+//                                            //车辆监控（实际）
+////                        intent=new Intent();
+////                        //风控预警（实际）
+////                        intent.setClass(HomePage.this, RiskWarningActivity.class);
+////                        startActivity(intent);
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                                            break;
+//                                        case 2:
+//                                            //车辆管理列表
+//                         intent=new Intent();
+////                        //2.0的车辆管理
+//////                        intent.setClass(HomePage.this, CarManagerActivity.class);
+//                        intent.setClass(HomePage.this, CarManagerRealActivity.class);
+//                        startActivity(intent);
+////                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                                            break;
+//                                        case 3:
+//                                            //围栏功能（现）
+//                                            //下单中心（实际）
+////                        intent=new Intent();
+////                        intent.setClass(HomePage.this,VPageActivity .class);
+////                        startActivity(intent);
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                                            break;
+//                                        case 4:
+//                                            //围栏管理（实际）
+////                        intent=new Intent();
+//////                        intent.setClass(HomePage.this,EnclosureManagerActivity.class);
+////                        intent.setClass(HomePage.this,EnclosureAllManagerActivity.class);
+////                        startActivity(intent);
+//
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//
+//                                            break;
+//                                        case 5:
+//                                            //指令设置（实际）
+//                                            //账号管理，有展开
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+////                         intent=new Intent();
+////                        intent.setClass(HomePage.this, CustomerManagementActivity.class);
+////                        startActivity(intent);
+//                                            break;
+//                                        case 6:
+//                                            //客户管理
+////                        intent=new Intent();
+//////                        intent.setClass(HomePage.this, VPageActivity.class);
+//////                        intent.setClass(HomePage.this, LowerAccountActivity.class);
+////                        intent.setClass(HomePage.this, CustomerManagerActivity.class);
+////                        startActivity(intent);
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                                            break;
+//                                        case 7:
+//                                            //更多
+////                        intent=new Intent();
+//////                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
+////                                                intent.setClass(HomePage.this, GunDongActivity.class);
+////                        startActivity(intent);
+//                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
+//                                            break;
+//
+//                                    }
+//                                }
+//                            });
+
+
 
 
                 }else{
@@ -276,19 +289,32 @@ public class HomePage extends BaseActivity implements OnBannerListener{
 //        Toast.makeText(getApplicationContext(),"你点击了："+position,Toast.LENGTH_SHORT).show();
     }
 
-    public List<Map<String,Object>> getData(int qx_jk) {
+    public List<Map<String,Object>> getData(HashMap<String,Boolean> qx_jk) {
         //模仿返回数据有新的
-        boolean needshow=true;
-        if(qx_jk==0){
+//        boolean needshow=true;
+        if(qx_jk.get("qx_jk")){
             iconname.add("车辆监控");
+            needshow.add(true);
+        }else{
+            iconname.add("车辆监控");
+            needshow.add(false);
         }
-
+        iconname.add("风控预警");
+        needshow.add(false);
+        iconname.add("车辆管理");
+        needshow.add(true);
         for(int i=0;i<iconname.size();i++){
+            if(needshow.get(i)){
                 Map<String,Object>map=new HashMap<String,Object>();
                 map.put("image",icon[i]);
                 map.put("text",iconname.get(i));
                 map.put("coverimg","");
+                map.put("needshow",needshow.get(i));
                 data_list.add(map);
+            }else{
+                continue;
+            }
+
         }
         return data_list;
     }

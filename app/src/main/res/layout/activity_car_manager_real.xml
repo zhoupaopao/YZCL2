@@ -113,6 +113,7 @@
             android:textColor="@color/color_car_detail"
         android:layout_weight="1"/>
         <TextView
+            android:id="@+id/car_all"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:textColor="@color/color_number"
@@ -137,6 +138,7 @@
             android:textColor="@color/color_car_detail"
             android:layout_weight="1"/>
         <TextView
+            android:id="@+id/car_yq"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:textColor="@color/color_number"
@@ -163,6 +165,7 @@
             android:textColor="@color/color_car_detail"
             android:layout_weight="1"/>
         <TextView
+            android:id="@+id/car_zdgz"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:textColor="@color/color_number"
@@ -251,6 +254,7 @@
                 android:textColor="@color/color_car_detail"
                 android:layout_weight="1"/>
             <TextView
+                android:id="@+id/device_online"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textColor="@color/color_number"
@@ -275,6 +279,7 @@
                 android:textColor="@color/color_car_detail"
                 android:layout_weight="1"/>
             <TextView
+                android:id="@+id/device_offline"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textColor="@color/color_number"
@@ -301,6 +306,7 @@
                 android:textColor="@color/color_car_detail"
                 android:layout_weight="1"/>
             <TextView
+                android:id="@+id/device_unuse"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textColor="@color/color_number"

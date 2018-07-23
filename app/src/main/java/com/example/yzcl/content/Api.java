@@ -24,8 +24,6 @@ public class Api {
     public static  String querySettleList="https://lbstec.cn/yzcl/operation/v1/settleReport/querySettleList";
     //取消结清
     public static  String cancelSettleById="https://lbstec.cn/yzcl/operation/v1/settleReport/cancelSettleById";
-    //获取各预警数量
-    public static  String queAlarmStati="https://lbstec.cn/yzcldevice/v1/queAlarmStati";
 //    //获取高危预警列表
 //    public static  String queryHighAlarmList="https://lbstec.cn/yzcl/operation/v1/highAlarmReport/queryHighAlarmList";
     //警情明细即设备预警
@@ -34,8 +32,8 @@ public class Api {
     //用于存放各种接口
     public static final String GET_PROVINCE_CITY ="http://m1api.chetxt.com:8083/DataLib.asmx/Json_GetProvinceCity";
 //    http://101.37.119.32:20200//operation/v1/monitor/queVehicleListForSea?token
-//    public  static  String MonitorUrl="http://101.37.119.32:20200/";//测试服
-    public  static  String MonitorUrl="http://47.98.146.91:20200/";//正式服
+    public  static  String MonitorUrl="http://101.37.119.32:20200/";//测试服
+//    public  static  String MonitorUrl="http://47.98.146.91:20200/";//正式服
     //模糊搜索设备名车架号
     public static final String queVehicleListForSea=MonitorUrl+"/operation/v1/monitor/queVehicleListForSea";
     //获取车辆信息
@@ -68,6 +66,13 @@ public class Api {
     public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
     //获取高危报警类型
     public static final String queryHighAlarmList=MonitorUrl+"/operation/v1/highAlarmReport/queryHighAlarmList";
-    //权限设置
-//    public  static  String getUserGeneralInfo=MonitorUrl+"operation/v1/init/getUserGeneralInfo";
+    //获取设备在离线状态统计
+    public static final String queAlarmStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
+    //获取设备在离线状态统计
+    public static final String queDeviceIsUsedStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
+    //获取车辆逾期统计
+    public static final String getRedBind=MonitorUrl+"operation/v1/vehicleManage/getRedBind";
+    //获取客户组织
+    public static final String getCustomer=MonitorUrl+"operation/v1/customer/getCustomer";
+
 }
