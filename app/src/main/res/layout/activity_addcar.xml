@@ -39,7 +39,10 @@
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:orientation="vertical">
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -76,6 +79,7 @@
                 </LinearLayout>
 
                 <EditText
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -115,6 +119,7 @@
                     android:src="@mipmap/icon_right" />
 
                 <TextView
+                    android:id="@+id/tv_sex"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -154,6 +159,7 @@
                     android:src="@mipmap/icon_right" />
 
                 <TextView
+                    android:id="@+id/car_type"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -180,6 +186,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/card_num"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -205,6 +212,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -230,6 +238,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/home_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -240,6 +249,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="1dp"
@@ -263,6 +273,7 @@
                     android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />
 
+            </LinearLayout>
             </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
@@ -299,6 +310,7 @@
                 </LinearLayout>
 
                 <EditText
+                    android:id="@+id/car_vin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -324,6 +336,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/car_num"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -362,6 +375,7 @@
                     android:src="@mipmap/icon_right" />
 
                 <TextView
+                    android:id="@+id/tv_cartype"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -387,6 +401,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/car_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -420,6 +435,7 @@
                     android:layout_alignParentRight="true" />
 
                 <EditText
+                    android:id="@+id/mileage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -460,6 +476,7 @@
                     android:src="@mipmap/icon_right" />
 
                 <TextView
+                    android:id="@+id/use_age"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -493,6 +510,7 @@
                     android:layout_alignParentRight="true" />
 
                 <EditText
+                    android:id="@+id/use_money"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -633,6 +651,7 @@
                         android:src="@mipmap/icon_right" />
 
                     <TextView
+                        android:id="@+id/belong_name"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
@@ -671,6 +690,7 @@
                 </LinearLayout>
 
                 <EditText
+                    android:id="@+id/con_person"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -708,6 +728,7 @@
                 </LinearLayout>
 
                 <EditText
+                    android:id="@+id/con_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -733,6 +754,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/installer_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -758,6 +780,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/installer_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -783,6 +806,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/installer_bz"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -793,6 +817,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/add_device"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@color/white"

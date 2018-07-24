@@ -136,6 +136,9 @@
         <activity android:name="com.example.yzcl.mvp.ui.TimingSettingActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TranceActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TrajectoryActivity"></activity>
+        <activity
+            android:name="com.lzy.imagepicker.ui.ImagePreviewDelActivity"
+            android:theme="@style/ImagePickerThemeFullScreen" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

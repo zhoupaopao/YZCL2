@@ -27,7 +27,8 @@
         android:layout_marginLeft="30dp"
         android:layout_toRightOf="@id/icon_head"
         android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,16 +42,20 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_alignLeft="@+id/linearLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/linearLayout"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:button="@drawable/checkbox"
+
             android:gravity="center_vertical"
             android:scaleX="0.90"
             android:scaleY="0.90"
             android:text="显示下级数据"
+            android:clickable="true"
             android:textColor="@color/white"
             android:textSize="10dp" />
+        <!--android:button="@drawable/checkbox"-->
     </LinearLayout>
 
     <ImageView

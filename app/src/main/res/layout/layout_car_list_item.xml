@@ -23,14 +23,19 @@ android:minHeight="240dp"
             android:textColor="@color/car_person_name"
             android:layout_centerVertical="true"
             android:text="刘诗诗"/>
-        <ImageView
-            android:id="@+id/pic_status"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/u2816"
-            android:layout_centerVertical="true"
+        <TextView
+            android:id="@+id/car_status"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dl_radius"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/device_msg"
+            android:text="@string/impor_care"
             android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@id/name"/>
+
         <!--<Button-->
             <!--android:id="@+id/gz"-->
             <!--android:layout_width="70dp"-->
@@ -42,6 +47,7 @@ android:minHeight="240dp"
             <!--android:background="@drawable/button_radius_change"/>-->
         <Button
             android:id="@+id/gz"
+            android:visibility="gone"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:text="关注"
@@ -98,30 +104,7 @@ android:minHeight="240dp"
             android:textColor="@color/car_message_text"
             />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="绑车时间："
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-        <TextView
-            android:id="@+id/data_bind_car"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2012-01-01 01:11"
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -146,6 +129,30 @@ android:minHeight="240dp"
             android:textColor="@color/car_message_text"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="创建时间："
+            android:textSize="13dp"
+            android:textColor="@color/car_message_text"
+            />
+        <TextView
+            android:id="@+id/data_bind_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2012-01-01 01:11"
+            android:textSize="13dp"
+            android:textColor="@color/car_message_text"
+            />
+    </LinearLayout>
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0dp"-->
@@ -163,6 +170,18 @@ android:minHeight="240dp"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:orientation="horizontal">
+
+
+        <RadioButton
+            android:id="@+id/detail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:button="@null"
+            android:background="@drawable/radio_check_button"
+            android:textColor="@drawable/radio_button_color"
+            android:text="详情"/>
         <RadioButton
             android:id="@+id/address"
             android:layout_width="0dp"
@@ -175,29 +194,7 @@ android:minHeight="240dp"
             android:text="位置"/>
 
         <RadioButton
-            android:id="@+id/detail"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:button="@null"
-            android:background="@drawable/radio_check_button"
-            android:textColor="@drawable/radio_button_color"
-            android:text="详情"/>
-
-        <RadioButton
-            android:id="@+id/yuqi"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:button="@null"
-            android:background="@drawable/radio_check_button"
-            android:textColor="@drawable/radio_button_color"
-            android:text="取消逾期"/>
-
-        <RadioButton
-            android:id="@+id/Settle"
+            android:id="@+id/mark"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -205,7 +202,7 @@ android:minHeight="240dp"
             android:background="@drawable/radio_check_button"
             android:textColor="@drawable/radio_button_color"
             android:button="@null"
-            android:text="结清"/>
+            android:text="标记"/>
     </RadioGroup>
 
 </LinearLayout>

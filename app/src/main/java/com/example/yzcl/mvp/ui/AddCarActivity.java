@@ -24,23 +24,30 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.TieBean;
+import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.yzcl.Listener.OnRecyclerItemClickListener;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.ImagePickerAdapter;
 import com.example.yzcl.adapter.PostArticleImgAdapter;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.utils.MultiImageSelector;
@@ -48,6 +55,10 @@ import com.example.yzcl.utils.MyCallBack;
 import com.example.yzcl.utils.PickImageHelper;
 import com.example.yzcl.utils.TimePickerDialog;
 import com.gyf.barlibrary.ImmersionBar;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,11 +68,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.Inflater;
 
+import static com.dou361.dialogui.DialogUIUtils.showToast;
+
 
 /**
  * 新增车辆
  */
-public class AddCarActivity extends BaseActivity implements com.example.yzcl.utils.TimePickerDialog.TimePickerDialogInterface{
+public class AddCarActivity extends BaseActivity implements com.example.yzcl.utils.TimePickerDialog.TimePickerDialogInterface,ImagePickerAdapter.OnRecyclerViewItemClickListener{
     public static final int IMAGE_SIZE = 9;
     RecyclerView rcvImg;
     private TextView title;
@@ -78,6 +91,9 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private TextView tv_endtime;
     final int SHOW_STARTTIME=1;
     final int SHOW_ENDTIME=2;
+    public static final int IMAGE_ITEM_ADD = -1;
+    public static final int REQUEST_CODE_SELECT = 100;
+    public static final int REQUEST_CODE_PREVIEW = 101;
     AlertDialog.Builder adb;
     DatePicker dp;
     TimePicker tp;
@@ -90,6 +106,38 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     int timenew=1;
     int mYear,mMonth,mDay,mHour,mMinutes;
     private TimePickerDialog mTimePickerDialog;
+
+    private ImagePickerAdapter adapter;
+    private ArrayList<ImageItem> selImageList; //当前选择的所有图片
+    private int maxImgCount = 8;               //允许选择图片最大数
+
+    //详细布局
+    private RelativeLayout rl_sex;//性别
+    private TextView tv_sex;//性别
+    private EditText name;//姓名
+    private RelativeLayout rl_cardtype;//证件类型
+    private TextView cardtype;//证件类型
+    private EditText card_num;//证件号码
+    private EditText mobile;//手机号码
+    private EditText home_address;//家庭地址
+    private EditText car_vin;//车辆vin
+    private EditText car_num;//车牌号
+    private RelativeLayout rl_cartype;//选择车型
+    private TextView tv_cartype;//车辆类型
+    private EditText car_color;//车辆颜色
+    private EditText mileage;//行驶里程
+    private RelativeLayout rl_useyear;//使用年限
+    private TextView use_age;//使用年限
+    private EditText use_money;//借款金额
+    private RelativeLayout belong;//所属客户
+    private TextView belong_name;//所属客户名字
+    private EditText con_person;//联系人
+    private EditText con_phone;//联系电话
+    private EditText installer_name;//安装工姓名
+    private EditText installer_phone;//安装工手机号码
+    private EditText installer_bz;//安装备注
+    private LinearLayout add_device;//添加设备
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,11 +147,62 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
-        initData();
-        initView();
 
+        initView();
+        initData();
         initListener();
     }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.i("onItemClick: ",position+"21" );
+        //要进行application注册
+        switch (position) {
+
+            case IMAGE_ITEM_ADD:
+                List<TieBean> strings = new ArrayList<TieBean>();
+                strings.add(new TieBean("拍照"));
+                strings.add(new TieBean("相册"));
+                DialogUIUtils.showSheet(AddCarActivity.this, strings, "取消", Gravity.BOTTOM, true, true, new DialogUIItemListener() {
+                    @Override
+                    public void onItemClick(CharSequence text, int position) {
+//                        showToast(text + "---" + position);
+                        switch (position) {
+                            case 0: // 直接调起相机
+                                //打开选择,本次允许选择的数量
+                                ImagePicker.getInstance().setSelectLimit(maxImgCount - selImageList.size());
+                                Intent intent = new Intent(AddCarActivity.this, ImageGridActivity.class);
+                                intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS,true); // 是否是直接打开相机
+                                startActivityForResult(intent, REQUEST_CODE_SELECT);
+                                break;
+                            case 1:
+                                //打开选择,本次允许选择的数量
+                                ImagePicker.getInstance().setSelectLimit(maxImgCount - selImageList.size());
+                                Intent intent1 = new Intent(AddCarActivity.this, ImageGridActivity.class);
+                                startActivityForResult(intent1, REQUEST_CODE_SELECT);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onBottomBtnClick() {
+                        showToast("取消");
+                    }
+                }).show();
+                break;
+            default:
+                //打开预览
+                Intent intentPreview = new Intent(this, ImagePreviewDelActivity.class);
+                intentPreview.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, (ArrayList<ImageItem>) adapter.getImages());
+                intentPreview.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, position);
+                intentPreview.putExtra(ImagePicker.EXTRA_FROM_ITEMS,true);
+                startActivityForResult(intentPreview, REQUEST_CODE_PREVIEW);
+                break;
+        }
+    }
+
     static class MyRunnable implements Runnable {
 
         List<String> images;
@@ -310,17 +409,17 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 
 
     private void initData() {
-        if (originImages == null) {//原始图片
-            originImages = new ArrayList<>();
-        }
-        mContext = getApplicationContext();
-        //添加按钮图片资源
-        String plusPath = getString(R.string.glide_plus_icon_string) + getPackageInfo(mContext).packageName + "/mipmap/" + R.mipmap.mine_btn_plus;
-        Log.i("plusPath", plusPath);
-        dragImages = new ArrayList<>();//压缩图片
-        originImages.add(plusPath);//添加按键，超过9张时在adapter中隐藏
-        dragImages.addAll(originImages);
-        new Thread(new MyRunnable(this, dragImages, originImages, dragImages, myHandler, false)).start();//开启线程，在新线程中去压缩图片
+//        if (originImages == null) {//原始图片
+//            originImages = new ArrayList<>();
+//        }
+//        mContext = getApplicationContext();
+//        //添加按钮图片资源
+//        String plusPath = getString(R.string.glide_plus_icon_string) + getPackageInfo(mContext).packageName + "/mipmap/" + R.mipmap.mine_btn_plus;
+//        Log.i("plusPath", plusPath);
+//        dragImages = new ArrayList<>();//压缩图片
+//        originImages.add(plusPath);//添加按键，超过9张时在adapter中隐藏
+//        dragImages.addAll(originImages);
+//        new Thread(new MyRunnable(this, dragImages, originImages, dragImages, myHandler, false)).start();//开启线程，在新线程中去压缩图片
     }
     public static PackageInfo getPackageInfo(Context context) {
         PackageManager pm = context.getPackageManager();
@@ -356,10 +455,30 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {//从相册选择完图片
-            //压缩图片
-            new Thread(new MyRunnable(AddCarActivity.this, data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT),
-                    originImages, dragImages, myHandler, true)).start();
+//        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {//从相册选择完图片
+//            //压缩图片
+//            new Thread(new MyRunnable(AddCarActivity.this, data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT),
+//                    originImages, dragImages, myHandler, true)).start();
+//        }
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            //添加图片返回
+            if (data != null && requestCode == REQUEST_CODE_SELECT) {
+                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                if (images != null){
+                    selImageList.addAll(images);
+                    adapter.setImages(selImageList);
+                }
+            }
+        } else if (resultCode == ImagePicker.RESULT_CODE_BACK) {
+            //预览图片返回
+            if (data != null && requestCode == REQUEST_CODE_PREVIEW) {
+                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
+                if (images != null){
+                    selImageList.clear();
+                    selImageList.addAll(images);
+                    adapter.setImages(selImageList);
+                }
+            }
         }
     }
     @Override
@@ -441,8 +560,54 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         endtime=findViewById(R.id.endtime);
         tv_starttime=findViewById(R.id.tv_starttime);
         tv_endtime=findViewById(R.id.tv_endtime);
+        rl_sex=findViewById(R.id.rl_sex);//性别
+        tv_sex=findViewById(R.id.tv_sex);//性别
+        name=findViewById(R.id.name);//姓名
+        rl_cardtype=findViewById(R.id.rl_cardtype);//证件类型
+        cardtype=findViewById(R.id.cardtype);//证件类型
+        card_num=findViewById(R.id.card_num);//证件号码
+        mobile=findViewById(R.id.mobile);//手机号码
+        home_address=findViewById(R.id.home_address);//家庭地址
+        car_vin=findViewById(R.id.car_vin);//车辆vin
+        car_num=findViewById(R.id.car_num);//车牌号
+        rl_cartype=findViewById(R.id.rl_cartype);//选择车型
+        tv_cartype=findViewById(R.id.tv_cartype);//车辆类型
+        car_color=findViewById(R.id.car_color);//车辆颜色
+        mileage=findViewById(R.id.mileage);//行驶里程
+        rl_useyear=findViewById(R.id.rl_useyear);//使用年限
+        use_age=findViewById(R.id.use_age);//使用年限
+        use_money=findViewById(R.id.use_money);//借款金额
+        belong=findViewById(R.id.belong);//所属客户
+        belong_name=findViewById(R.id.belong_name);//所属客户名字
+        con_person=findViewById(R.id.con_person);//联系人
+        con_phone=findViewById(R.id.con_phone);//联系电话
+        installer_name=findViewById(R.id.installer_name);//安装工姓名
+        installer_phone=findViewById(R.id.installer_phone);//安装工手机号码
+        installer_bz=findViewById(R.id.installer_bz);//安装备注
+        add_device=findViewById(R.id.add_device);//添加设备
         //初始化图片recycle
-        initRcv();
+//        initRcv();
+        initRecy();
+        List<TieBean> strings = new ArrayList<TieBean>();
+        strings.add(new TieBean("1"));
+        strings.add(new TieBean("2"));
+        strings.add(new TieBean("3"));
+        DialogUIUtils.showSheet(AddCarActivity.this, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
+            @Override
+            public void onItemClick(CharSequence text, int position) {
+//                showToast(text);
+            }
+        }).show();
+    }
+
+    private void initRecy() {
+        selImageList = new ArrayList<>();
+        adapter = new ImagePickerAdapter(this, selImageList, maxImgCount);
+        adapter.setOnItemClickListener(this);
+
+        rcvImg.setLayoutManager(new GridLayoutManager(this, 4));
+        rcvImg.setHasFixedSize(true);
+        rcvImg.setAdapter(adapter);
     }
 
     private void initRcv() {
@@ -557,4 +722,5 @@ itemTouchHelper.attachToRecyclerView(rcvImg);
     public void negativeListener() {
 
     }
+
 }

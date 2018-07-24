@@ -73,6 +73,34 @@ public class CarListBean {
         private String  pledgename;// 借款人名称
         private String  status;// 标记状态
         private int  used_age ;//使用年限(年)
+        private String car_address;
+        private String car_no;
+        private String sign_status;//报警类型
+
+
+        public String getCar_address() {
+            return car_address;
+        }
+
+        public void setCar_address(String car_address) {
+            this.car_address = car_address;
+        }
+
+        public String getCar_no() {
+            return car_no;
+        }
+
+        public void setCar_no(String car_no) {
+            this.car_no = car_no;
+        }
+
+        public String getSign_status() {
+            return sign_status;
+        }
+
+        public void setSign_status(String sign_status) {
+            this.sign_status = sign_status;
+        }
 
         public String getId() {
             return id;

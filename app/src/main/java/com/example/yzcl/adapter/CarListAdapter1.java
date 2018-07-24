@@ -56,7 +56,7 @@ public class CarListAdapter1 extends BaseAdapter {
             viewHolder=new ViewHolder();
             viewHolder.gz=contentView.findViewById(R.id.gz);
             viewHolder.name=contentView.findViewById(R.id.name);
-            viewHolder.pic_status=contentView.findViewById(R.id.pic_status);
+            viewHolder.car_status=contentView.findViewById(R.id.car_status);
             viewHolder.vinid=contentView.findViewById(R.id.vinid);
             viewHolder.equipment=contentView.findViewById(R.id.equipment);
             viewHolder.data_bind_car=contentView.findViewById(R.id.data_bind_car);
@@ -64,8 +64,7 @@ public class CarListAdapter1 extends BaseAdapter {
             viewHolder.handle_car=contentView.findViewById(R.id.handle_car);
             viewHolder.address=contentView.findViewById(R.id.address);
             viewHolder.detail=contentView.findViewById(R.id.detail);
-            viewHolder.yuqi=contentView.findViewById(R.id.yuqi);
-            viewHolder.Settle=contentView.findViewById(R.id.Settle);
+            viewHolder.mark=contentView.findViewById(R.id.mark);
             contentView.setTag(viewHolder);
         }else{
             viewHolder= (ViewHolder) contentView.getTag();
@@ -75,39 +74,26 @@ public class CarListAdapter1 extends BaseAdapter {
         //借款人姓名
         viewHolder.name.setText(carBean.getPledgename());
         //显示逾期按钮
-        if(carBean.getIsoverdue()==1){
-            //逾期
-            //讲逾期图标可见
-            viewHolder.pic_status.setVisibility(View.VISIBLE);
-            //逾期按钮设置为取消逾期
-            viewHolder.yuqi.setText("取消逾期");
+        if(carBean.getStatus().equals("1")){
+            //正常，图标不可见
+            viewHolder.car_status.setVisibility(View.GONE);
         }else{
             //没有逾期
             //讲逾期图标不可见
-            viewHolder.pic_status.setVisibility(View.GONE);
-            //逾期按钮设置为=逾期
-            viewHolder.yuqi.setText("逾期");
+            viewHolder.car_status.setText(carBean.getSign_status());
+            viewHolder.car_status.setVisibility(View.VISIBLE);
         }
         viewHolder.vinid.setText(carBean.getVin());
-        viewHolder.equipment.setText(carBean.getDevicecount()+"个");
+//        viewHolder.equipment.setText(carBean.getDevicecount()+"个");
         viewHolder.data_bind_car.setText(carBean.getCreatetime());
         viewHolder.belong.setText(carBean.getGroupname());
-        //是否重点关注
-        if(carBean.getIscare()==1){
-            //重点关注
-            viewHolder.gz.setText("已关注");
-            viewHolder.gz.setBackgroundResource(R.drawable.button_radius_change_gzed);
-        }else{
-            viewHolder.gz.setText("关注");
-            viewHolder.gz.setBackgroundResource(R.drawable.button_radius_change);
-        }
 
         return contentView;
     }
     public static class ViewHolder{
         private Button gz;
         private TextView name;
-        private ImageView pic_status;
+        private TextView car_status;
         private TextView vinid;
         private TextView equipment;
         private TextView data_bind_car;
@@ -115,7 +101,6 @@ public class CarListAdapter1 extends BaseAdapter {
         private RadioGroup handle_car;
         private RadioButton address;
         private RadioButton detail;
-        private RadioButton yuqi;
-        private RadioButton Settle;
+        private RadioButton mark;
     }
 }

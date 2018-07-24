@@ -62,11 +62,11 @@ public class Api {
     public static final String saveOrUpdateDeviceSetting=MonitorUrl+"/device/v1/saveOrUpdateDeviceSetting";
     //不用验证码的登录接口
     public  static  String loginRbn=MonitorUrl+"auth/v1/loginRbn";
-    //获取车辆报警类型
-    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
+//    //获取车辆报警类型
+//    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
     //获取高危报警类型
     public static final String queryHighAlarmList=MonitorUrl+"/operation/v1/highAlarmReport/queryHighAlarmList";
-    //获取设备在离线状态统计
+    //获取设备报警状态统计
     public static final String queAlarmStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
     //获取设备在离线状态统计
     public static final String queDeviceIsUsedStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
@@ -74,5 +74,8 @@ public class Api {
     public static final String getRedBind=MonitorUrl+"operation/v1/vehicleManage/getRedBind";
     //获取客户组织
     public static final String getCustomer=MonitorUrl+"operation/v1/customer/getCustomer";
+    //获取车辆列表/operation/v1/vehicleManage/getCar
+    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
+
 
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.CarListAdapter1;
 import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarListBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
@@ -29,10 +30,16 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+
 /**
  * Created by Lenovo on 2018/2/2.
  */
-
+//车辆列表页面
 public class MyCarListActivity extends BaseActivity {
     private ImageView back;
     private ImageView search;
@@ -42,6 +49,7 @@ public class MyCarListActivity extends BaseActivity {
     private RadioGroup car_status;
     SharedPreferences sp=null;
     CarListBean carListBean;
+    private String TAG="MyCarListActivity";
     CarListAdapter1 adapter;
 //    ArrayList<CarListBean.CarBean>carlist;
 //    private RadioButton status_all;
@@ -72,38 +80,31 @@ public class MyCarListActivity extends BaseActivity {
     }
 
     private void initData() {
-        //写item的布局，书是平台的车务列表
-        JSONObject jsonObject=new JSONObject();
-        try {
-            //0:全部；1：逾期；2：重点关注
-            jsonObject.put("status ",0);
-            jsonObject.put("pagesize ",100);
-            jsonObject.put("page ",1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        StringEntity entity=null;
-        try {
-            entity=new StringEntity(jsonObject.toString());
-            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String token=sp.getString("Token","");
-        Log.i("Token", token);
-        AsyncHttpClient client=new AsyncHttpClient();
-        client.post(this, Api.getCar + "?token=" + token, entity, "application/json", new AsyncHttpResponseHandler() {
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        jsonObject.put("page",1);
+        jsonObject.put("pagesize",10);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override
-            public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                String json=new String(bytes).trim().toString();
-                Log.i("getCar", json);
-                carListBean= com.alibaba.fastjson.JSONObject.parseObject(json,CarListBean.class);
+            protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
                 adapter=new CarListAdapter1(MyCarListActivity.this,carListBean.getList());
                 carlistview.setAdapter(adapter);
             }
 
             @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+            public void onStart() {
+                super.onStart();
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
 
             }
         });
