@@ -20,8 +20,8 @@ public class Api {
     public static  String delFence=GPSURL+"fence/v1/delFence";
 //    //查询车辆列表
 //    public static  String getCar="http://yzapi.chetxt.com:82/yzcl/operation/v1/vehicleManage/getCar";
-    //查询结清列表
-    public static  String querySettleList="https://lbstec.cn/yzcl/operation/v1/settleReport/querySettleList";
+//    //查询结清列表
+//    public static  String querySettleList="https://lbstec.cn/yzcl/operation/v1/settleReport/querySettleList";
     //取消结清
     public static  String cancelSettleById="https://lbstec.cn/yzcl/operation/v1/settleReport/cancelSettleById";
 //    //获取高危预警列表
@@ -68,14 +68,15 @@ public class Api {
     public static final String queryHighAlarmList=MonitorUrl+"/operation/v1/highAlarmReport/queryHighAlarmList";
     //获取设备报警状态统计
     public static final String queAlarmStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
-    //获取设备在离线状态统计
-    public static final String queDeviceIsUsedStati=MonitorUrl+"device/v1/queDeviceIsUsedStati";
+    //获取设备在离线状态统计/device/v1/queDeviceInfoStatistics
+    public static final String queDeviceIsUsedStati=MonitorUrl+"/device/v1/queDeviceInfoStatistics";
     //获取车辆逾期统计
     public static final String getRedBind=MonitorUrl+"operation/v1/vehicleManage/getRedBind";
     //获取客户组织
     public static final String getCustomer=MonitorUrl+"operation/v1/customer/getCustomer";
-    //获取车辆列表/operation/v1/vehicleManage/getCar
-    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getCar";
-
+    //获取车辆列表getVehicleManageExp
+    public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getVehicleManageExp";
+    //结清列表和统计
+    public static final String querySettleList=MonitorUrl+"/operation/v1/settleReport/querySettleList";
 
 }

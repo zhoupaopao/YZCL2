@@ -19,27 +19,40 @@
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:src="@mipmap/icon_account" />
-
+        <ImageView
+            android:id="@+id/unuse"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_right_light" />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@id/unuse"
         android:layout_toRightOf="@id/icon_head"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:id="@+id/linearLayout">
 
         <TextView
+            android:id="@+id/groupname"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingLeft="5dp"
-            android:text="瓜子总部"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text=""
+            android:gravity="center_vertical"
             android:textColor="@color/white"
             android:textSize="18dp" />
 
         <CheckBox
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_alignLeft="@+id/linearLayout"
@@ -47,7 +60,8 @@
             android:layout_alignStart="@+id/linearLayout"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-
+            android:checked="true"
+            android:id="@+id/show_child"
             android:gravity="center_vertical"
             android:scaleX="0.90"
             android:scaleY="0.90"
@@ -58,12 +72,7 @@
         <!--android:button="@drawable/checkbox"-->
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@mipmap/icon_right_light" />
+
 </RelativeLayout>
     <RelativeLayout
         android:id="@+id/car_list"
@@ -88,13 +97,14 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_right"/>
         <TextView
+            android:id="@+id/all_car_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/to_right"
             android:textSize="13dp"
             android:textColor="@color/color_car_detail"
-            android:text="查看详情"/>
+            android:text="共1000台"/>
     </RelativeLayout>
 <LinearLayout
     android:layout_width="match_parent"
@@ -112,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
             android:textSize="13dp"
-            android:text="全部"
+            android:text="正常"
             android:gravity="center"
             android:layout_gravity="center"
             android:textColor="@color/color_car_detail"
@@ -181,38 +191,7 @@
             android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/jq_list"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:background="@color/white">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:textSize="13dp"
-            android:textColor="@color/color_car"
-            android:text="已结清车辆"/>
-        <ImageView
-            android:id="@+id/to_right1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_right"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/to_right1"
-            android:textSize="13dp"
-            android:textColor="@color/color_car_detail"
-            android:text="查看详情"/>
-    </RelativeLayout>
+
     <RelativeLayout
 
         android:layout_marginTop="10dp"
@@ -229,12 +208,23 @@
             android:textSize="13dp"
             android:textColor="@color/color_car"
             android:text="我的设备"/>
-        <Spinner
-            android:id="@+id/spinner"
+        <ImageView
+            android:id="@+id/to_right2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:src="@mipmap/icon_right"/>
+        <TextView
+            android:id="@+id/all_device_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"></Spinner>
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/to_right2"
+            android:textSize="13dp"
+            android:textColor="@color/color_car_detail"
+            android:text="共1000个"/>
+
 
     </RelativeLayout>
     <LinearLayout
@@ -253,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textSize="13dp"
-                android:text="在线设备"
+                android:text="已绑车"
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:textColor="@color/color_car_detail"
@@ -278,7 +268,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textSize="13dp"
-                android:text="离线设备"
+                android:text="未绑车"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="@color/color_car_detail"
@@ -305,7 +295,7 @@
                 android:layout_height="0dp"
                 android:textSize="13dp"
                 android:layout_gravity="center"
-                android:text="未启用"
+                android:text="已过期"
                 android:gravity="center"
 
                 android:textColor="@color/color_car_detail"
@@ -322,4 +312,37 @@
                 android:layout_weight="1"/>
         </LinearLayout>
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/jq_list"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textSize="13dp"
+            android:textColor="@color/color_car"
+            android:text="已结清车辆"/>
+        <ImageView
+            android:id="@+id/to_right1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_right"/>
+        <TextView
+            android:id="@+id/jq_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/to_right1"
+            android:textSize="13dp"
+            android:textColor="@color/color_car_detail"
+            android:text="共1000台"/>
+    </RelativeLayout>
 </LinearLayout>

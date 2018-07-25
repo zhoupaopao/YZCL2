@@ -3,6 +3,8 @@ package com.example.yzcl.mvp.ui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +12,8 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.CarListAdapter1;
 import com.example.yzcl.content.Api;
@@ -44,13 +48,16 @@ public class MyCarListActivity extends BaseActivity {
     private ImageView back;
     private ImageView search;
     private TextView title;
-    private ListView carlistview;
+    private RecyclerView carlistview;
     private ArrayList<String> cc_list;
     private RadioGroup car_status;
     SharedPreferences sp=null;
     CarListBean carListBean;
     private String TAG="MyCarListActivity";
     CarListAdapter1 adapter;
+    private String ids="";
+    private BuildBean dialog;
+    private String nowstatus="";
 //    ArrayList<CarListBean.CarBean>carlist;
 //    private RadioButton status_all;
 //    private RadioButton status_yuqi;
@@ -63,7 +70,7 @@ public class MyCarListActivity extends BaseActivity {
                 .statusBarColor(R.color.title_color)
                 .init();
         initView();
-        initData();
+        initData(nowstatus);
         initListener();
     }
 
@@ -74,15 +81,26 @@ public class MyCarListActivity extends BaseActivity {
         carlistview=findViewById(R.id.carlist);
         car_status=findViewById(R.id.car_status);
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        ids=getIntent().getStringExtra("ids");
 //        status_all=findViewById(R.id.status_all);
 //        status_yuqi=findViewById(R.id.status_yuqi);
 //        status_zdgz=findViewById(R.id.status_zdgz);
     }
 
-    private void initData() {
+    private void initData(String statuss) {
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
         com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        if(ids.equals("")){
+
+        }else{
+            jsonObject.put("groupids",ids);
+        }
+        if(statuss.equals("")){
+
+        }else{
+            jsonObject.put("status",statuss);
+        }
         jsonObject.put("page",1);
         jsonObject.put("pagesize",10);
         params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
@@ -93,19 +111,26 @@ public class MyCarListActivity extends BaseActivity {
                 Log.i(TAG, jsonObject.toString());
                 carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
                 adapter=new CarListAdapter1(MyCarListActivity.this,carListBean.getList());
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MyCarListActivity.this);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                carlistview.setLayoutManager(layoutManager);
                 carlistview.setAdapter(adapter);
+                adapter.setupRecyclerView(carlistview);
+                dialog.dialog.dismiss();
             }
 
             @Override
             public void onStart() {
                 super.onStart();
+                dialog= DialogUIUtils.showLoading(MyCarListActivity.this,"加载中...",true,true,false,true);
+                dialog.show();
 
             }
 
             @Override
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
-
+                dialog.dialog.dismiss();
             }
         });
 //        cc_list=new ArrayList<>();
@@ -133,17 +158,17 @@ public class MyCarListActivity extends BaseActivity {
                         //全部
                         Log.i("onCheckedChanged", "all");
 
-                        doNetWork(0);
+                        initData("");
                         break;
                     case R.id.status_yuqi:
                         //逾期
                         Log.i("onCheckedChanged", "yuqi");
-                        doNetWork(1);
+                        initData("2");
                         break;
                     case  R.id.status_zdgz:
                         //重点关注
                         Log.i("onCheckedChanged", "zdgz");
-                        doNetWork(2);
+                        initData("3");
                         break;
                     default:
                             //其他

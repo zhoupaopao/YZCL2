@@ -68,10 +68,10 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
-//        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
-//        dialog.show();
+        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
+        dialog.show();
         initView();
-//        initData();
+        initData();
         initListener();
 
     }
@@ -127,17 +127,17 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
                 startActivity(intent);
             }
         });
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                handler.sendEmptyMessage(0);
-//            }
-//        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                handler.sendEmptyMessage(0);
+            }
+        }).start();
 
     }
     Handler handler=new Handler(){
@@ -191,6 +191,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     protected void onDestroy() {
         super.onDestroy();
         bmapview.onDestroy();
+        mLocClient.stop();
     }
 
     @Override

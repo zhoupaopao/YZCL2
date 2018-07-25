@@ -9,6 +9,7 @@
         android:id="@+id/car_status"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:background="@color/white"
         android:orientation="horizontal">
         <RadioButton
             android:id="@+id/status_all"
@@ -42,12 +43,17 @@
             android:text="重点关注"
             android:textColor="@drawable/radio_button_color1"/>
     </RadioGroup>
-
-    <ListView
+    <com.andview.refreshview.XRefreshView
+        android:id="@+id/xrefreshview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        >
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/carlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </ListView>
-
+    </android.support.v7.widget.RecyclerView>
+    </com.andview.refreshview.XRefreshView>
 </LinearLayout>

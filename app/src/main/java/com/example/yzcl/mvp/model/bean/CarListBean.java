@@ -76,7 +76,15 @@ public class CarListBean {
         private String car_address;
         private String car_no;
         private String sign_status;//报警类型
+        private ArrayList<devicesBean>devices;//设备
 
+        public ArrayList<devicesBean> getDevices() {
+            return devices;
+        }
+
+        public void setDevices(ArrayList<devicesBean> devices) {
+            this.devices = devices;
+        }
 
         public String getCar_address() {
             return car_address;
@@ -228,6 +236,19 @@ public class CarListBean {
 
         public void setUsed_age(int used_age) {
             this.used_age = used_age;
+        }
+
+        public static class devicesBean{
+            //其他参数不要了
+            private String internalnum;
+
+            public String getInternalnum() {
+                return internalnum;
+            }
+
+            public void setInternalnum(String internalnum) {
+                this.internalnum = internalnum;
+            }
         }
     }
 }

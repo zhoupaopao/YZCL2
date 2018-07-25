@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="240dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
-android:minHeight="240dp"
+android:minHeight="180dp"
     android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <View
         android:layout_width="match_parent"
         android:background="@color/page_color"
         android:layout_height="15dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:minHeight="180dp"
+        android:orientation="vertical"
+        android:elevation="14dp">
     <RelativeLayout
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -179,8 +185,8 @@ android:minHeight="240dp"
             android:gravity="center"
             android:layout_weight="1"
             android:button="@null"
-            android:background="@drawable/radio_check_button"
-            android:textColor="@drawable/radio_button_color"
+            android:background="@drawable/unchecked_radio_button"
+            android:textColor="@color/title_color"
             android:text="详情"/>
         <RadioButton
             android:id="@+id/address"
@@ -188,9 +194,9 @@ android:minHeight="240dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/radio_check_button"
+            android:background="@drawable/unchecked_radio_button"
             android:button="@null"
-            android:textColor="@drawable/radio_button_color"
+            android:textColor="@color/title_color"
             android:text="位置"/>
 
         <RadioButton
@@ -199,10 +205,10 @@ android:minHeight="240dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/radio_check_button"
-            android:textColor="@drawable/radio_button_color"
+            android:background="@drawable/unchecked_radio_button"
+            android:textColor="@color/title_color"
             android:button="@null"
             android:text="标记"/>
     </RadioGroup>
-
+    </LinearLayout>
 </LinearLayout>

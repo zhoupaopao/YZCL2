@@ -27,6 +27,10 @@ public class Node3 {
      */
     private boolean isExpand = false;
 
+    /**
+     * 是否选中
+     */
+    private boolean isChecked = false;
     private int icon;
 
     /**
@@ -50,6 +54,14 @@ public class Node3 {
         this.pId = pId;
         this.name = name;
         this.useid =useid;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public int getId() {

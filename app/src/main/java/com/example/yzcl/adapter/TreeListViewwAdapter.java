@@ -144,6 +144,7 @@ public abstract class TreeListViewwAdapter<T> extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 expandOrCollapse(i);
+                Log.i("expandOrCollapse", i+"");
             }
         });
 
