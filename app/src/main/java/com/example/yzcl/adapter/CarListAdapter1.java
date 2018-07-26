@@ -3,14 +3,18 @@ package com.example.yzcl.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
@@ -18,13 +22,14 @@ import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.CarListBean;
 import com.example.yzcl.mvp.ui.MyCarListActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Lenovo on 2018/2/3.
  */
 
-public class CarListAdapter1 extends RecyclerView.Adapter<CarListAdapter1.ViewHolder> {
+public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHolder> {
     private MyCarListActivity context;
     private List<CarListBean.CarBean> carlist;
     private LayoutInflater mInflater;
@@ -34,17 +39,45 @@ public class CarListAdapter1 extends RecyclerView.Adapter<CarListAdapter1.ViewHo
         mInflater=LayoutInflater.from(context);
     }
 
+
+
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder getViewHolder(View view) {
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType, boolean isItem) {
         View view=mInflater.inflate(R.layout.layout_car_list_item,parent,false);
         ViewHolder viewHolder=new ViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position, boolean isItem) {
 //开始处理数据
         CarListBean.CarBean carBean=carlist.get(position);
+        final ArrayList<String>data_list=new ArrayList<>();
+        data_list.add("标记");
+        data_list.add("正常");
+        data_list.add("光感异常");
+        data_list.add("逾期");
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(context,R.layout.spinner_item,data_list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //请求接口
+                Log.i("onItemSelected: ", data_list.get(i));
+                holder.spinner.setSelection(0,true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        holder.spinner.setAdapter(adapter);
         //借款人姓名
         holder.name.setText(carBean.getPledgename());
         //显示逾期按钮
@@ -74,8 +107,13 @@ public class CarListAdapter1 extends RecyclerView.Adapter<CarListAdapter1.ViewHo
     }
 
     @Override
-    public int getItemCount() {
+    public int getAdapterItemCount() {
         return carlist.size();
+    }
+
+    public void changedata(ArrayList<CarListBean.CarBean> nowList) {
+        this.carlist=nowList;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,6 +128,7 @@ public class CarListAdapter1 extends RecyclerView.Adapter<CarListAdapter1.ViewHo
         private RadioButton address;
         private RadioButton detail;
         private RadioButton mark;
+        private Spinner spinner;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -104,6 +143,7 @@ public class CarListAdapter1 extends RecyclerView.Adapter<CarListAdapter1.ViewHo
             address=itemView.findViewById(R.id.address);
             detail=itemView.findViewById(R.id.detail);
             mark=itemView.findViewById(R.id.mark);
+            spinner=itemView.findViewById(R.id.spinner);
         }
     }
     public void setupRecyclerView(RecyclerView recyclerView) {

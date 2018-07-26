@@ -1,214 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="195dp"
-    android:orientation="vertical"
-android:minHeight="195dp"
-    android:background="@color/white"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <View
-        android:layout_width="match_parent"
-        android:background="@color/page_color"
-        android:layout_height="15dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:minHeight="180dp"
-        android:orientation="vertical"
-        android:elevation="14dp">
-    <RelativeLayout
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:textColor="@color/car_person_name"
-            android:layout_centerVertical="true"
-            android:text="刘诗诗"/>
-        <TextView
-            android:id="@+id/car_status"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dl_radius"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/device_msg"
-            android:text="@string/impor_care"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/name"/>
-
-        <!--<Button-->
-            <!--android:id="@+id/gz"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:text="关注"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:background="@drawable/button_radius_change"/>-->
-        <Button
-            android:id="@+id/gz"
-            android:visibility="gone"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:text="关注"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"
-            android:background="@drawable/button_radius_change"/>
-    </RelativeLayout>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:layout_weight="1">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="车架号："
-        android:textSize="13dp"
-        android:textColor="@color/car_message_text"
-        />
-    <TextView
-        android:id="@+id/vinid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="122132132132"
-        android:textSize="13dp"
-        android:textColor="@color/car_message_text"
-        />
-</LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="已绑设备："
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-        <TextView
-            android:id="@+id/equipment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="有线（1个）、无线（1个）"
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-    </LinearLayout>
+    android:layout_height="195dp"
+    android:background="@color/white"
+    android:minHeight="195dp"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="所属客户："
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-        <TextView
-            android:id="@+id/belong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="深圳市罗湖大兴4S店面"
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="创建时间："
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-        <TextView
-            android:id="@+id/data_bind_car"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2012-01-01 01:11"
-            android:textSize="13dp"
-            android:textColor="@color/car_message_text"
-            />
-    </LinearLayout>
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_weight="2">-->
-        <!---->
-    <!--</LinearLayout>-->
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/biankuang"/>
-    <RadioGroup
-        android:id="@+id/handle_car"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="horizontal">
+        android:layout_height="15dp"
+        android:background="@color/page_color" />
 
 
-        <RadioButton
-            android:id="@+id/detail"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:button="@null"
-            android:background="@drawable/unchecked_radio_button"
-            android:textColor="@color/title_color"
-            android:text="详情"/>
-        <RadioButton
-            android:id="@+id/address"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:background="@drawable/unchecked_radio_button"
-            android:button="@null"
-            android:textColor="@color/title_color"
-            android:text="位置"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:elevation="14dp"
+            android:minHeight="180dp"
+            android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/mark"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:background="@drawable/unchecked_radio_button"
-            android:textColor="@color/title_color"
-            android:button="@null"
-            android:text="标记"/>
-    </RadioGroup>
-    </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="刘诗诗"
+                    android:textColor="@color/car_person_name"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/car_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/name"
+                    android:background="@drawable/dl_radius"
+                    android:text="@string/impor_care"
+                    android:textColor="@color/device_msg"
+                    android:visibility="gone" />
+
+                <!--<Button-->
+                <!--android:id="@+id/gz"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:text="关注"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:background="@drawable/button_radius_change"/>-->
+                <Button
+                    android:id="@+id/gz"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/button_radius_change"
+                    android:text="关注"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车架号："
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/vinid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="122132132132"
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="已绑设备："
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/equipment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="有线（1个）、无线（1个）"
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="所属客户："
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/belong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="深圳市罗湖大兴4S店面"
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="创建时间："
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/data_bind_car"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2012-01-01 01:11"
+                    android:textColor="@color/car_message_text"
+                    android:textSize="13dp" />
+            </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_weight="2">-->
+            <!---->
+            <!--</LinearLayout>-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/biankuang" />
+
+            <RadioGroup
+                android:id="@+id/handle_car"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+
+                <RadioButton
+                    android:id="@+id/detail"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/unchecked_radio_button"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="详情"
+                    android:textColor="@color/title_color" />
+
+                <RadioButton
+                    android:id="@+id/address"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/unchecked_radio_button"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="位置"
+                    android:textColor="@color/title_color" />
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"></Spinner>
+                <RadioButton
+                    android:id="@+id/mark"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:background="@drawable/unchecked_radio_button"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="标记"
+                    android:textColor="@color/title_color" />
+            </RadioGroup>
+        </LinearLayout>
+
 </LinearLayout>

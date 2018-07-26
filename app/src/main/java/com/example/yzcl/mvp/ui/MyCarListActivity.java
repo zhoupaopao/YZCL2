@@ -2,7 +2,9 @@ package com.example.yzcl.mvp.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.andview.refreshview.XRefreshView;
+import com.andview.refreshview.XRefreshViewFooter;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
@@ -53,11 +58,15 @@ public class MyCarListActivity extends BaseActivity {
     private RadioGroup car_status;
     SharedPreferences sp=null;
     CarListBean carListBean;
+    ArrayList<CarListBean.CarBean>nowList=new ArrayList<>();
     private String TAG="MyCarListActivity";
     CarListAdapter1 adapter;
     private String ids="";
     private BuildBean dialog;
-    private String nowstatus="";
+    private String nowstatus="";//当前页数
+    private XRefreshView xRefreshView;
+    private int nowPages=1;//当前的页数
+//    private String nowstatus="";
 //    ArrayList<CarListBean.CarBean>carlist;
 //    private RadioButton status_all;
 //    private RadioButton status_yuqi;
@@ -70,7 +79,8 @@ public class MyCarListActivity extends BaseActivity {
                 .statusBarColor(R.color.title_color)
                 .init();
         initView();
-        initData(nowstatus);
+        nowPages=1;
+        initData(nowstatus,1);
         initListener();
     }
 
@@ -82,12 +92,101 @@ public class MyCarListActivity extends BaseActivity {
         car_status=findViewById(R.id.car_status);
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         ids=getIntent().getStringExtra("ids");
+        xRefreshView=findViewById(R.id.xrefreshview);
+
+        xRefreshView.setPullLoadEnable(true);
+        //设置刷新完成以后，headerview固定的时间
+        xRefreshView.setPinnedTime(1000);
+        xRefreshView.setMoveForHorizontal(true);
+        //是否自动加载更新
+        xRefreshView.setAutoLoadMore(true);
+        xRefreshView.enablePullUpWhenLoadCompleted(true);
+//        xRefreshView.setCustomFooterView(new XRefreshViewFooter(this));
+        xRefreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh(boolean isPullDown) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        initDataa(nowstatus,1);
+//                        adapter.notifyItemRangeChanged(0,5) ;//列表从positionStart位置到itemCount数量的列表项进行数据刷新
+//                        adapter.notifyDataSetChanged();//整个数据刷新
+                        xRefreshView.stopRefresh();
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onLoadMore(boolean isSilence) {
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        nowPages++;
+                        loadData(nowstatus,nowPages);
+                    }
+                }, 500);
+            }
+        });
 //        status_all=findViewById(R.id.status_all);
 //        status_yuqi=findViewById(R.id.status_yuqi);
 //        status_zdgz=findViewById(R.id.status_zdgz);
     }
 
-    private void initData(String statuss) {
+    private void loadData(String statuss, final int page) {
+        //上滑加载更多
+        nowPages=page;
+        nowstatus=statuss;
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        if(ids.equals("")){
+
+        }else{
+            jsonObject.put("groupids",ids);
+        }
+        if(statuss.equals("")){
+
+        }else{
+            jsonObject.put("status",statuss);
+        }
+        jsonObject.put("page",page);
+        jsonObject.put("pagesize",10);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
+                if(carListBean.getList().size()==0){
+                    //没有更多数据的情况
+                    xRefreshView.setLoadComplete(true);
+                }else{
+                    nowList.addAll(carListBean.getList());
+                    Log.i(TAG, page-1+"onSuccess: ");
+//                    adapter.notifyItemRangeInserted((page-1)*10, nowList.size()-1);//批量插入。从起始位置到结束位置
+                    // 刷新完成必须调用此方法停止加载
+                    xRefreshView.stopLoadMore(true);//true代表加载成功，false代表失败
+                }
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
+    }
+    private void initData(String statuss,int page) {
+        //加了这个可以让已经不能加载的时候能够加载
+        xRefreshView.setLoadComplete(false);
+        nowPages=page;
+        nowstatus=statuss;
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
         com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
@@ -110,12 +209,16 @@ public class MyCarListActivity extends BaseActivity {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
                 carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
-                adapter=new CarListAdapter1(MyCarListActivity.this,carListBean.getList());
+                nowList=carListBean.getList();
+                adapter=new CarListAdapter1(MyCarListActivity.this,nowList);
+                adapter.setCustomLoadMoreView(new XRefreshViewFooter(MyCarListActivity.this));
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MyCarListActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 carlistview.setLayoutManager(layoutManager);
                 carlistview.setAdapter(adapter);
-                adapter.setupRecyclerView(carlistview);
+//                adapter.setupRecyclerView(carlistview);
+                //设置增加或删除条目的动画
+                carlistview.setItemAnimator( new DefaultItemAnimator());
                 dialog.dialog.dismiss();
             }
 
@@ -131,6 +234,56 @@ public class MyCarListActivity extends BaseActivity {
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
                 dialog.dialog.dismiss();
+            }
+        });
+//        cc_list=new ArrayList<>();
+//        for(int i=0;i<10;i++){
+//            cc_list.add(i+"aa");
+//        }
+//        ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,R.layout.layout_car_list_item,R.id.name,cc_list);
+//        carlist.setAdapter(adapter);
+    }
+    private void initDataa(String statuss,int page) {
+
+        nowPages=page;
+        nowstatus=statuss;
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        if(ids.equals("")){
+
+        }else{
+            jsonObject.put("groupids",ids);
+        }
+        if(statuss.equals("")){
+
+        }else{
+            jsonObject.put("status",statuss);
+        }
+        jsonObject.put("page",1);
+        jsonObject.put("pagesize",10);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
+                nowList=carListBean.getList();
+//                adapter=new CarListAdapter1(MyCarListActivity.this,nowList);
+                adapter.changedata(nowList);
+
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
             }
         });
 //        cc_list=new ArrayList<>();
@@ -158,17 +311,17 @@ public class MyCarListActivity extends BaseActivity {
                         //全部
                         Log.i("onCheckedChanged", "all");
 
-                        initData("");
+                        initData("",1);
                         break;
                     case R.id.status_yuqi:
                         //逾期
                         Log.i("onCheckedChanged", "yuqi");
-                        initData("2");
+                        initData("2",1);
                         break;
                     case  R.id.status_zdgz:
                         //重点关注
                         Log.i("onCheckedChanged", "zdgz");
-                        initData("3");
+                        initData("3",1);
                         break;
                     default:
                             //其他
