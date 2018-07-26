@@ -1,12 +1,16 @@
 package com.example.yzcl.mvp.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,6 +25,7 @@ import com.example.yzcl.R;
 import com.example.yzcl.adapter.SimpleTreeeAdapter;
 import com.example.yzcl.adapter.TreeListViewwAdapter;
 import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CustomerManagerBean;
 import com.example.yzcl.mvp.model.bean.CustomerOrganizationBeans;
 import com.example.yzcl.mvp.model.bean.NewFileBean;
@@ -53,6 +58,7 @@ public class CustomerChooseActivity extends BaseActivity {
     BuildBean progress;
     CustomerOrganizationBeans CustomerMBean;
     SimpleTreeeAdapter adapter;
+    private EditText et_search;
     private List<NewFileBean> mData = new ArrayList<>();
 
     @Override
@@ -77,6 +83,7 @@ public class CustomerChooseActivity extends BaseActivity {
         sure = findViewById(R.id.textview2);
         tree_list = findViewById(R.id.tree_list);
         sp = getSharedPreferences("YZCL", MODE_PRIVATE);
+        et_search=findViewById(R.id.et_search);
     }
 
     private void initData() {
@@ -197,6 +204,40 @@ public class CustomerChooseActivity extends BaseActivity {
                 }
 
 
+            }
+        });
+        et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    // 先隐藏键盘
+                    ((InputMethodManager) et_search.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(CustomerChooseActivity.this
+                                            .getCurrentFocus().getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+                    // 搜索，进行自己要的操作...
+                    if(et_search.getText().toString().trim().equals("")){
+                        Toast.makeText(CustomerChooseActivity.this,"搜索字符不能为空",Toast.LENGTH_SHORT).show();
+                    }else{
+                        String search_list_last=sp.getString("search_list","");
+                        SharedPreferences.Editor editor=sp.edit();
+                        editor.putString("search_list",et_search.getText().toString().trim()+","+search_list_last);
+                        editor.commit();
+                        if(!Constant.isNetworkConnected(CustomerChooseActivity.this)) {
+                            //判断网络是否可用
+                            Toast.makeText(CustomerChooseActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                        }else{
+//                            queVehicleListForSea(et_search.getText().toString().trim());
+                        }
+
+                    }
+
+                    return true;
+                }
+                return false;
             }
         });
     }

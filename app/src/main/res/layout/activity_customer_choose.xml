@@ -25,10 +25,11 @@
             android:id="@+id/search"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@mipmap/search"
+            android:src="@mipmap/smallsearch"
             android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"/>
         <EditText
+            android:id="@+id/et_search"
             android:layout_toRightOf="@id/search"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -37,6 +38,8 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"
             android:background="@null"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
             android:textColor="@color/input_text_color"
             android:textColorHint="@color/input_text_color"
             android:textSize="14dp"/>

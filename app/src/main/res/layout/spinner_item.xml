@@ -4,9 +4,10 @@
     style="?android:attr/spinnerItemStyle"
     android:singleLine="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:ellipsize="marquee"
     android:textColor="@color/title_color"
     android:gravity="center"
+    android:background="@drawable/unchecked_radio_button"
     android:text="123231"
     android:textAlignment="inherit"/>
