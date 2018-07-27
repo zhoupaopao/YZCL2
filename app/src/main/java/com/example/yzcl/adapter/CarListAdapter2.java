@@ -1,7 +1,5 @@
 package com.example.yzcl.adapter;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -29,10 +25,8 @@ import com.example.yzcl.R;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarListBean;
-import com.example.yzcl.mvp.model.bean.CarMonSearchListBean;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.ui.CarAddressActivity;
-import com.example.yzcl.mvp.ui.CarMonSearchActivity;
 import com.example.yzcl.mvp.ui.CarSearchActivity;
 import com.example.yzcl.mvp.ui.MyCarListActivity;
 
@@ -49,15 +43,14 @@ import okhttp3.MediaType;
  * Created by Lenovo on 2018/2/3.
  */
 
-public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHolder> {
-    private MyCarListActivity context;
-    private CarSearchActivity context1;
+public class CarListAdapter2 extends BaseRecyclerAdapter<CarListAdapter2.ViewHolder> {
+    private CarSearchActivity context;
     private List<CarListBean.CarBean> carlist;
     private LayoutInflater mInflater;
     private SharedPreferences sp;
     private BuildBean dialog;
     private String nowstatus;
-    public CarListAdapter1(MyCarListActivity context, List<CarListBean.CarBean> carlist, String nowstatus){
+    public CarListAdapter2(CarSearchActivity context, List<CarListBean.CarBean> carlist,String nowstatus){
         this.context=context;
         this.carlist=carlist;
         this.nowstatus=nowstatus;
@@ -176,7 +169,7 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
                     if(jsonObject.getBoolean("success")){
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         //刷新页面s
-                        context.initData(nowstatus,1);
+                        context.queVehicleListForSea(nowstatus);
 //                        notifyDataSetChanged();
                     }else{
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();

@@ -22,8 +22,7 @@ public class Api {
 //    public static  String getCar="http://yzapi.chetxt.com:82/yzcl/operation/v1/vehicleManage/getCar";
 //    //查询结清列表
 //    public static  String querySettleList="https://lbstec.cn/yzcl/operation/v1/settleReport/querySettleList";
-    //取消结清
-    public static  String cancelSettleById="https://lbstec.cn/yzcl/operation/v1/settleReport/cancelSettleById";
+
 //    //获取高危预警列表
 //    public static  String queryHighAlarmList="https://lbstec.cn/yzcl/operation/v1/highAlarmReport/queryHighAlarmList";
     //警情明细即设备预警
@@ -78,5 +77,12 @@ public class Api {
     public static final String getCar=MonitorUrl+"/operation/v1/vehicleManage/getVehicleManageExp";
     //结清列表和统计
     public static final String querySettleList=MonitorUrl+"/operation/v1/settleReport/querySettleList";
-
+    //选择账号搜索
+    public static final String queCustMerBySearch=MonitorUrl+"/operation/v1/customer/queCustMerBySearch";
+    //定时请求的接口
+    public static final String queAlarmTopCount=MonitorUrl+"/alarm/v1/alert/queAlarmTopCount";
+    //标记逾期光感/operation/v1/vehicleManage/setRemark
+    public static final String setRemark=MonitorUrl+"/operation/v1/vehicleManage/setRemark";
+    //取消结清
+    public static  String cancelSettleById=MonitorUrl+"/operation/v1/settleReport/cancelSettleById";
 }

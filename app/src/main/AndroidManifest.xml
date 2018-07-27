@@ -136,6 +136,7 @@
         <activity android:name="com.example.yzcl.mvp.ui.TimingSettingActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TranceActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.TrajectoryActivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.CarSearchActivity"></activity>
         <activity
             android:name="com.lzy.imagepicker.ui.ImagePreviewDelActivity"
             android:theme="@style/ImagePickerThemeFullScreen" />
@@ -145,6 +146,14 @@
             android:process=":remote" >
         </service>
         <uses-library android:name="com.google.android.maps" android:required="false"/>
+
+        <service android:name="com.example.yzcl.utils.HorizonService">
+        </service>
+        <receiver android:name="com.example.yzcl.utils.AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

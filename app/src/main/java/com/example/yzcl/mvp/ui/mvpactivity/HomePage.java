@@ -42,6 +42,7 @@ import com.example.yzcl.mvp.ui.RiskWarningActivity;
 import com.example.yzcl.mvp.ui.VPageActivity;
 import com.example.yzcl.mvp.ui.VehicleMonitoringActivity;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.utils.HorizonService;
 import com.gyf.barlibrary.ImmersionBar;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -78,6 +79,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
     private int[] icon = { R.mipmap.group1, R.mipmap.group2,
             R.mipmap.group3,R.mipmap.group4, R.mipmap.group5,
             R.mipmap.group5, R.mipmap.group7,R.mipmap.group8};
+    private Intent intent1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +125,8 @@ public class HomePage extends BaseActivity implements OnBannerListener{
         }else{
             achieveJurisdiction();
         }
+        intent1 = new Intent(HomePage.this,HorizonService.class);
+        startService(intent1);
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.example.yzcl.adapter.CarListAdapter1;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarListBean;
+import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
 import com.loopj.android.http.AsyncHttpClient;
@@ -68,9 +71,9 @@ public class MyCarListActivity extends BaseActivity {
     private int nowPages=1;//当前的页数
 //    private String nowstatus="";
 //    ArrayList<CarListBean.CarBean>carlist;
-//    private RadioButton status_all;
-//    private RadioButton status_yuqi;
-//    private RadioButton status_zdgz;
+    private RadioButton status_all;
+    private RadioButton status_yuqi;
+    private RadioButton status_zdgz;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,9 +130,9 @@ public class MyCarListActivity extends BaseActivity {
                 }, 500);
             }
         });
-//        status_all=findViewById(R.id.status_all);
-//        status_yuqi=findViewById(R.id.status_yuqi);
-//        status_zdgz=findViewById(R.id.status_zdgz);
+        status_all=findViewById(R.id.status_all);
+        status_yuqi=findViewById(R.id.status_yuqi);
+        status_zdgz=findViewById(R.id.status_zdgz);
     }
 
     private void loadData(String statuss, final int page) {
@@ -182,7 +185,7 @@ public class MyCarListActivity extends BaseActivity {
             }
         });
     }
-    private void initData(String statuss,int page) {
+    public void initData(String statuss,int page) {
         //加了这个可以让已经不能加载的时候能够加载
         xRefreshView.setLoadComplete(false);
         nowPages=page;
@@ -203,23 +206,32 @@ public class MyCarListActivity extends BaseActivity {
         jsonObject.put("page",1);
         jsonObject.put("pagesize",10);
         params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        Log.i(TAG, "initData: ");
         HttpRequest.post(Api.getCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override
             protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
                 carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
-                nowList=carListBean.getList();
-                adapter=new CarListAdapter1(MyCarListActivity.this,nowList);
-                adapter.setCustomLoadMoreView(new XRefreshViewFooter(MyCarListActivity.this));
-                LinearLayoutManager layoutManager = new LinearLayoutManager(MyCarListActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                carlistview.setLayoutManager(layoutManager);
-                carlistview.setAdapter(adapter);
+                if(carListBean.isSuccess()){
+                    nowList=carListBean.getList();
+                    adapter=new CarListAdapter1(MyCarListActivity.this,nowList,nowstatus);
+                    adapter.setCustomLoadMoreView(new XRefreshViewFooter(MyCarListActivity.this));
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(MyCarListActivity.this);
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    carlistview.setLayoutManager(layoutManager);
+                    carlistview.setAdapter(adapter);
 //                adapter.setupRecyclerView(carlistview);
-                //设置增加或删除条目的动画
-                carlistview.setItemAnimator( new DefaultItemAnimator());
-                dialog.dialog.dismiss();
+                    //设置增加或删除条目的动画
+                    carlistview.setItemAnimator( new DefaultItemAnimator());
+                    //获取统计
+                    achievetj();
+                    dialog.dialog.dismiss();
+                }else{
+                    Toast.makeText(MyCarListActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                    dialog.dialog.dismiss();
+                }
+
             }
 
             @Override
@@ -243,6 +255,42 @@ public class MyCarListActivity extends BaseActivity {
 //        ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,R.layout.layout_car_list_item,R.id.name,cc_list);
 //        carlist.setAdapter(adapter);
     }
+
+    private void achievetj() {
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        if(ids.equals("")){
+
+        }else{
+            jsonObject.put("groupids",ids);
+        }
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getRedBind+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                if(jsonObject.getBoolean("success")){
+                    com.alibaba.fastjson.JSONObject jsonObject1=jsonObject.getJSONObject("object");
+                    int normal=jsonObject1.getInteger("bindCar")-jsonObject1.getInteger("overdueCar")-jsonObject1.getInteger("careCar");
+                    status_all.setText("全部("+jsonObject1.getInteger("bindCar")+")");
+                    status_yuqi.setText("逾期("+jsonObject1.getInteger("overdueCar")+")");
+                    status_zdgz.setText("重点关注("+jsonObject1.getInteger("careCar")+")");
+                }else{
+                    Toast.makeText(MyCarListActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                Toast.makeText(MyCarListActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void initDataa(String statuss,int page) {
 
         nowPages=page;
@@ -301,6 +349,15 @@ public class MyCarListActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(MyCarListActivity.this,CarSearchActivity.class);
+                intent.putExtra("ids",ids);
+                startActivity(intent);
             }
         });
         car_status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -366,4 +423,67 @@ public class MyCarListActivity extends BaseActivity {
             }
         });
     }
+    //查看定位
+    public void lookAddress(String car_id){
+        if(!Constant.isNetworkConnected(MyCarListActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(MyCarListActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            //点击具体的车辆
+            //请求具体的车辆信息
+            RequestParams params1=new RequestParams();
+            //因为传递的是json数据，所以需要设置header和body
+            params1.addHeader("Content-Type","application/json");
+            com.alibaba.fastjson.JSONObject jsonObject1=new com.alibaba.fastjson.JSONObject();
+            jsonObject1.put("car_id",car_id);
+            params1.setRequestBody(MediaType.parse("application/json"),jsonObject1.toString());
+            HttpRequest.post(Api.queCarDeviceGps+"?token="+sp.getString(Constant.Token,""),params1,new JsonHttpRequestCallback(){
+                @Override
+                protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                    super.onSuccess(headers, jsonObject);
+                    Log.i(TAG, jsonObject.toString());
+                    carDetailGPSBeans carDetailGPSBeans= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),carDetailGPSBeans.class);
+                    if(carDetailGPSBeans.isSuccess()){
+                        //请求成功
+                        //显示点
+                        ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
+                        if(jsonObject.getJSONArray("list").size()==0){
+                            //就不用跳转了，没有设备
+                            Toast.makeText(MyCarListActivity.this, "该车辆未绑定设备，无法查看位置。", Toast.LENGTH_SHORT).show();
+                        }else{
+                            //跳转到车辆位置页面
+                            Intent intent=new Intent();
+                            intent.setClass(MyCarListActivity.this,CarAddressActivity.class);
+//                                    Bundle b=new Bundle();
+//                                    b.put("pose_title", pose_title);
+//                                    intent.putExtras(b);
+                            Log.i("carDetailGPS", jsonObject.get("list").toString());
+
+                            intent.putExtra("carDetailGPS", jsonObject.get("list").toString());
+//                                        intent.putExtra("carDetailGPS", carSearchBean.getId());
+                            startActivity(intent);
+                        }
+
+
+                    }else{
+                        Toast.makeText(MyCarListActivity.this,carDetailGPSBeans.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onStart() {
+                    super.onStart();
+                    dialog= DialogUIUtils.showLoading(MyCarListActivity.this,"加载中...",true,true,false,true);
+                    dialog.show();
+                }
+
+                @Override
+                public void onFinish() {
+                    super.onFinish();
+                    dialog.dialog.dismiss();
+                }
+            });
+        }
+    }
+
 }

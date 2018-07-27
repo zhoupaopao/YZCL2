@@ -20,6 +20,7 @@ import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.SettleListAdapter;
 import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.SettleListBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.gyf.barlibrary.ImmersionBar;
@@ -39,6 +40,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+
 /**
  * Created by Lenovo on 2018/2/4.
  */
@@ -55,6 +62,9 @@ public class JieQingActivity extends BaseActivity {
     private TextView sure;
     private TextView cancel;
     private DatePicker dp;
+    private String ids="";
+    private String starttime="";
+    private String endtime="";
     BuildBean dia;
     BuildBean jq_dia;
     SettleListBean settleListBean;
@@ -84,39 +94,50 @@ public class JieQingActivity extends BaseActivity {
     }
 
     private void initData() {
+        ids=getIntent().getStringExtra("ids");
         Calendar calendar=Calendar.getInstance();
         int init_month=calendar.get(Calendar.MONTH)+1;
         jq_date.setText(calendar.get(Calendar.YEAR)+"年"+init_month+"月");
+        int days=getDayOfMonth(calendar.get(Calendar.YEAR),init_month);
+        starttime=calendar.get(Calendar.YEAR)+"-"+init_month+"-"+01;
+        endtime=calendar.get(Calendar.YEAR)+"-"+init_month+"-"+days;
         //舒适化结清列表
         InitList();
     }
-
+    //获取某年某月有多少天
+    public int getDayOfMonth(int year,int month){
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, 0); //输入类型为int类型
+        return c.get(Calendar.DAY_OF_MONTH);
+    }
     private void InitList() {
-        AsyncHttpClient client=new AsyncHttpClient();
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("page",1);
-            jsonObject.put("pagesize",100);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
+        if(ids.equals("")){
+
+        }else{
+            jsonObject.put("groupids",ids);
         }
-        StringEntity entity=null;
-        try {
-            entity=new StringEntity(jsonObject.toString());
-            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String token=sp.getString("Token","");
-        client.post(JieQingActivity.this, Api.querySettleList+"?token="+token, entity, "application/json", new AsyncHttpResponseHandler() {
+        jsonObject.put("starttime",starttime);
+        jsonObject.put("endtime",endtime);
+        jsonObject.put("page",1);
+        jsonObject.put("pagesize",100);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.querySettleList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override
-            public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                String json=new String(bytes).trim().toString();
-                Log.i("querySettleList", json);
-                settleListBean= com.alibaba.fastjson.JSONObject.parseObject(json,SettleListBean.class);
-                settleBeans=settleListBean.getList();
-                adapter= new SettleListAdapter(JieQingActivity.this,settleBeans);
-                carlistview.setAdapter(adapter);
+            protected void onSuccess(Headers headers, com.alibaba.fastjson.JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                settleListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),SettleListBean.class);
+                if(settleListBean.isSuccess()){
+                    jq_num.setText("共计结清"+settleListBean.getCount()+"台车辆");
+                    settleBeans=settleListBean.getList();
+                    adapter= new SettleListAdapter(JieQingActivity.this,settleBeans);
+                    carlistview.setAdapter(adapter);
+                }else{
+                    Toast.makeText(JieQingActivity.this,settleListBean.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -131,17 +152,13 @@ public class JieQingActivity extends BaseActivity {
                 super.onFinish();
                 DialogUIUtils.dismiss(jq_dia);
             }
-
-            @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
-            }
         });
 
     }
     private void initListener() {
         search.setImageResource(R.mipmap.search);
-        title.setText("车辆列表");
+        search.setVisibility(View.GONE);
+        title.setText("已结清列表");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,6 +192,11 @@ public class JieQingActivity extends BaseActivity {
                         //隐藏
                         DialogUIUtils.dismiss(dia);
                         jq_date.setText(dp.getYear()+"年"+date_month+"月");
+                        int days=getDayOfMonth(dp.getYear(),date_month);
+                        starttime=dp.getYear()+"-"+date_month+"-"+01;
+                        endtime=dp.getYear()+"-"+date_month+"-"+days;
+                        Log.i("onClick: ", endtime);
+                        InitList();
 //                        Toast.makeText(JieQingActivity.this,dp.getYear()+"-"+date_month,Toast.LENGTH_SHORT).show();
                     }
                 });

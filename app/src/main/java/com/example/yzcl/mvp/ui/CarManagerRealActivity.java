@@ -200,13 +200,31 @@ public class CarManagerRealActivity extends BaseActivity {
                 Log.i(TAG, jsonObject.toString());
                 if(jsonObject.getBoolean("success")){
                     //统计最终的在离线数量
+                    String bindCounts="";
+                    String unbindCounts="";
+                    String expireCounts="";
                     JSONObject all_device=jsonObject.getJSONObject("object");
+                    if(all_device.getString("bindCounts")!=null){
+                        bindCounts=all_device.getString("bindCounts");
+                    }else{
+                        bindCounts="0";
+                    }
+                    if(all_device.getString("unbindCounts")!=null){
+                        unbindCounts=all_device.getString("unbindCounts");
+                    }else{
+                        unbindCounts="0";
+                    }
+                    if(all_device.getString("expireCounts")!=null){
+                        expireCounts=all_device.getString("expireCounts");
+                    }else{
+                        expireCounts="0";
+                    }
                     //已绑车
-                    device_online.setText(all_device.getString("bindCounts"));
+                    device_online.setText(bindCounts);
                     //未绑车
-                    device_offline.setText(all_device.getString("unbindCounts"));
-                    device_unuse.setText(all_device.getString("expireCounts"));
-                    int alldevice=Integer.parseInt(all_device.getString("bindCounts"))+Integer.parseInt(all_device.getString("unbindCounts"));
+                    device_offline.setText(unbindCounts);
+                    device_unuse.setText(expireCounts);
+                    int alldevice=Integer.parseInt(bindCounts)+Integer.parseInt(unbindCounts);
                     all_device_num.setText("共"+alldevice+"个");
                     //请求车辆逾期重点关注的数量
                     achieveCarNum(idss);
@@ -311,6 +329,7 @@ public class CarManagerRealActivity extends BaseActivity {
             }
         });
         AddCar.setText("新增车辆");
+        AddCar.setVisibility(View.GONE);
         AddCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -358,7 +377,7 @@ public class CarManagerRealActivity extends BaseActivity {
                 //选择了客户的
                  ids=data.getStringExtra("ids");
                 String names=data.getStringExtra("names");
-                groupname.setText(names);
+                groupname.setText(names.substring(0,names.length()-1));
                 achieveDeviceStatus(ids);
                 break;
         }

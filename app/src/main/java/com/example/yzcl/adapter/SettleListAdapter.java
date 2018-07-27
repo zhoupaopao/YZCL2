@@ -67,6 +67,12 @@ public class SettleListAdapter extends BaseAdapter {
         viewHolder.equipment.setText(settleBean.getCar_brand()+settleBean.getCar_version());
         viewHolder.data_jq_car.setText(settleBean.getSettledtime());
         viewHolder.belong.setText(settleBean.getGroupname());
+        if(settleBean.getIsactive()==0){
+            //不显示取消结清
+            viewHolder.qxjq.setVisibility(View.GONE);
+        }else{
+            viewHolder.qxjq.setVisibility(View.VISIBLE);
+        }
         viewHolder.qxjq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
