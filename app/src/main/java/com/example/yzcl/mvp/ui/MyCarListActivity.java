@@ -451,6 +451,7 @@ public class MyCarListActivity extends BaseActivity {
                             //就不用跳转了，没有设备
                             Toast.makeText(MyCarListActivity.this, "该车辆未绑定设备，无法查看位置。", Toast.LENGTH_SHORT).show();
                         }else{
+                            //提交新的
                             //跳转到车辆位置页面
                             Intent intent=new Intent();
                             intent.setClass(MyCarListActivity.this,CarAddressActivity.class);
