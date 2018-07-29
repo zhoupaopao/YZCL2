@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.mapapi.map.MapView;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
@@ -65,6 +66,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
     Banner banner;
     GridView grid;
     TextView title;
+    private MapView bmapview;
     ImageView head;
     private SimpleAdapter sim_adapter;
     private List<Map<String,Object>>data_list;
@@ -89,6 +91,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                 .init();
         banner=findViewById(R.id.banner);
         title=findViewById(R.id.title);
+        bmapview=findViewById(R.id.bmap);
         head=findViewById(R.id.iamgeView2);
         title.setText("首页");
         head.setOnClickListener(new View.OnClickListener() {
@@ -334,5 +337,22 @@ public class HomePage extends BaseActivity implements OnBannerListener{
             }
         }
         return true;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bmapview.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bmapview.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bmapview.onResume();
     }
 }

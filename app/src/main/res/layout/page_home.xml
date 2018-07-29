@@ -5,6 +5,13 @@
     android:fitsSystemWindows="true"
     android:weightSum="9">
     <include layout="@layout/icon_title"/>
+    <com.baidu.mapapi.map.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bmap"
+        android:visibility="gone"
+        android:clickable="true">
+    </com.baidu.mapapi.map.MapView>
     <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0dp"-->
