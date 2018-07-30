@@ -64,11 +64,6 @@ public class DeviceListActivity extends BaseActivity{
         device_list=findViewById(R.id.device_list);
         abl_title=findViewById(R.id.abl_title);
         list=new ArrayList<>();
-        // 主标题
-//        toolbar.setTitle("Title");
-
-//        setSupportActionBar(toolbar);
-
     }
 
     private void initData() {
