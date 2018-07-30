@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -80,6 +81,7 @@ public class CarManagerRealActivity extends BaseActivity {
 
     private String TAG="CarManagerRealActivity";
     private SharedPreferences sp;
+    private RelativeLayout device_list;
     private DeviceStatusBeans deviceStatusBeans;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class CarManagerRealActivity extends BaseActivity {
         initListener();
     }
 
+    @SuppressLint("WrongViewCast")
     private void initView() {
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         title=findViewById(R.id.title);
@@ -113,6 +116,7 @@ public class CarManagerRealActivity extends BaseActivity {
         all_car_num=findViewById(R.id.all_car_num);
         all_device_num=findViewById(R.id.all_device_num);
         jq_all=findViewById(R.id.jq_all);
+        device_list=findViewById(R.id.device_list);
     }
 
     private void initData() {
@@ -364,6 +368,15 @@ public class CarManagerRealActivity extends BaseActivity {
                 Intent intent=new Intent();
                 intent.putExtra("ids",ids);
                 intent.setClass(CarManagerRealActivity.this,JieQingActivity.class);
+                startActivity(intent);
+            }
+        });
+        device_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.putExtra("ids",ids);
+                intent.setClass(CarManagerRealActivity.this,DeviceListActivity.class);
                 startActivity(intent);
             }
         });

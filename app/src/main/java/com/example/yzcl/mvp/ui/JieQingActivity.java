@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -101,8 +102,8 @@ public class JieQingActivity extends BaseActivity {
         int days=getDayOfMonth(calendar.get(Calendar.YEAR),init_month);
         starttime=calendar.get(Calendar.YEAR)+"-"+init_month+"-"+01;
         endtime=calendar.get(Calendar.YEAR)+"-"+init_month+"-"+days;
-        //舒适化结清列表
-        InitList();
+        //初始化结清列表
+//        InitList();
     }
     //获取某年某月有多少天
     public int getDayOfMonth(int year,int month){
@@ -157,7 +158,16 @@ public class JieQingActivity extends BaseActivity {
     }
     private void initListener() {
         search.setImageResource(R.mipmap.search);
-        search.setVisibility(View.GONE);
+//        search.setVisibility(View.GONE);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(JieQingActivity.this,JieQingSearchActivity.class);
+                intent.putExtra("ids",ids);
+                startActivity(intent);
+            }
+        });
         title.setText("已结清列表");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,5 +306,11 @@ public class JieQingActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        InitList();
     }
 }
