@@ -85,4 +85,6 @@ public class Api {
     public static final String setRemark=MonitorUrl+"/operation/v1/vehicleManage/setRemark";
     //取消结清
     public static  String cancelSettleById=MonitorUrl+"/operation/v1/settleReport/cancelSettleById";
+    //设备列表
+    public static  String queryDeviceList=MonitorUrl+"/device/v1/queryDeviceList";
 }
