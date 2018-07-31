@@ -105,6 +105,7 @@ public class DeviceListActivity extends BaseActivity{
         device_list=findViewById(R.id.device_list);
         abl_title=findViewById(R.id.abl_title);
         list=new ArrayList<>();
+        //sadsad
 //        xRefreshView=findViewById(R.id.xrefreshview);
 //
 //        xRefreshView.setPullLoadEnable(true);
