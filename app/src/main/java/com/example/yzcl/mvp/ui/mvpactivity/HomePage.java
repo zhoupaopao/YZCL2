@@ -310,6 +310,8 @@ public class HomePage extends BaseActivity implements OnBannerListener{
         needshow.add(false);
         iconname.add("车辆管理");
         needshow.add(true);
+        iconname.add("车辆列表");
+        needshow.add(true);
         for(int i=0;i<iconname.size();i++){
             if(needshow.get(i)){
                 Map<String,Object>map=new HashMap<String,Object>();
