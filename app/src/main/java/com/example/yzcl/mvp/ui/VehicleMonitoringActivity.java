@@ -1,17 +1,27 @@
 package com.example.yzcl.mvp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.andview.refreshview.XRefreshView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -27,11 +37,23 @@ import com.baidu.mapapi.model.LatLng;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.CarDeviceListAdapter;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
+import com.example.yzcl.mvp.model.bean.CarMonSearchListBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.mvp.ui.baseactivity.CheckPermissionsActivity;
 import com.example.yzcl.mvp.ui.mvpactivity.HomePage;
 import com.example.yzcl.mvp.ui.mvpactivity.MainActivity;
 import com.gyf.barlibrary.ImmersionBar;
+
+import java.util.ArrayList;
+
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 
 /**
  * Created by Lenovo on 2018/6/25.
@@ -59,8 +81,17 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     private MyLocationData locData;
     private SensorManager mSensorManager;
     private BuildBean dialog;
-
-
+    private TextView heead;
+//    private ListView listview;
+    private XRefreshView xrefreshview;
+    private RecyclerView carlist;
+    private ArrayList<String> list;
+    CarDeviceListAdapter adapter;
+    int width;
+    int height;
+    private SharedPreferences sp;
+    private String TAG="VehicleMonitoringActivity";
+    private ArrayList<CarMonSearchListBean.CarSearchBean>carSearchBeans=new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +108,30 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     }
 
     private void initView() {
+        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         title=findViewById(R.id.title);
         back=findViewById(R.id.back);
         add=findViewById(R.id.add);
         rl_search=findViewById(R.id.rl_search);
         bmapview=findViewById(R.id.bmap);
+        heead=findViewById(R.id.heead);
+        carlist=findViewById(R.id.carlist);
+        xrefreshview=findViewById(R.id.xrefreshview);
+        list=new ArrayList<>();
     }
 
     private void initData() {
+        if(!Constant.isNetworkConnected(VehicleMonitoringActivity.this)) {
+            //判断网络是否可用
+            Toast.makeText(VehicleMonitoringActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+        }else{
+            queVehicleListForSea();
+        }
+        //获取屏幕宽高
+        WindowManager wm = (WindowManager) this
+                .getSystemService(Context.WINDOW_SERVICE);
+         width = wm.getDefaultDisplay().getWidth();
+         height = wm.getDefaultDisplay().getHeight();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);//获取传感器管理服务
         mCurrentMode = MyLocationConfiguration.LocationMode.NORMAL;
 
@@ -110,6 +157,8 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     }
 
     private void initListener() {
+//        adapter= new CarDeviceListAdapter(VehicleMonitoringActivity.this,list);
+//        listview.setAdapter(adapter);
         title.setText(R.string.car_veh);
         add.setImageResource(R.mipmap.search);
         add.setVisibility(View.GONE);
@@ -138,6 +187,17 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
                 handler.sendEmptyMessage(0);
             }
         }).start();
+        heead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //让listview变大
+                XRefreshView linearLayout = (XRefreshView) findViewById(R.id.xrefreshview);//找到xml上的控件
+//                LinearLayout linearLayout2 = (LinearLayout) findViewById(R.id.linear3);//找到xml上的控件
+                ViewGroup.LayoutParams params = linearLayout.getLayoutParams();
+                params.height = height-700;
+                linearLayout.setLayoutParams(params);
+            }
+        });
 
     }
     Handler handler=new Handler(){
@@ -186,7 +246,59 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         public void onReceivePoi(BDLocation poiLocation) {
         }
     }
+    public void queVehicleListForSea() {
+        //展示搜索列表
 
+
+        RequestParams params=new RequestParams();
+//        params.setRequestBodyString();
+//        params.setRequestBody();
+        //因为传递的是json数据，所以需要设置header和body
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+//        params.addFormDataPart("token",sp.getString(Constant.Token,""));
+//        params.addFormDataPart("search",et_search.getText().toString().trim());
+
+        HttpRequest.post(Api.queVehicleListForSea+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                CarMonSearchListBean carMonSearchListBean=JSONObject.parseObject(jsonObject.toString(),CarMonSearchListBean.class);
+                if(carMonSearchListBean.isSuccess()){
+                    carSearchBeans=carMonSearchListBean.getList();
+
+                    if(carSearchBeans.size()==0){
+                        Toast.makeText(VehicleMonitoringActivity.this,"暂无数据",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(VehicleMonitoringActivity.this,carMonSearchListBean.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                DialogUIUtils.showToast("网络错误");
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,true,false,true);
+                dialog.show();
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                dialog.dialog.dismiss();
+            }
+        });
+
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -7,11 +7,58 @@
 
     <include layout="@layout/first_title_icon"/>
     <include layout="@layout/layout_search"/>
-    <com.baidu.mapapi.map.MapView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/bmap"
-        android:clickable="true">
+        android:layout_height="match_parent">
+        <com.baidu.mapapi.map.MapView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bmap"
+            android:clickable="true">
+        </com.baidu.mapapi.map.MapView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:id="@+id/heead"
+                android:gravity="center"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="我是头"/>
+            <com.andview.refreshview.XRefreshView
+                android:layout_below="@id/heead"
+            android:id="@+id/xrefreshview"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/white"
+            >
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/carlist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
 
-    </com.baidu.mapapi.map.MapView>
+            </android.support.v7.widget.RecyclerView>
+        </com.andview.refreshview.XRefreshView>
+
+            <!--<ListView-->
+                <!--android:id="@+id/listview"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:layout_below="@id/xrefreshview"></ListView>-->
+            <TextView
+                android:id="@+id/boottom"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_below="@id/xrefreshview"
+                android:background="@color/white"
+                android:text="我是底部"/>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
 </LinearLayout>

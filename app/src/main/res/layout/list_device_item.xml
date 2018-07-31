@@ -1,13 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="160dp"
     android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/tv_name"
         android:text="312"
+        android:layout_alignParentLeft="true"
         android:gravity="center"/>
+        <TextView
+            android:id="@+id/device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/tv_offline"
+            android:text="@string/status_offline"/>
 
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/warning_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="暂无报警"/>
+        <TextView
+            android:id="@+id/dl"
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tv_online"
+            android:text="电量90%"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/car_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="绑车信息：苗北北，L11111111111111111111111"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/car_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="当前定位：2018-07-02 11:22，地址和时间最多显示到两行地址和时间最多显示到两行地址和时间最多显示到两行..."/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:layout_weight="2">
+        <TextView
+            android:id="@+id/xfzl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/xfzl"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:background="@drawable/layout_radius_text"
+            />
+        <TextView
+            android:id="@+id/look_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查看定位"
+            android:padding="5dp"
+            android:layout_toLeftOf="@id/xfzl"
+            android:background="@drawable/layout_radius_text"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
 </LinearLayout>

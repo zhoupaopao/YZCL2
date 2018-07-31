@@ -13,7 +13,7 @@
             android:id="@+id/abl_title"
             android:animateLayoutChanges="true"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="80dp"
              >
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -26,57 +26,9 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="80dp"
                     android:background="@color/white"
                     android:orientation="vertical">
-                    <RadioGroup
-                        android:id="@+id/warning"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <RadioButton
-                            android:id="@+id/warning_all"
-                            android:checked="true"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textSize="13dp"
-                            android:button="@null"
-                            android:text="全部"
-                            android:textColor="@drawable/radio_button_color1"/>
-                        <RadioButton
-                            android:id="@+id/warning_none"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textSize="13dp"
-                            android:button="@null"
-                            android:text="无"
-                            android:textColor="@drawable/radio_button_color1"/>
-                        <RadioButton
-                            android:id="@+id/warning_have"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textSize="13dp"
-                            android:button="@null"
-                            android:text="断电/光感"
-                            android:textColor="@drawable/radio_button_color1"/>
-                        <RadioButton
-                            android:visibility="invisible"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textSize="13dp"
-                            android:button="@null"
-                            android:text="断电/光感"
-                            android:textColor="@drawable/radio_button_color1"/>
-                    </RadioGroup>
                     <RadioGroup
                         android:id="@+id/online"
                         android:layout_width="match_parent"
@@ -170,7 +122,7 @@
                             android:gravity="center"
                             android:textSize="13dp"
                             android:button="@null"
-                            android:text="未绑车"
+                            android:text="已过期"
                             android:textColor="@drawable/radio_button_color1"/>
                     </RadioGroup>
 
@@ -197,11 +149,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <com.example.yzcl.utils.MyListView
         android:id="@+id/device_list"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ></com.example.yzcl.utils.MyListView>
+
         </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>
