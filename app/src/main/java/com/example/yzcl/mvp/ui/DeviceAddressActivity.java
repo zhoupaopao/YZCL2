@@ -2,6 +2,7 @@ package com.example.yzcl.mvp.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -38,6 +39,8 @@ public class DeviceAddressActivity extends BaseActivity {
     private MapView mapView;
     private BaiduMap mBaiduMap;
     private Marker mMarkerA;
+    private ImageView back;
+    private TextView title;
     BitmapDescriptor bdA = BitmapDescriptorFactory
             .fromResource(R.mipmap.ico_car_on);
 
