@@ -58,6 +58,7 @@ public class DeviceAddressActivity extends BaseActivity {
 
     private void initView() {
         title=findViewById(R.id.title);
+        back=findViewById(R.id.back);
         device_name=findViewById(R.id.device_name);
         waring_name=findViewById(R.id.waring_name);
         device_status=findViewById(R.id.device_status);
