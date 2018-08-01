@@ -81,7 +81,7 @@ public class Api {
     public static final String queCustMerBySearch=MonitorUrl+"/operation/v1/customer/queCustMerBySearch";
     //定时请求的接口
     public static final String queAlarmTopCount=MonitorUrl+"/alarm/v1/alert/queAlarmTopCount";
-    //标记逾期光感/operation/v1/vehicleManage/setRemark
+    //标记逾期光感/operation/v1/vehicleManage/
     public static final String setRemark=MonitorUrl+"/operation/v1/vehicleManage/setRemark";
     //取消结清
     public static  String cancelSettleById=MonitorUrl+"/operation/v1/settleReport/cancelSettleById";
