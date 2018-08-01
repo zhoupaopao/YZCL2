@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.example.yzcl.R;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * Created by Lenovo on 2018/6/8.
  */
 
-public class EasyRecycleAdapter extends RecyclerView.Adapter<EasyRecycleAdapter.ESViewHolder> {
+public class EasyRecycleAdapter extends BaseRecyclerAdapter<EasyRecycleAdapter.ESViewHolder> {
     ArrayList<String>list;
     Context context;
     public EasyRecycleAdapter(Context context, ArrayList<String>list){
@@ -28,20 +29,29 @@ public class EasyRecycleAdapter extends RecyclerView.Adapter<EasyRecycleAdapter.
         list.addAll(aa);
         notifyDataSetChanged();
     }
+
     @Override
-    public ESViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ESViewHolder getViewHolder(View view) {
+        return new ESViewHolder(view);
+    }
+
+    @Override
+    public ESViewHolder onCreateViewHolder(ViewGroup parent, int viewType, boolean isItem) {
         View view= LayoutInflater.from(context).inflate(R.layout.item_recycle_view,parent,false);
         ESViewHolder viewHolder=new ESViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ESViewHolder holder, int position) {
+    public void onBindViewHolder(ESViewHolder holder, int position, boolean isItem) {
         holder.tv1.setText(list.get(position));
     }
 
+
+
+
     @Override
-    public int getItemCount() {
+    public int getAdapterItemCount() {
         return list.size();
     }
 

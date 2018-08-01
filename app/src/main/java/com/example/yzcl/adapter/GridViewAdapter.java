@@ -14,13 +14,12 @@ import android.widget.Toast;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.ui.CarManagerRealActivity;
 import com.example.yzcl.mvp.ui.RealCarListActivity;
+import com.example.yzcl.mvp.ui.RealDeviceListActivity;
 import com.example.yzcl.mvp.ui.VehicleMonitoringActivity;
-import com.example.yzcl.mvp.ui.mvpactivity.HomePage;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 /**
  * Created by Lenovo on 2018/7/23.
@@ -101,7 +100,9 @@ public class GridViewAdapter extends BaseAdapter {
                         intent=new Intent();
 //                        //2.0的车辆管理
 ////                        intent.setClass(HomePage.this, CarManagerActivity.class);
-                        intent.setClass(context, CarManagerRealActivity.class);
+//                        intent.setClass(context, CarManagerRealActivity.class);
+                        intent.setClass(context, RealCarListActivity.class);
+
                         context.startActivity(intent);
 //                                            Toast.makeText(HomePage.this,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
@@ -152,7 +153,7 @@ public class GridViewAdapter extends BaseAdapter {
                         //更多
                         intent=new Intent();
 //                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
-                        intent.setClass(context, RealCarListActivity.class);
+                        intent.setClass(context, RealDeviceListActivity.class);
                         context.startActivity(intent);
                         Toast.makeText(context,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;

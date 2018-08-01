@@ -215,7 +215,7 @@ public class MyCarListActivity extends BaseActivity {
                 carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
                 if(carListBean.isSuccess()){
                     nowList=carListBean.getList();
-                    adapter=new CarListAdapter1(MyCarListActivity.this,nowList,nowstatus);
+//                    adapter=new CarListAdapter1(MyCarListActivity.this,nowList,nowstatus);
                     adapter.setCustomLoadMoreView(new XRefreshViewFooter(MyCarListActivity.this));
                     LinearLayoutManager layoutManager = new LinearLayoutManager(MyCarListActivity.this);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

@@ -117,6 +117,7 @@
                 android:text="离线"
                 android:textColor="@drawable/radio_button_color1"/>
         </RadioGroup>
+
     </android.support.design.widget.AppBarLayout>
 
     <com.andview.refreshview.XRefreshView

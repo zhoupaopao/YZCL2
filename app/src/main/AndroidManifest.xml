@@ -139,7 +139,10 @@
         <activity android:name="com.example.yzcl.mvp.ui.CarSearchActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.JieQingSearchActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.DeviceListActivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.RealDeviceListActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.RealCarListActivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.DeviceSearchAcrivity"></activity>
+        <activity android:name="com.example.yzcl.mvp.ui.DeviceAddressActivity"></activity>
         <activity
             android:name="com.lzy.imagepicker.ui.ImagePreviewDelActivity"
             android:theme="@style/ImagePickerThemeFullScreen" />

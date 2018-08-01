@@ -35,6 +35,7 @@ import com.example.yzcl.mvp.ui.CarAddressActivity;
 import com.example.yzcl.mvp.ui.CarMonSearchActivity;
 import com.example.yzcl.mvp.ui.CarSearchActivity;
 import com.example.yzcl.mvp.ui.MyCarListActivity;
+import com.example.yzcl.mvp.ui.RealCarListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,14 +51,14 @@ import okhttp3.MediaType;
  */
 
 public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHolder> {
-    private MyCarListActivity context;
+    private RealCarListActivity context;
     private CarSearchActivity context1;
     private List<CarListBean.CarBean> carlist;
     private LayoutInflater mInflater;
     private SharedPreferences sp;
     private BuildBean dialog;
-    private String nowstatus;
-    public CarListAdapter1(MyCarListActivity context, List<CarListBean.CarBean> carlist, String nowstatus){
+    private int nowstatus;
+    public CarListAdapter1(RealCarListActivity context, List<CarListBean.CarBean> carlist, int nowstatus){
         this.context=context;
         this.carlist=carlist;
         this.nowstatus=nowstatus;

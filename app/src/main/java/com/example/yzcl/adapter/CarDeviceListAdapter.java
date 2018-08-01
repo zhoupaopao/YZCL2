@@ -1,16 +1,20 @@
 package com.example.yzcl.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.DeviceListBean;
+import com.example.yzcl.mvp.ui.DeviceAddressActivity;
+import com.example.yzcl.mvp.ui.XfzlActivity;
 
 import java.util.ArrayList;
 
@@ -41,8 +45,85 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
     @Override
     public void onBindViewHolder(ViewHolder holder, int position, boolean isItem) {
         //处理数据
-        DeviceListBean.DeviceLLBean deviceLLBean=list.get(position);
+        final DeviceListBean.DeviceLLBean deviceLLBean=list.get(position);
         holder.tv_name.setText(deviceLLBean.getInternalnum()+"-"+deviceLLBean.getDevicetype());
+        holder.device_status.setText(deviceLLBean.getGpsStates());
+        if(deviceLLBean.getGpsStates().substring(0,2).equals("休眠")||deviceLLBean.getGpsStates().substring(0,2).equals("静止")){
+            holder.device_status.setTextColor(context.getResources().getColor(R.color.device_status_xm));
+        }else if(deviceLLBean.getGpsStates().substring(0,2).equals("离线")){
+            holder.device_status.setTextColor(context.getResources().getColor(R.color.tv_offline));
+        }else if(deviceLLBean.getGpsStates().equals("行驶中")||deviceLLBean.getGpsStates().equals("在线")){
+            holder.device_status.setTextColor(context.getResources().getColor(R.color.tv_online));
+        }else{
+            holder.device_status.setTextColor(context.getResources().getColor(R.color.black));
+        }
+        if(deviceLLBean.getAlaram().equals("正常")){
+            //没有报警
+            holder.warning_name.setText("暂无报警");
+            holder.warning_name.setTextColor(context.getResources().getColor(R.color.black));
+        }else{
+            holder.warning_name.setText(deviceLLBean.getAlaram());
+            holder.warning_name.setTextColor(context.getResources().getColor(R.color.tv_offline));
+        }
+        if(deviceLLBean.getDevicetype().equals("有线设备")){
+            holder.dl.setVisibility(View.GONE);
+            holder.xfzl.setVisibility(View.GONE);
+        }else{
+            if(deviceLLBean.getBl()!=null){
+                holder.dl.setVisibility(View.VISIBLE);
+                holder.xfzl.setVisibility(View.VISIBLE);
+                holder.dl.setText("电量"+deviceLLBean.getBl()+"%");
+                if(Integer.parseInt(deviceLLBean.getBl())<30){
+                    holder.dl.setTextColor(context.getResources().getColor(R.color.tv_warning));
+                }else{
+                    holder.dl.setTextColor(context.getResources().getColor(R.color.tv_online));
+                }
+            }else{
+                holder.dl.setVisibility(View.GONE);
+                holder.xfzl.setVisibility(View.VISIBLE);
+
+            }
+
+        }
+        //绑车信息
+        if(deviceLLBean.getBindtime()!=null){
+            //有绑车时间
+            holder.car_message.setText("暂时没有车主和车架号");
+        }else{
+            //未绑车
+            holder.car_message.setText("绑车信息：未绑车");
+        }
+        if(deviceLLBean.getGpsStates().equals("未定位")){
+            holder.car_loc.setText("当前定位：设备未开启，无法获取GPS定位信息");
+        }else{
+            holder.car_loc.setText("当前定位：没有定位时间，"+deviceLLBean.getPostion());
+        }
+        holder.xfzl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.putExtra("deviceid",deviceLLBean.getId());
+                intent.setClass(context, XfzlActivity.class);
+                context.startActivity(intent);
+            }
+        });
+        holder.look_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //查看定位
+                //没有定位
+                if(deviceLLBean.getGpsStates().equals("未定位")){
+                    Toast.makeText(context,"设备未定位",Toast.LENGTH_SHORT).show();
+                }else{
+                    //到位置页面
+                    Intent intent=new Intent();
+
+                    intent.setClass(context, DeviceAddressActivity.class);
+                    context.startActivity(intent);
+                }
+            }
+        });
+
 
 
     }

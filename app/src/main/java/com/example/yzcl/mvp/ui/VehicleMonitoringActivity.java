@@ -125,7 +125,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
             //判断网络是否可用
             Toast.makeText(VehicleMonitoringActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
         }else{
-            queVehicleListForSea();
+//            queVehicleListForSea();
         }
         //获取屏幕宽高
         WindowManager wm = (WindowManager) this
