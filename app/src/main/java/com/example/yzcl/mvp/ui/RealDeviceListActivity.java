@@ -116,6 +116,7 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
 //                        adapter.notifyItemRangeChanged(0,5) ;//列表从positionStart位置到itemCount数量的列表项进行数据刷新
 //                        adapter.notifyDataSetChanged();//整个数据刷新
                         initDataa(dev_status,1);
+                        xRefreshView.stopRefresh();
 
                     }
                 }, 500);
@@ -185,6 +186,7 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
         });
     }
     private void initData(final int dev_status, int page) {
+        xRefreshView.setLoadComplete(false);
         nowPages=page;
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
@@ -231,7 +233,21 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 recyclerView.setAdapter(adapter);
                 //设置增加或删除条目的动画
                 recyclerView.setItemAnimator( new DefaultItemAnimator());
-                dialog.dialog.dismiss();
+                if(deviceLLBeans.size()<10){
+                    //说明没了
+                    xRefreshView.setLoadComplete(true);
+
+                }else{
+                    xRefreshView.setLoadComplete(false);
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        dialog.dialog.dismiss();
+                    }
+                }, 1500);
             }
 
             @Override
@@ -342,7 +358,11 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 recyclerView.setAdapter(adapter);
                 //设置增加或删除条目的动画
                 recyclerView.setItemAnimator( new DefaultItemAnimator());
-                xRefreshView.stopRefresh();
+
+                if(deviceLLBeans.size()>=10){
+                    //加载显示
+                    xRefreshView.setLoadComplete(false);
+                }
             }
 
             @Override
@@ -454,6 +474,9 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 groupname.setText(names.substring(0,names.length()-1));
                 //重新请求数据，根据当前的在离线和ids
                 initData(dev_status,1);
+                tongji(0,1);
+                tongji(1,1);
+                tongji(10,1);
                 break;
         }
     }

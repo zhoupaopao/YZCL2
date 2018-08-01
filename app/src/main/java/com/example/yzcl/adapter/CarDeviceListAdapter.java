@@ -113,7 +113,7 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
             public void onClick(View view) {
                 //查看定位
                 //没有定位
-                if(deviceLLBean.getGpsStates().equals("未定位")){
+                if(deviceLLBean.getGpsStates().equals("未定位")||deviceLLBean.getBlat()==null){
                     Toast.makeText(context,"设备未定位",Toast.LENGTH_SHORT).show();
                 }else{
                     //到位置页面

@@ -71,7 +71,7 @@ public class CustomerChooseActivity extends BaseActivity {
     private String TAG="CustomerChooseActivity";
     private List<NewFileBean> mData = new ArrayList<>();
     private BuildBean dialog;
-
+    private Boolean isfirst=true;
     private CustomerListBeans customerListBeans;
 
     @Override
@@ -100,6 +100,7 @@ public class CustomerChooseActivity extends BaseActivity {
     }
 
     private void initData() {
+        isfirst=true;
 //        AsyncHttpClient client = new AsyncHttpClient();
 //        RequestParams params = new RequestParams();
         String token = sp.getString("Token", null);
@@ -112,6 +113,7 @@ public class CustomerChooseActivity extends BaseActivity {
             @Override
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
+
                 CustomerMBean = JSONObject.parseObject(jsonObject.toString(), CustomerOrganizationBeans.class);
                 //就从第一个开始，默认最上级是1，他的parentid是0
                 //第一条信息
@@ -212,6 +214,12 @@ public class CustomerChooseActivity extends BaseActivity {
 
     private void child(int parentid, CustomerOrganizationBeans.CustomerOrganizationBean.CustomerOrganization customerMBean) {
         Log.i("pid", mData.size() + 1 + "|" + parentid + "|" + customerMBean.getId());
+        if(isfirst){
+            isfirst=false;
+            mData.clear();
+        }else{
+
+        }
         mData.add(new NewFileBean(mData.size() + 1, parentid, customerMBean.getGroup_name(), customerMBean.getId()));
         List<CustomerOrganizationBeans.CustomerOrganizationBean.CustomerOrganization> ChildCustomer = customerMBean.getChildCustomerModel();
         int pid = mData.size();

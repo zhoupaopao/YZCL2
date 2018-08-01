@@ -193,6 +193,7 @@ public class DeviceSearchAcrivity extends BaseActivity {
     }
 
     private void initListener() {
+        et_search.setHint("请输入设备名、设备号");
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
