@@ -147,7 +147,9 @@ public class DeviceAddressActivity extends BaseActivity {
         device_status_time.setVisibility(View.GONE);
         if(Devicetype.equals("有线设备")){
             dl.setVisibility(View.GONE);
+            xfzl.setVisibility(View.GONE);
         }else{
+            xfzl.setVisibility(View.VISIBLE);
             if(Bl!=null){
                 dl.setText("电量"+Bl+"%");
                 if(Integer.parseInt(Bl)<30){

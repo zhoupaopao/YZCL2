@@ -178,6 +178,7 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         //刷新页面s
                         context.initData(nowstatus,1);
+                        context.achievetj();
 //                        notifyDataSetChanged();
                     }else{
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();

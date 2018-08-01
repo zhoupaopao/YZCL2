@@ -251,7 +251,7 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
             }
         });
     }
-    private void achievetj() {
+    public void achievetj() {
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
         com.alibaba.fastjson.JSONObject jsonObject=new com.alibaba.fastjson.JSONObject();
