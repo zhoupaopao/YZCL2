@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
     private RadioGroup car_status;
     private int nowPages=1;//当前的页数
     private ImageView search;
+    private RadioButton status_zdgz,status_yuqi,status_all;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +72,15 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 .init();
         initView();
         initData(dev_status,1);
+        tongji(0,1);
+        tongji(1,1);
         initListener();
     }
 
     private void initView() {
+        status_zdgz=findViewById(R.id.status_zdgz);
+        status_yuqi=findViewById(R.id.status_yuqi);
+        status_all=findViewById(R.id.status_all);
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         title=findViewById(R.id.title);
         back=findViewById(R.id.back);
@@ -126,8 +133,58 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
             }
         });
     }
+    private void tongji(final int dev_status, int page) {
+        nowPages=page;
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("page",page);
+        jsonObject.put("pagesize",1);
+        if(ids.equals("")){
 
-    private void initData(int dev_status,int page) {
+        }else{
+            jsonObject.put("groupids",ids);
+        }
+        if(dev_status==0){
+            //代表离线
+            jsonObject.put("onlineState",dev_status);
+        }else if(dev_status==1){
+            //在线
+            jsonObject.put("onlineState",dev_status);
+        }else if(dev_status==2){
+            //未定位
+            jsonObject.put("onlineState",dev_status);
+        }else{
+            //全部
+        }
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.queryDeviceList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                DeviceListBean deviceListBean=JSONObject.parseObject(jsonObject.toString(),DeviceListBean.class);
+                if(dev_status==0){
+                    status_zdgz.setText("离线("+deviceListBean.getCount()+")");
+                }else if(dev_status==1){
+                    status_yuqi.setText("在线("+deviceListBean.getCount()+")");
+                }else{
+                    status_all.setText("全部("+deviceListBean.getCount()+")");
+                }
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
+    }
+    private void initData(final int dev_status, int page) {
         nowPages=page;
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
@@ -158,6 +215,13 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
                 DeviceListBean deviceListBean=JSONObject.parseObject(jsonObject.toString(),DeviceListBean.class);
+                if(dev_status==0){
+                    status_zdgz.setText("离线("+deviceListBean.getCount()+")");
+                }else if(dev_status==1){
+                    status_yuqi.setText("在线("+deviceListBean.getCount()+")");
+                }else{
+                    status_all.setText("全部("+deviceListBean.getCount()+")");
+                }
                 deviceLLBeans=deviceListBean.getList();
                 adapter=new CarDeviceListAdapter(RealDeviceListActivity.this,deviceLLBeans);
                 adapter.setCustomLoadMoreView(new XRefreshViewFooter(RealDeviceListActivity.this));

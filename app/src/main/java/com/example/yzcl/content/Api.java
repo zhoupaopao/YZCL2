@@ -86,5 +86,5 @@ public class Api {
     //取消结清
     public static  String cancelSettleById=MonitorUrl+"/operation/v1/settleReport/cancelSettleById";
     //设备列表
-    public static  String queryDeviceList=MonitorUrl+"/device/v1/queryDeviceList";
+    public static  String queryDeviceList=MonitorUrl+"/device/v1/queryDeviceListApp";
 }

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.DeviceListBean;
@@ -88,7 +89,7 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
         //绑车信息
         if(deviceLLBean.getBindtime()!=null){
             //有绑车时间
-            holder.car_message.setText("暂时没有车主和车架号");
+            holder.car_message.setText("绑车信息："+deviceLLBean.getPledgerName()+","+deviceLLBean.getVin());
         }else{
             //未绑车
             holder.car_message.setText("绑车信息：未绑车");
@@ -96,7 +97,7 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
         if(deviceLLBean.getGpsStates().equals("未定位")){
             holder.car_loc.setText("当前定位：设备未开启，无法获取GPS定位信息");
         }else{
-            holder.car_loc.setText("当前定位：没有定位时间，"+deviceLLBean.getPostion());
+            holder.car_loc.setText("当前定位："+deviceLLBean.getLastLocTime()+"，"+deviceLLBean.getPostion());
         }
         holder.xfzl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +118,23 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
                 }else{
                     //到位置页面
                     Intent intent=new Intent();
+                    intent.putExtra("blat",deviceLLBean.getBlat());
+                    intent.putExtra("blng",deviceLLBean.getBlng());
+                    intent.putExtra("Internalnum",deviceLLBean.getInternalnum());
+                    intent.putExtra("Devicetype",deviceLLBean.getDevicetype());
+                    intent.putExtra("Alaram",deviceLLBean.getAlaram());
+                    intent.putExtra("GpsStates",deviceLLBean.getGpsStates());
+                    intent.putExtra("Bl",deviceLLBean.getBl());
+                    intent.putExtra("LastLocTime",deviceLLBean.getLastLocTime());
+
+                    intent.putExtra("Postion",deviceLLBean.getPostion());
+                    intent.putExtra("Bindtime",deviceLLBean.getBindtime());
+                    intent.putExtra("PledgerName",deviceLLBean.getPledgerName());
+                    intent.putExtra("Vin",deviceLLBean.getVin());
+                    intent.putExtra("Valid_from",deviceLLBean.getValid_from());
+                    intent.putExtra("Valid_end",deviceLLBean.getValid_end());
+                    intent.putExtra("Group_name",deviceLLBean.getGroup_name());
+                    intent.putExtra("Id",deviceLLBean.getId());
 
                     intent.setClass(context, DeviceAddressActivity.class);
                     context.startActivity(intent);

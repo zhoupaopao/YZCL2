@@ -95,7 +95,7 @@ public class GridViewAdapter extends BaseAdapter {
 //                        startActivity(intent);
                         Toast.makeText(context,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
-                    case "车辆管理":
+                    case "车辆列表":
                         //车辆管理列表
                         intent=new Intent();
 //                        //2.0的车辆管理
@@ -149,13 +149,13 @@ public class GridViewAdapter extends BaseAdapter {
 //                        startActivity(intent);
                         Toast.makeText(context,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
-                    case "车辆列表":
+                    case "设备列表":
                         //更多
                         intent=new Intent();
 //                        intent.setClass(HomePage.this, CarManagerFragmentActivity.class);
                         intent.setClass(context, RealDeviceListActivity.class);
                         context.startActivity(intent);
-                        Toast.makeText(context,"敬请期待",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context,"敬请期待",Toast.LENGTH_SHORT).show();
                         break;
                 }
             }

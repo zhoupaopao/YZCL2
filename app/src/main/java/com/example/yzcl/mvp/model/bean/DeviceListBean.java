@@ -40,6 +40,69 @@ public class DeviceListBean extends BaseResponse {
         private String onlineStateStr;
         private String postion;
         private String simcard;
+        private String lastLocTime;
+        private String pledgerName;
+        private String vin;
+        private String blat;
+        private String blng;
+        private String valid_from;
+        private String valid_end;
+
+        public String getValid_from() {
+            return valid_from;
+        }
+
+        public void setValid_from(String valid_from) {
+            this.valid_from = valid_from;
+        }
+
+        public String getValid_end() {
+            return valid_end;
+        }
+
+        public void setValid_end(String valid_end) {
+            this.valid_end = valid_end;
+        }
+
+        public String getLastLocTime() {
+            return lastLocTime;
+        }
+
+        public void setLastLocTime(String lastLocTime) {
+            this.lastLocTime = lastLocTime;
+        }
+
+        public String getPledgerName() {
+            return pledgerName;
+        }
+
+        public void setPledgerName(String pledgerName) {
+            this.pledgerName = pledgerName;
+        }
+
+        public String getVin() {
+            return vin;
+        }
+
+        public void setVin(String vin) {
+            this.vin = vin;
+        }
+
+        public String getBlat() {
+            return blat;
+        }
+
+        public void setBlat(String blat) {
+            this.blat = blat;
+        }
+
+        public String getBlng() {
+            return blng;
+        }
+
+        public void setBlng(String blng) {
+            this.blng = blng;
+        }
 
         public String getAlaram() {
             return alaram;
