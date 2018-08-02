@@ -12,6 +12,7 @@
         android:orientation="vertical">
         <RelativeLayout
             android:id="@+id/nzms"
+            android:visibility="gone"
             android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -48,6 +49,7 @@
             android:background="@color/warning_color"/>
         <RelativeLayout
             android:id="@+id/dsms"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:background="@color/white">
@@ -83,6 +85,7 @@
             android:background="@color/warning_color"/>
         <RelativeLayout
             android:id="@+id/xqms"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:background="@color/white">

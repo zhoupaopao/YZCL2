@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -89,6 +90,21 @@ public class SimpleTreeeAdapter<T> extends TreeListViewwAdapter<T> {
         }
         //icon的赋值其实是在ifelse里面完成的
         viewHolder.label.setText(node.getName());
+        if(node.isChkDisabled()){
+            //不能选择
+            viewHolder.cb.setEnabled(false);
+        }else{
+            viewHolder.cb.setEnabled(true);
+        }
+        final ViewHolder finalViewHolder1 = viewHolder;
+//        viewHolder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if(node.isChkDisabled()){
+//                    finalViewHolder1.cb.setChecked(false);
+//                }
+//            }
+//        });
 //        viewHolder.qty.setText(node.getAty()+"/"+node.getTempQty());
         return convertView;
     }
@@ -116,12 +132,23 @@ public class SimpleTreeeAdapter<T> extends TreeListViewwAdapter<T> {
      */
     public <T,B>void setChildChecked(Node3 node,boolean checked){
         if(!node.isLeaf()){
-            node.setChecked(checked);
+            if(node.isChkDisabled()){
+                //不能选择
+                node.setChecked(false);
+            }else{
+                node.setChecked(checked);
+            }
+
             for (Node3 childrenNode : node.getChildren()) {
                 setChildChecked(childrenNode, checked);
             }
         }else{
-            node.setChecked(checked);
+            if(node.isChkDisabled()){
+                //不能选择
+                node.setChecked(false);
+            }else{
+                node.setChecked(checked);
+            }
         }
     }
     private void setNodeParentChecked(Node3 node,boolean checked){

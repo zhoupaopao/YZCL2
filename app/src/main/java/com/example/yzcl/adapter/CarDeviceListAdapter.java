@@ -2,6 +2,7 @@ package com.example.yzcl.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,13 @@ import java.util.ArrayList;
 public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapter.ViewHolder> {
     private Context context;
     private ArrayList<DeviceListBean.DeviceLLBean>list;
+    private SharedPreferences sp;
+    private boolean canxfzl=false;
     public CarDeviceListAdapter(Context context,ArrayList<DeviceListBean.DeviceLLBean>list){
         this.context=context;
         this.list=list;
+        sp=context.getSharedPreferences("YZCL",Context.MODE_PRIVATE);
+        checkqx();
     }
 
     @Override
@@ -66,13 +71,19 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
             holder.warning_name.setText(deviceLLBean.getAlaram());
             holder.warning_name.setTextColor(context.getResources().getColor(R.color.tv_offline));
         }
+
         if(deviceLLBean.getDevicetype().equals("有线设备")){
             holder.dl.setVisibility(View.GONE);
             holder.xfzl.setVisibility(View.GONE);
         }else{
+            if(canxfzl){
+                holder.xfzl.setVisibility(View.VISIBLE);
+            }else{
+                holder.xfzl.setVisibility(View.GONE);
+            }
             if(deviceLLBean.getBl()!=null){
                 holder.dl.setVisibility(View.VISIBLE);
-                holder.xfzl.setVisibility(View.VISIBLE);
+//                holder.xfzl.setVisibility(View.VISIBLE);
                 holder.dl.setText("电量"+deviceLLBean.getBl()+"%");
                 if(Integer.parseInt(deviceLLBean.getBl())<30){
                     holder.dl.setTextColor(context.getResources().getColor(R.color.tv_warning));
@@ -81,7 +92,7 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
                 }
             }else{
                 holder.dl.setVisibility(View.GONE);
-                holder.xfzl.setVisibility(View.VISIBLE);
+//                holder.xfzl.setVisibility(View.VISIBLE);
 
             }
 
@@ -93,12 +104,15 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
         }else{
             //未绑车
             holder.car_message.setText("绑车信息：未绑车");
+            holder.device_status.setVisibility(View.GONE);
+            holder.warning_name.setVisibility(View.GONE);
         }
         if(deviceLLBean.getGpsStates().equals("未定位")){
             holder.car_loc.setText("当前定位：设备未开启，无法获取GPS定位信息");
         }else{
             holder.car_loc.setText("当前定位："+deviceLLBean.getLastLocTime()+"，"+deviceLLBean.getPostion());
         }
+
         holder.xfzl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +159,17 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
 
 
     }
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("100")){
+                canxfzl=true;
 
+            }
+
+        }
+    }
     @Override
     public int getAdapterItemCount() {
         return list.size();

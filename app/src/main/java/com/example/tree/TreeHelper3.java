@@ -93,6 +93,7 @@ public class TreeHelper3 {
             String label = null;
             String useid=null;
             String customer=null;
+            Boolean chkDisabled=true;
             int aty=-1;
             int temQty=-1;
             Class<? extends Object> clazz = t.getClass();
@@ -103,6 +104,11 @@ public class TreeHelper3 {
                 {
                     f.setAccessible(true);
                     id = f.getInt(t);
+                }
+                if (f.getAnnotation(TreeNodechkDisabled.class) != null)
+                {
+                    f.setAccessible(true);
+                    chkDisabled = (Boolean) f.get(t);
                 }
                 if (f.getAnnotation(TreeNodePid.class) != null)
                 {
@@ -140,7 +146,7 @@ public class TreeHelper3 {
                 }
             }
 
-            node = new Node3(id, pId, label,useid);
+            node = new Node3(id, pId, label,useid,chkDisabled);
             nodes.add(node);
         }
 

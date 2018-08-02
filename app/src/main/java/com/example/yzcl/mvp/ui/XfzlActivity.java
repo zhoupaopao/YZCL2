@@ -57,6 +57,7 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
                 .statusBarColor(R.color.title_color)
                 .init();
         initView();
+        checkqx();
         if(!Constant.isNetworkConnected(XfzlActivity.this)) {
             //判断网络是否可用
             Toast.makeText(XfzlActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
@@ -67,7 +68,26 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
 
         initListener();
     }
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
 
+            if (list_jur[i].equals("240")){
+                nzms.setVisibility(View.VISIBLE);
+
+            }
+            if (list_jur[i].equals("242")){
+                xqms.setVisibility(View.VISIBLE);
+
+            }
+            if (list_jur[i].equals("241")){
+                dsms.setVisibility(View.VISIBLE);
+
+            }
+
+        }
+    }
     private void initView() {
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         Intent intent=getIntent();
@@ -102,26 +122,29 @@ public class XfzlActivity extends BaseActivity implements OnClickListener{
                 if(xfzlBean.isSuccess()){
                     //请求成功
                     //判断是什么模式
-                    switch (xfzlBean.getObject().getType()){
-                        case 0:
-                            //定时模式0
-                            interval=xfzlBean.getObject().getInterval();
-                            ds_status.setVisibility(View.VISIBLE);
-                            nowstatus=0;
-                            break;
-                        case 1:
-                            //闹钟模式1
-                            wuc=xfzlBean.getObject().getWuc();
-                            nz_status.setVisibility(View.VISIBLE);
-                            nowstatus=1;
-                            break;
-                        case 2:
-                            //星期模式
-                            wuc=xfzlBean.getObject().getWuc();
-                            xq_status.setVisibility(View.VISIBLE);
-                            nowstatus=2;
-                            break;
+                    if(xfzlBean.getObject()!=null){
+                        switch (xfzlBean.getObject().getType()){
+                            case 0:
+                                //定时模式0
+                                interval=xfzlBean.getObject().getInterval();
+                                ds_status.setVisibility(View.VISIBLE);
+                                nowstatus=0;
+                                break;
+                            case 1:
+                                //闹钟模式1
+                                wuc=xfzlBean.getObject().getWuc();
+                                nz_status.setVisibility(View.VISIBLE);
+                                nowstatus=1;
+                                break;
+                            case 2:
+                                //星期模式
+                                wuc=xfzlBean.getObject().getWuc();
+                                xq_status.setVisibility(View.VISIBLE);
+                                nowstatus=2;
+                                break;
+                        }
                     }
+
 
                 }else{
                     Toast.makeText(XfzlActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();

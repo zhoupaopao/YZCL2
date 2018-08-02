@@ -220,7 +220,7 @@ public class CustomerChooseActivity extends BaseActivity {
         }else{
 
         }
-        mData.add(new NewFileBean(mData.size() + 1, parentid, customerMBean.getGroup_name(), customerMBean.getId()));
+        mData.add(new NewFileBean(mData.size() + 1, parentid, customerMBean.getGroup_name(), customerMBean.getId(),customerMBean.isChkDisabled()));
         List<CustomerOrganizationBeans.CustomerOrganizationBean.CustomerOrganization> ChildCustomer = customerMBean.getChildCustomerModel();
         int pid = mData.size();
         if (ChildCustomer != null) {

@@ -139,7 +139,7 @@ public class CustomerManagerActivity extends BaseActivity {
 
     private void child(int parentid, CustomerManagerBean.treeBean.customerBean customerMBean) {
         Log.i("pid", mData.size()+1+"|"+parentid+"|"+customerMBean.getId());
-        mData.add(new NewFileBean(mData.size()+1,parentid,customerMBean.getGroup_name(),customerMBean.getId()));
+        mData.add(new NewFileBean(mData.size()+1,parentid,customerMBean.getGroup_name(),customerMBean.getId(),customerMBean.isChkDisabled()));
         List<CustomerManagerBean.treeBean.customerBean>ChildCustomer=customerMBean.getChildCustomerModel();
         int pid=mData.size();
         if(ChildCustomer!=null){

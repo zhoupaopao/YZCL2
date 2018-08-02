@@ -152,6 +152,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                     hashMap.put("qx_wlgl",false);
                     hashMap.put("qx_zlsz",false);
                     hashMap.put("qx_khgl",false);
+                    hashMap.put("qx_sb",false);
                     String list_Jurisdiction=jsonObject.getJSONObject("object").getString("rightstring");
                     SharedPreferences.Editor editor=sp.edit();
                     editor.putString("list_Jurisdiction",list_Jurisdiction);
@@ -162,6 +163,15 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                             //有车辆监控权限
                             hashMap.put("qx_jk",true);
                         }
+                        if (list_jur[i].equals("159")){
+                            //有设备列表权限
+                            hashMap.put("qx_sb",true);
+                        }
+                        if (list_jur[i].equals("183")){
+                            //有车辆列表权限
+                            hashMap.put("qx_clgl",true);
+                        }
+
                     }
 //                    String []from={"image","text","coverimg"};
 //                    int [] to = {R.id.image1,R.id.text1,R.id.coverimg};
@@ -306,12 +316,27 @@ public class HomePage extends BaseActivity implements OnBannerListener{
             iconname.add("车辆监控");
             needshow.add(false);
         }
+        if(qx_jk.get("qx_sb")){
+            iconname.add("设备列表");
+            needshow.add(true);
+        }else{
+            iconname.add("设备列表");
+            needshow.add(false);
+        }
+        if(qx_jk.get("qx_clgl")){
+            iconname.add("车辆列表");
+            needshow.add(true);
+        }else{
+            iconname.add("车辆列表");
+            needshow.add(false);
+        }
+
         iconname.add("风控预警");
         needshow.add(false);
-        iconname.add("车辆列表");
-        needshow.add(true);
-        iconname.add("设备列表");
-        needshow.add(false);
+//        iconname.add("车辆列表");
+//        needshow.add(true);
+//        iconname.add("设备列表");
+//        needshow.add(true);
         for(int i=0;i<iconname.size();i++){
             if(needshow.get(i)){
                 Map<String,Object>map=new HashMap<String,Object>();

@@ -31,6 +31,15 @@ public class CustomerListBeans extends BaseResponse {
         private String group_name;
         private String parent_id;
         private Boolean ischec=false;
+        private Boolean chkDisabled;
+
+        public Boolean getChkDisabled() {
+            return chkDisabled;
+        }
+
+        public void setChkDisabled(Boolean chkDisabled) {
+            this.chkDisabled = chkDisabled;
+        }
 
         public Boolean getIschec() {
             return ischec;

@@ -17,7 +17,7 @@ public class Node3 {
     private int pId = 0;
     private String name;
     private String useid;
-
+    private boolean chkDisabled;
     /**
      * 当前的级别
      */
@@ -30,6 +30,7 @@ public class Node3 {
     /**
      * 是否选中
      */
+
     private boolean isChecked = false;
     private int icon;
 
@@ -47,13 +48,14 @@ public class Node3 {
     {
     }
 
-    public Node3(int id, int pId, String name,  String useid)
+    public Node3(int id, int pId, String name,  String useid,Boolean chkDisabled)
     {
         super();
         this.id = id;
         this.pId = pId;
         this.name = name;
         this.useid =useid;
+        this.chkDisabled =chkDisabled;
     }
 
     public boolean isChecked() {
@@ -116,11 +118,22 @@ public class Node3 {
             return false;
         return parent.isExpand();
     }
+
+    public boolean isChkDisabled() {
+        return chkDisabled;
+    }
+
+    public void setChkDisabled(boolean chkDisabled) {
+        this.chkDisabled = chkDisabled;
+    }
+
     /**
      * 是否是叶子界点
      *
      * @return
      */
+
+
     public boolean isLeaf()
     {
         return children.size() == 0;

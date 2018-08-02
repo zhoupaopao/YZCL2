@@ -58,6 +58,12 @@ public class CustomerListAdapter extends BaseAdapter {
         }
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.name.setText(list.get(i).getGroup_name());
+//        if(list.get(i).getChkDisabled()){
+//            //隐藏
+//            viewHolder.ll_line.setVisibility(View.GONE);
+//        }else{
+//            viewHolder.ll_line.setVisibility(View.VISIBLE);
+//        }
         viewHolder.ll_line.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

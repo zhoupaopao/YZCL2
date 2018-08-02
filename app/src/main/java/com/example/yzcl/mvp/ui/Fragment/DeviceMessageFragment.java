@@ -106,7 +106,7 @@ public class DeviceMessageFragment extends Fragment{
             }
             if (list_jur[i].equals("222")){
                 trajectory.setVisibility(View.VISIBLE);
-                break;
+
             }
 
         }
@@ -201,14 +201,66 @@ public class DeviceMessageFragment extends Fragment{
                 //判断是否在线，在线隐藏离线时间
                 offline_time.setVisibility(View.GONE);
                 if(datalist.getDgm().getSpeed()!=null){
-                    if(datalist.getDgm().getSpeed().equals("0")){
-                        //在线的话速度为0状态就是静止
-                        //设备状态
-                        online_status.setText("静止");
+                    //先判断是有线无线
+                    //有线是行驶中、静止
+                    //无线是在线、休眠
+                    if(datalist.getCategory().equals("有线设备")){
+                        long starttme=stringToLong(datalist.getDgm().getTime(),"yyyy-MM-dd HH:mm:ss");
+                        long endtime=stringToLong(datalist.getDgm().getStime(),"yyyy-MM-dd HH:mm:ss");
+                        long time_during=endtime-starttme;
+                        if(time_during>5*60*1000){
+                            //大于5分钟
+                            //代表禁止
+                            online_status.setText("静止");
+                            offline_time.setVisibility(View.VISIBLE);
+                            long hours=time_during/(1000*60*60);//获取间隔小时
+                            long mintues=time_during-(hours*(1000*60*60));//获取间隔分钟
+                            mintues=mintues/(60*1000);
+                            long days=hours/24;
+                            hours=hours-days*24;
+                            if(days==0){
+                                offline_time.setText("("+hours+"小时"+mintues+"分钟"+")");
+                            }else{
+                                offline_time.setText("("+days+"天"+hours+"小时"+mintues+"分钟"+")");
+                            }                        }else{
+                            //行驶中
+                            online_status.setText("行驶中");
+                        }
 
                     }else{
-                        online_status.setText("行驶中");
+                        //无线
+                        //在线和休眠
+                        long starttme=stringToLong(datalist.getDgm().getStime(),"yyyy-MM-dd HH:mm:ss");
+                        long endtime=System.currentTimeMillis();
+                        long time_during=endtime-starttme;
+                        if(time_during>10*60*1000){
+                            //大于5分钟
+                            //代表禁止
+                            online_status.setText("休眠");
+                            offline_time.setVisibility(View.VISIBLE);
+                            long hours=time_during/(1000*60*60);//获取间隔小时
+                            long mintues=time_during-(hours*(1000*60*60));//获取间隔分钟
+                            mintues=mintues/(60*1000);
+                            long days=hours/24;
+                            hours=hours-days*24;
+                            if(days==0){
+                                offline_time.setText("("+hours+"小时"+mintues+"分钟"+")");
+                            }else{
+                                offline_time.setText("("+days+"天"+hours+"小时"+mintues+"分钟"+")");
+                            }
+                            }else{
+                            //行驶中
+                            online_status.setText("在线");
+                        }
                     }
+//                    if(datalist.getDgm().getSpeed().equals("0")){
+//                        //在线的话速度为0状态就是静止
+//                        //设备状态
+//                        online_status.setText("静止");
+//
+//                    }else{
+//                        online_status.setText("行驶中");
+//                    }
                     online_status.setTextColor(getContext().getResources().getColor(R.color.tv_online));
                 }else{
                     online_status.setTextColor(getContext().getResources().getColor(R.color.tv_offline));
@@ -241,8 +293,8 @@ public class DeviceMessageFragment extends Fragment{
 
 
         //最后定位时间
-        if(datalist.getDgm().getTime()!=null){
-            last_loc_time.setText(datalist.getDgm().getTime());
+        if(datalist.getDgm().getStime()!=null){
+            last_loc_time.setText(datalist.getDgm().getStime());
             //定位类型
             loc_type.setText(datalist.getDgm().getType());
             //最后定位地址

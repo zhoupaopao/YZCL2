@@ -100,8 +100,8 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
-//        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
-//        dialog.show();
+        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
+        dialog.show();
         initView();
         initData();
         initListener();
@@ -206,7 +206,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-//                    dialog.dialog.dismiss();
+                    dialog.dialog.dismiss();
                     break;
                 case 1:
 
