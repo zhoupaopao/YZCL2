@@ -33,7 +33,7 @@
             android:layout_toRightOf="@id/search"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:hint="输入客户名称、用户账号、姓名"
+            android:hint="请输入客户名称"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:layout_marginLeft="15dp"
