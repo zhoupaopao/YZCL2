@@ -40,6 +40,7 @@ import com.example.yzcl.R;
 import com.example.yzcl.adapter.CarDeviceListAdapter;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
+import com.example.yzcl.mvp.model.bean.CarDetailBeans;
 import com.example.yzcl.mvp.model.bean.CarMonSearchListBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.mvp.ui.baseactivity.CheckPermissionsActivity;
@@ -248,32 +249,26 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     }
     public void queVehicleListForSea() {
         //展示搜索列表
-
-
         RequestParams params=new RequestParams();
 //        params.setRequestBodyString();
 //        params.setRequestBody();
         //因为传递的是json数据，所以需要设置header和body
         params.addHeader("Content-Type","application/json");
         JSONObject jsonObject=new JSONObject();
+        jsonObject.put("page",1);
+        jsonObject.put("pagesize",10);
         params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
-//        params.addFormDataPart("token",sp.getString(Constant.Token,""));
-//        params.addFormDataPart("search",et_search.getText().toString().trim());
-
-        HttpRequest.post(Api.queVehicleListForSea+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+        HttpRequest.post(Api.queVehicleList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
-                CarMonSearchListBean carMonSearchListBean=JSONObject.parseObject(jsonObject.toString(),CarMonSearchListBean.class);
-                if(carMonSearchListBean.isSuccess()){
-                    carSearchBeans=carMonSearchListBean.getList();
+                CarDetailBeans carDetailBeans=JSONObject.parseObject(jsonObject.toString(),CarDetailBeans.class);
+                if(carDetailBeans.isSuccess()){
+                    ArrayList<CarDetailBeans.CarDetailBean> carDetailBeanArrayList=new ArrayList<>();
 
-                    if(carSearchBeans.size()==0){
-                        Toast.makeText(VehicleMonitoringActivity.this,"暂无数据",Toast.LENGTH_SHORT).show();
-                    }
                 }else{
-                    Toast.makeText(VehicleMonitoringActivity.this,carMonSearchListBean.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VehicleMonitoringActivity.this,carDetailBeans.getMessage(),Toast.LENGTH_SHORT).show();
                 }
 
             }
