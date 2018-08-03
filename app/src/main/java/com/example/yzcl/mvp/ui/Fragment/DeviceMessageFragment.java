@@ -299,9 +299,9 @@ public class DeviceMessageFragment extends Fragment{
             loc_type.setText(datalist.getDgm().getType());
             //最后定位地址
             if(datalist.getDgm().getPostion()!=null){
-                loc_address.setText("最后定位地址:   "+datalist.getDgm().getPostion());
+                loc_address.setText("定位地址:   "+datalist.getDgm().getPostion());
             }else{
-                loc_address.setText("最后定位地址:   "+"当前无位置信息");
+                loc_address.setText("定位地址:   "+"当前无位置信息");
             }
 
         }else{
@@ -309,7 +309,7 @@ public class DeviceMessageFragment extends Fragment{
             //定位类型
             loc_type.setText("");
             //最后定位地址
-            loc_address.setText("最后定位地址:   "+"");
+            loc_address.setText("定位地址:   "+"");
         }
 
         //导航

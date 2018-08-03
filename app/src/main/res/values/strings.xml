@@ -16,7 +16,7 @@
     <string name="ggyc">光感异常</string>
     <string name="status_device">设备状态:</string>
     <string name="status_offline">离线</string>
-    <string name="last_loc_time">最后定位时间:</string>
+    <string name="last_loc_time">定位时间:</string>
     <string name="loc_type">定位类型:</string>
     <string name="jz_loc">基站定位</string>
     <string name="close_loc">跟踪</string>
