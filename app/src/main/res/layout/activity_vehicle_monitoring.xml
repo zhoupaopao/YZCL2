@@ -17,17 +17,33 @@
             android:clickable="true">
         </com.baidu.mapapi.map.MapView>
         <RelativeLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
-            <TextView
+            <LinearLayout
                 android:id="@+id/heead"
-                android:gravity="center"
-                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="我是头"/>
+
+                android:background="@color/white"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <View
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="50dp"
+                    android:layout_height="3dp"
+                    android:background="@color/dzwl_color"/>
+                <TextView
+
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="共6000台车"/>
+            </LinearLayout>
+
             <com.andview.refreshview.XRefreshView
                 android:layout_below="@id/heead"
             android:id="@+id/xrefreshview"
@@ -49,14 +65,65 @@
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="80dp"-->
                 <!--android:layout_below="@id/xrefreshview"></ListView>-->
-            <TextView
-                android:id="@+id/boottom"
+            <RadioGroup
+                android:id="@+id/radio_status"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:gravity="center"
                 android:layout_below="@id/xrefreshview"
-                android:background="@color/white"
-                android:text="我是底部"/>
+                android:orientation="horizontal"
+                android:background="@color/white">
+                <RadioButton
+                    android:id="@+id/status_all"
+                    android:checked="true"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13dp"
+                    android:button="@null"
+                    android:text="全部"
+                    android:textColor="@drawable/radio_button_color1"/>
+                <RadioButton
+                    android:id="@+id/status_online"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13dp"
+                    android:button="@null"
+                    android:text="在线"
+                    android:textColor="@drawable/radio_button_color1"/>
+                <RadioButton
+                    android:id="@+id/status_offline"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13dp"
+                    android:button="@null"
+                    android:text="离线"
+                    android:textColor="@drawable/radio_button_color1"/>
+                <RadioButton
+                    android:id="@+id/status_unuse"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13dp"
+                    android:button="@null"
+                    android:text="未启用"
+                    android:textColor="@drawable/radio_button_color1"/>
+
+            </RadioGroup>
+            <!--<TextView-->
+                <!--android:id="@+id/boottom"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_below="@id/xrefreshview"-->
+                <!--android:background="@color/white"-->
+                <!--android:text="我是底部"/>-->
 
 
         </RelativeLayout>

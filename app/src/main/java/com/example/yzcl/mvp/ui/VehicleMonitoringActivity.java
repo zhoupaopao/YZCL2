@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +18,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andview.refreshview.XRefreshView;
+import com.andview.refreshview.XRefreshViewFooter;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -38,6 +42,7 @@ import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
 import com.example.yzcl.adapter.CarDeviceListAdapter;
+import com.example.yzcl.adapter.VehCarListAdapter;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarDetailBeans;
@@ -69,6 +74,9 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     private MapView bmapview;
     private RelativeLayout rl_search;
     BaiduMap mBaiduMap;
+    Boolean candismis=false;
+    private int nowpage=1;
+    private int nowstatus=10;//初始全部
     BitmapDescriptor mCurrentMarker;
     // 定位相关
     LocationClient mLocClient;
@@ -82,17 +90,19 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
     private MyLocationData locData;
     private SensorManager mSensorManager;
     private BuildBean dialog;
-    private TextView heead;
+    private LinearLayout heead;
 //    private ListView listview;
     private XRefreshView xrefreshview;
     private RecyclerView carlist;
     private ArrayList<String> list;
-    CarDeviceListAdapter adapter;
+    ArrayList<CarDetailBeans.CarDetailBean> carDetailBeanArrayList;
+    VehCarListAdapter adapter;
     int width;
     int height;
     private SharedPreferences sp;
     private String TAG="VehicleMonitoringActivity";
     private ArrayList<CarMonSearchListBean.CarSearchBean>carSearchBeans=new ArrayList<>();
+    private RadioGroup radio_status;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +110,8 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
-        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
-        dialog.show();
+//        dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,false,false,true);
+//        dialog.show();
         initView();
         initData();
         initListener();
@@ -118,7 +128,9 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         heead=findViewById(R.id.heead);
         carlist=findViewById(R.id.carlist);
         xrefreshview=findViewById(R.id.xrefreshview);
+        radio_status=findViewById(R.id.radio_status);
         list=new ArrayList<>();
+        carDetailBeanArrayList=new ArrayList<>();
     }
 
     private void initData() {
@@ -126,7 +138,7 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
             //判断网络是否可用
             Toast.makeText(VehicleMonitoringActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
         }else{
-//            queVehicleListForSea();
+            queVehicleListForSea();
         }
         //获取屏幕宽高
         WindowManager wm = (WindowManager) this
@@ -199,14 +211,44 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
                 linearLayout.setLayoutParams(params);
             }
         });
+        radio_status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.status_all:
+                        nowpage=1;
+                        nowstatus=10;
+                        queVehicleListForSea();
 
+                        break;
+                    case R.id.status_online:
+                        nowpage=1;
+                        nowstatus=1;
+                        queVehicleListForSea();
+                        break;
+                    case R.id.status_offline:
+                        nowpage=1;
+                        nowstatus=0;
+                        queVehicleListForSea();
+                        break;
+                    case R.id.status_unuse:
+                        break;
+                }
+            }
+        });
     }
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                    dialog.dialog.dismiss();
+                    if(candismis){
+                        Log.i(TAG, "candismis-true");
+                        dialog.dialog.dismiss();
+                    }else{
+                        Log.i(TAG, "candismis-true");
+                        candismis=true;
+                    }
                     break;
                 case 1:
 
@@ -247,16 +289,22 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
         public void onReceivePoi(BDLocation poiLocation) {
         }
     }
-    public void queVehicleListForSea() {
-        //展示搜索列表
+    private void loadmore(){
+//0是离线1是在线
         RequestParams params=new RequestParams();
 //        params.setRequestBodyString();
 //        params.setRequestBody();
         //因为传递的是json数据，所以需要设置header和body
         params.addHeader("Content-Type","application/json");
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("page",1);
+        jsonObject.put("page",nowpage);
         jsonObject.put("pagesize",10);
+        if(nowstatus==10){
+
+        }else{
+            jsonObject.put("online_status",nowstatus);
+        }
+
         params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
         HttpRequest.post(Api.queVehicleList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
             @Override
@@ -265,8 +313,120 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
                 Log.i(TAG, jsonObject.toString());
                 CarDetailBeans carDetailBeans=JSONObject.parseObject(jsonObject.toString(),CarDetailBeans.class);
                 if(carDetailBeans.isSuccess()){
-                    ArrayList<CarDetailBeans.CarDetailBean> carDetailBeanArrayList=new ArrayList<>();
 
+                    carDetailBeanArrayList.addAll(carDetailBeans.getList());
+
+                    xrefreshview.stopLoadMore(true);
+                }else{
+                    Toast.makeText(VehicleMonitoringActivity.this,carDetailBeans.getMessage(),Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                Toast.makeText(VehicleMonitoringActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
+                xrefreshview.stopLoadMore(false);
+//                DialogUIUtils.showToast("网络错误");
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+//                dialog= DialogUIUtils.showLoading(VehicleMonitoringActivity.this,"加载中...",true,true,false,true);
+//                dialog.show();
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                dialog.dialog.dismiss();
+            }
+        });
+    }
+    public void queVehicleListForSea() {
+        //展示搜索列表
+        RequestParams params=new RequestParams();
+//        params.setRequestBodyString();
+//        params.setRequestBody();
+        //因为传递的是json数据，所以需要设置header和body
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("page",nowpage);
+        jsonObject.put("pagesize",10);
+        if(nowstatus==10){
+            //所有车辆
+        }else{
+            jsonObject.put("online_status",nowstatus);
+        }
+
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.queVehicleList+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                CarDetailBeans carDetailBeans=JSONObject.parseObject(jsonObject.toString(),CarDetailBeans.class);
+                if(carDetailBeans.isSuccess()){
+                     carDetailBeanArrayList.clear();
+                    carDetailBeanArrayList=carDetailBeans.getList();
+                    xrefreshview.setPullLoadEnable(true);
+                    //设置刷新完成以后，headerview固定的时间
+                    xrefreshview.setPinnedTime(1000);
+                    xrefreshview.setMoveForHorizontal(true);
+                    //是否自动加载更新
+                    xrefreshview.setAutoLoadMore(true);
+                    xrefreshview.enablePullUpWhenLoadCompleted(true);
+//        xRefreshView.setCustomFooterView(new XRefreshViewFooter(this));
+                    xrefreshview.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+                        @Override
+                        public void onRefresh(boolean isPullDown) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nowpage=1;
+                                    queVehicleListForSea();
+                                    xrefreshview.stopRefresh();
+                                }
+                            }, 500);
+                        }
+
+                        @Override
+                        public void onLoadMore(boolean isSilence) {
+                            new Handler().postDelayed(new Runnable() {
+                                public void run() {
+                                    nowpage++;
+//                                    loadData(dev_status,nowPages);
+                                    loadmore();
+                                }
+                            }, 500);
+                        }
+                    });
+                    adapter=new VehCarListAdapter(VehicleMonitoringActivity.this,carDetailBeanArrayList);
+                    adapter.setCustomLoadMoreView(new XRefreshViewFooter(VehicleMonitoringActivity.this));
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(VehicleMonitoringActivity.this);
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    carlist.setLayoutManager(layoutManager);
+                    carlist.setAdapter(adapter);
+                    //设置增加或删除条目的动画
+                    carlist.setItemAnimator( new DefaultItemAnimator());
+
+//                    carlist.setNestedScrollingEnabled(false);
+                    carlist.setAdapter(adapter);
+                    //统计数量
+//                    Api
+//                    /monitor/queVehicleListCount
+                    if(candismis){
+                        dialog.dialog.dismiss();
+                        Log.i(TAG, "candismis-true");
+                    }else{
+                        candismis=true;
+                        Log.i(TAG, "candismis-false");
+                    }
+//                    dialog.dialog.dismiss();
                 }else{
                     Toast.makeText(VehicleMonitoringActivity.this,carDetailBeans.getMessage(),Toast.LENGTH_SHORT).show();
                 }
@@ -276,7 +436,9 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
             @Override
             public void onFailure(int errorCode, String msg) {
                 super.onFailure(errorCode, msg);
-                DialogUIUtils.showToast("网络错误");
+                Toast.makeText(VehicleMonitoringActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
+                xrefreshview.stopRefresh();
+//                DialogUIUtils.showToast("网络错误");
             }
 
             @Override
