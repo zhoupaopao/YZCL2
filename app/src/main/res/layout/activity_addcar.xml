@@ -1,351 +1,490 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:fitsSystemWindows="true">
 
     <include
         android:id="@+id/fist"
         layout="@layout/first_title" />
-<RelativeLayout
-    android:id="@+id/botton"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_alignParentBottom="true"
-    android:background="@color/white">
-    <TextView
-        android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/myrect"
-        android:text="提交"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
 
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:textColor="@color/white" />
-</RelativeLayout>
+
 
 
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/botton"
-        android:layout_below="@id/fist">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:orientation="vertical">
+
             <LinearLayout
+                android:id="@+id/person_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:gravity="center_vertical"
-                android:text="借款人信息"
-                android:textColor="@color/title_text_color" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:text="借款人信息"
+                    android:textColor="@color/title_text_color" />
 
                 <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="*"
-                        android:textColor="@color/red" />
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="@color/red" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="姓名"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="姓名"
-                        android:textSize="16dp" />
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请输入客户名称(必填)"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/name"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:hint="请输入客户名称(必填)"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="手机号码"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写手机号码"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/cardtype"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="证件类型"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_cardtype"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/cardtype">
+
+                        <ImageView
+                            android:id="@+id/toright1"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/car_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright1"
+                            android:gravity="center_vertical"
+                            android:text="身份证"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="证件号码"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/card_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写证件号码"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/sex"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="联系地址"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_sex"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/sex">
+
+                        <ImageView
+                            android:id="@+id/toright"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_sex"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright"
+                            android:maxLines="1"
+                            android:gravity="center_vertical"
+                            android:text="请选择所在地区"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="详细地址"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/home_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="街道和门牌号"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:id="@+id/sex"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="性别"
-                    android:textSize="16dp" />
-            <RelativeLayout
-                android:id="@+id/rl_sex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/sex">
-
-                <ImageView
-                    android:id="@+id/toright"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
-
-                <TextView
-                    android:id="@+id/tv_sex"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright"
-                    android:gravity="center_vertical"
-                    android:text="男"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:id="@+id/cardtype"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="证件类型"
-                    android:textSize="16dp" />
-            <RelativeLayout
-                android:id="@+id/rl_cardtype"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/cardtype">
-
-                <ImageView
-                    android:id="@+id/toright1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
-
-                <TextView
-                    android:id="@+id/car_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright1"
-                    android:gravity="center_vertical"
-                    android:text="身份证"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-            </RelativeLayout>
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="证件号码"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/card_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:hint="请输入证件号码(选填)"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="手机号码"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:hint="请输入手机号码(选填)"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="家庭住址"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/home_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:hint="选填"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
-
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/car_msg"
                 android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="工作地址"
-                    android:textSize="16dp" />
-
-                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
                     android:gravity="center_vertical"
-                    android:hint="选填"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
-
-            </LinearLayout>
-            </LinearLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:gravity="center_vertical"
-                android:text="车辆信息"
-                android:textColor="@color/title_text_color" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                    android:text="车辆信息"
+                    android:textColor="@color/title_text_color" />
 
                 <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="*"
-                        android:textColor="@color/red" />
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="@color/red" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="车架号"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/car_vin"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="车架号"
-                        android:textSize="16dp" />
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写17位车架号"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/car_vin"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:hint="请输入17位车架号(必填)"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
 
-            </LinearLayout>
-            <LinearLayout
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="车牌号"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写车牌号"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/carxi"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="品牌车系"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_carxi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/carxi">
+
+                        <ImageView
+                            android:id="@+id/toright22"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_carxi"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright22"
+                            android:gravity="center_vertical"
+                            android:text="请选择"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/cartype"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="选择车型"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_cartype"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/cartype">
+
+                        <ImageView
+                            android:id="@+id/toright2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_cartype"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright2"
+                            android:gravity="center_vertical"
+                            android:text="请选择"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="发动机号"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_fdj"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写行驶证上的发动机号码"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="车辆颜色"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:gravity="center_vertical"
+                        android:hint="请填写颜色"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_Filling"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="车牌号"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/car_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center_vertical"
-                    android:hint="请输入车牌号(选填)"
-                    android:textColorHint="@color/hint_input_color"
-                    android:textSize="14dp" />
-
+                android:gravity="center"
+                android:text="点击补填更多信息"
+                android:textColor="@color/title_color" />
             </LinearLayout>
+        <LinearLayout
+            android:id="@+id/car_filling_msg"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -354,63 +493,35 @@
                 android:paddingLeft="10dp">
 
                 <TextView
-                    android:id="@+id/cartype"
+                    android:id="@+id/caryear"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="选择车型"
+                    android:text="车龄"
                     android:textSize="16dp" />
-            <RelativeLayout
-                android:id="@+id/rl_cartype"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/cartype">
 
-                <ImageView
-                    android:id="@+id/toright2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                <TextView
+                    android:id="@+id/year1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
+                    android:gravity="center_vertical"
+                    android:text="年" />
 
-                <TextView
-                    android:id="@+id/tv_cartype"
+                <EditText
+                    android:id="@+id/years"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright2"
-                    android:gravity="center_vertical"
-                    android:text="请选择"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-            </RelativeLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="车辆颜色"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/car_color"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/year1"
+                    android:layout_toRightOf="@id/caryear"
                     android:background="@null"
+                    android:maxLines="1"
                     android:gravity="center_vertical"
-                    android:hint="请输入颜色(选填)"
+                    android:hint="请填写车龄使用年限"
                     android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />
-
-            </LinearLayout>
+            </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -430,9 +541,9 @@
                     android:id="@+id/line"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
                     android:gravity="center_vertical"
-                    android:text="公里"
-                    android:layout_alignParentRight="true" />
+                    android:text="公里" />
 
                 <EditText
                     android:id="@+id/mileage"
@@ -441,12 +552,14 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/line"
                     android:layout_toRightOf="@id/carline"
+                    android:background="@null"
+                    android:maxLines="1"
                     android:gravity="center_vertical"
+                    android:hint="请填写行驶里程数"
                     android:textColorHint="@color/hint_input_color"
-                    android:hint="请输入行驶里程数(选填)"
-                    android:textSize="14dp"
-                    android:background="@null"/>
+                    android:textSize="14dp" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -455,37 +568,36 @@
                 android:paddingLeft="10dp">
 
                 <TextView
-                    android:id="@+id/useyear"
+                    android:id="@+id/carmoney"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="使用年限"
+                    android:text="车辆价格"
                     android:textSize="16dp" />
-            <RelativeLayout
-                android:id="@+id/rl_useyear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/useyear">
-
-                <ImageView
-                    android:id="@+id/toright3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
 
                 <TextView
-                    android:id="@+id/use_age"
+                    android:id="@+id/money1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:text="万元" />
+
+                <EditText
+                    android:id="@+id/use_carmoney"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright3"
+                    android:layout_toLeftOf="@id/money1"
+                    android:layout_toRightOf="@id/carmoney"
+                    android:background="@null"
+                    android:maxLines="1"
                     android:gravity="center_vertical"
-                    android:text="请选择"
+                    android:hint="请填写购车金额，例如：22.23"
+                    android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />
             </RelativeLayout>
-            </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -505,9 +617,9 @@
                     android:id="@+id/moneyline"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
                     android:gravity="center_vertical"
-                    android:text="万元"
-                    android:layout_alignParentRight="true" />
+                    android:text="万元" />
 
                 <EditText
                     android:id="@+id/use_money"
@@ -516,12 +628,14 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/moneyline"
                     android:layout_toRightOf="@id/money"
+                    android:background="@null"
+                    android:maxLines="1"
                     android:gravity="center_vertical"
-                    android:textColorHint="@color/hint_input_color"
                     android:hint="请输入金额，如22.23万元(选填)"
-                    android:textSize="14dp"
-                    android:background="@null"/>
+                    android:textColorHint="@color/hint_input_color"
+                    android:textSize="14dp" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -534,8 +648,9 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="借款日期"
+                    android:text="车辆级别"
                     android:textSize="16dp" />
+
                 <RelativeLayout
                     android:id="@+id/starttime"
                     android:layout_width="match_parent"
@@ -543,26 +658,26 @@
                     android:layout_toRightOf="@id/date">
 
 
+                    <ImageView
+                        android:id="@+id/toright4"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/icon_right" />
 
-                <ImageView
-                    android:id="@+id/toright4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright4"
-                    android:gravity="center_vertical"
-                    android:id="@+id/tv_starttime"
-                    android:text="开始时间"
-                    android:textSize="14dp" />
+                    <TextView
+                        android:id="@+id/tv_starttime"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/toright4"
+                        android:gravity="center_vertical"
+                        android:text="请选择"
+                        android:textSize="14dp" />
                 </RelativeLayout>
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -571,35 +686,70 @@
                 android:paddingLeft="10dp">
 
 
-                <View
+                <TextView
                     android:id="@+id/kong"
                     android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
-            <RelativeLayout
-                android:id="@+id/endtime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/kong">
-
-                <ImageView
-                    android:id="@+id/toright5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_right" />
+                    android:text="使用性质"
+                    android:textSize="16dp" />
 
+                <RelativeLayout
+                    android:id="@+id/endtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/kong">
+
+                    <ImageView
+                        android:id="@+id/toright5"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/icon_right" />
+
+                    <TextView
+                        android:id="@+id/tv_endtime"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/toright5"
+                        android:gravity="center_vertical"
+                        android:text="请选择"
+                        android:textSize="14dp" />
+                </RelativeLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_marginTop="1dp"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="100dp"
+                android:paddingLeft="10dp"
+                android:orientation="vertical">
                 <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:text="备注信息"
+                    android:textSize="16dp" />
+                <EditText
+                    android:id="@+id/bz_msg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/toright5"
+                    android:background="@null"
                     android:gravity="center_vertical"
-                    android:id="@+id/tv_endtime"
-                    android:text="结束时间"
+                    android:paddingRight="10dp"
+                    android:hint="请描述，不超过200字"
+                    android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />
-            </RelativeLayout>
-            </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -607,6 +757,7 @@
                 android:gravity="center_vertical"
                 android:text="安装信息"
                 android:textColor="@color/title_text_color" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -641,11 +792,10 @@
                     android:layout_toRightOf="@id/date">
 
 
-
                     <ImageView
                         android:id="@+id/toright6"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:src="@mipmap/icon_right" />
@@ -662,6 +812,7 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -700,6 +851,7 @@
                     android:textSize="14dp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -738,6 +890,7 @@
                     android:textSize="14dp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -764,6 +917,7 @@
                     android:textSize="14dp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -790,6 +944,7 @@
                     android:textSize="14dp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -816,14 +971,16 @@
                     android:textSize="14dp" />
 
             </LinearLayout>
+
+
             <LinearLayout
                 android:id="@+id/add_device"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
                 android:paddingLeft="10dp">
 
                 <LinearLayout
@@ -852,33 +1009,68 @@
                     android:layout_toRightOf="@id/date">
 
 
-
                     <ImageView
                         android:id="@+id/toright7"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:src="@mipmap/icon_right" />
 
 
                 </RelativeLayout>
-
+            </LinearLayout>
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="10dp"
                 android:id="@+id/rcv_img"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingTop="20dp"
                 android:layout_below="@+id/et_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:clipToPadding="false"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:clipToPadding="false"/>
+                android:paddingTop="20dp" />
+            <LinearLayout
+                android:id="@+id/botton"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/next"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/myrect"
+
+                    android:gravity="center"
+                    android:text="下一步"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white" />
+                <TextView
+
+                    android:visibility="gone"
+                    android:id="@+id/submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/myrect1"
+                    android:layout_marginBottom="15dp"
+                    android:gravity="center"
+                    android:text="完成"
+                    android:textColor="@color/hint_input_color" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
+    android:id="@+id/line_car_address"
     android:layout_height="80dp"
     android:orientation="vertical"
     android:paddingRight="10dp"

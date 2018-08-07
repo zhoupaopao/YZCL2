@@ -1,15 +1,19 @@
 package com.example.yzcl.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.model.bean.CarDetailBeans;
+import com.example.yzcl.mvp.ui.CarAddressActivity;
+import com.example.yzcl.mvp.ui.CarMonSearchActivity;
 
 import java.util.ArrayList;
 import java.util.zip.Inflater;
@@ -41,6 +45,9 @@ public class VehCarListAdapter extends BaseRecyclerAdapter<VehCarListAdapter.Vie
     @Override
     public void onBindViewHolder(ViewHolder holder, int position, boolean isItem) {
         CarDetailBeans.CarDetailBean carDetailBean=list.get(position);
+        holder.device1.setVisibility(View.GONE);
+        holder.device2.setVisibility(View.GONE);
+        holder.device3.setVisibility(View.GONE);
         holder.car_name.setText(carDetailBean.getName());
         holder.vin.setText(carDetailBean.getVin());//没有车牌号，先不填
         //遍历所有的设备
@@ -100,6 +107,20 @@ public class VehCarListAdapter extends BaseRecyclerAdapter<VehCarListAdapter.Vie
         }else{
             holder.device_num.setText("...  共"+carDetailBean.getDevice().size()+"个设备");
         }
+//        holder.line_car_address.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ArrayList<com.example.yzcl.mvp.model.bean.carDetailGPSBeans.carDetailGPSBean>carDetailGPSBean=carDetailGPSBeans.getList();
+//                Intent intent=new Intent();
+//                intent.setClass(context,CarAddressActivity.class);
+////                                    Bundle b=new Bundle();
+////                                    b.put("pose_title", pose_title);
+////                                    intent.putExtras(b);
+//                intent.putExtra("carDetailGPS", jsonObject.get("list").toString());
+////                                        intent.putExtra("carDetailGPS", carSearchBean.getId());
+//                context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override
@@ -114,6 +135,7 @@ public class VehCarListAdapter extends BaseRecyclerAdapter<VehCarListAdapter.Vie
         TextView device2;
         TextView device3;
         TextView device_num;
+        LinearLayout line_car_address;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +145,7 @@ public class VehCarListAdapter extends BaseRecyclerAdapter<VehCarListAdapter.Vie
             device2=itemView.findViewById(R.id.device2);
             device3=itemView.findViewById(R.id.device3);
             device_num=itemView.findViewById(R.id.device_num);
+            line_car_address=itemView.findViewById(R.id.line_car_address);
         }
     }
 }

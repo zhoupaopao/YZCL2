@@ -74,7 +74,7 @@ import static com.dou361.dialogui.DialogUIUtils.showToast;
 /**
  * 新增车辆
  */
-public class AddCarActivity extends BaseActivity implements com.example.yzcl.utils.TimePickerDialog.TimePickerDialogInterface,ImagePickerAdapter.OnRecyclerViewItemClickListener{
+public class AddCarActivity extends BaseActivity implements com.example.yzcl.utils.TimePickerDialog.TimePickerDialogInterface,ImagePickerAdapter.OnRecyclerViewItemClickListener,View.OnClickListener{
     public static final int IMAGE_SIZE = 9;
     RecyclerView rcvImg;
     private TextView title;
@@ -112,8 +112,8 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private int maxImgCount = 8;               //允许选择图片最大数
 
     //详细布局
-    private RelativeLayout rl_sex;//性别
-    private TextView tv_sex;//性别
+    private RelativeLayout rl_sex;//联系地址
+    private TextView tv_sex;//联系地址
     private EditText name;//姓名
     private RelativeLayout rl_cardtype;//证件类型
     private TextView cardtype;//证件类型
@@ -137,6 +137,13 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private EditText installer_phone;//安装工手机号码
     private EditText installer_bz;//安装备注
     private LinearLayout add_device;//添加设备
+
+    private LinearLayout person_msg;//个人信息页面
+    private LinearLayout car_filling_msg;//点击填补后的消息
+    private LinearLayout car_msg;//车辆初始信息
+    private TextView tv_Filling;//点击的填补文字
+    private TextView next;//下一步和绑定设备
+    private int nowpage=1;//当前页数，控制下一页和返回的显示
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -203,6 +210,60 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.back:
+                if(nowpage==1){
+                    finish();
+                }else{
+                    //返回第一页
+                    person_msg.setVisibility(View.VISIBLE);
+                    car_msg.setVisibility(View.GONE);
+                    car_filling_msg.setVisibility(View.GONE);
+                    next.setText("下一页");
+                    nowpage=1;
+                }
+                break;
+            case R.id.rl_sex:
+                break;
+            case R.id.rl_cardtype:
+                break;
+            case R.id.rl_cartype:
+                break;
+            case R.id.next:
+                //下一步
+                if(nowpage==1){
+                    person_msg.setVisibility(View.GONE);
+                    car_msg.setVisibility(View.VISIBLE);
+                    next.setText("绑定设备");
+                    nowpage=2;
+                }else{
+                    //第二页了
+                    //需要去绑定设备
+                    Toast.makeText(AddCarActivity.this,"去绑定设备",Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            case R.id.tv_Filling:
+                //张开填补的信息
+                tv_Filling.setVisibility(View.GONE);
+                car_filling_msg.setVisibility(View.VISIBLE);
+
+
+                break;
+//            case R.id.rl_sex:
+//                break;
+//            case R.id.rl_sex:
+//                break;
+//            case R.id.rl_sex:
+//                break;
+//            case R.id.rl_sex:
+//                break;
+
+        }
+    }
+
     static class MyRunnable implements Runnable {
 
         List<String> images;
@@ -254,13 +315,9 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     }
 
     private void initListener() {
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        //开始时间设置
+        back.setOnClickListener(this);
+        tv_Filling.setOnClickListener(this);
+        next.setOnClickListener(this);
         starttime.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -552,6 +609,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     }
 
     private void initView() {
+        person_msg=findViewById(R.id.person_msg);
         rcvImg=findViewById(R.id.rcv_img);
         back=findViewById(R.id.back);
         title=findViewById(R.id.title);
@@ -574,7 +632,6 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         tv_cartype=findViewById(R.id.tv_cartype);//车辆类型
         car_color=findViewById(R.id.car_color);//车辆颜色
         mileage=findViewById(R.id.mileage);//行驶里程
-        rl_useyear=findViewById(R.id.rl_useyear);//使用年限
         use_age=findViewById(R.id.use_age);//使用年限
         use_money=findViewById(R.id.use_money);//借款金额
         belong=findViewById(R.id.belong);//所属客户
@@ -585,19 +642,24 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         installer_phone=findViewById(R.id.installer_phone);//安装工手机号码
         installer_bz=findViewById(R.id.installer_bz);//安装备注
         add_device=findViewById(R.id.add_device);//添加设备
+        person_msg=findViewById(R.id.person_msg);
+        car_filling_msg=findViewById(R.id.car_filling_msg);
+        car_msg=findViewById(R.id.car_msg);
+        tv_Filling=findViewById(R.id.tv_Filling);
+        next=findViewById(R.id.next);
         //初始化图片recycle
 //        initRcv();
         initRecy();
-        List<TieBean> strings = new ArrayList<TieBean>();
-        strings.add(new TieBean("1"));
-        strings.add(new TieBean("2"));
-        strings.add(new TieBean("3"));
-        DialogUIUtils.showSheet(AddCarActivity.this, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
-            @Override
-            public void onItemClick(CharSequence text, int position) {
-//                showToast(text);
-            }
-        }).show();
+//        List<TieBean> strings = new ArrayList<TieBean>();
+//        strings.add(new TieBean("1"));
+//        strings.add(new TieBean("2"));
+//        strings.add(new TieBean("3"));
+//        DialogUIUtils.showSheet(AddCarActivity.this, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
+//            @Override
+//            public void onItemClick(CharSequence text, int position) {
+////                showToast(text);
+//            }
+//        }).show();
     }
 
     private void initRecy() {
