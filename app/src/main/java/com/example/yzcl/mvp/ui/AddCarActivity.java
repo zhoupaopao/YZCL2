@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +44,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
@@ -116,7 +119,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private TextView tv_sex;//联系地址
     private EditText name;//姓名
     private RelativeLayout rl_cardtype;//证件类型
-    private TextView card_type;//证件类型
+    private TextView car_type;//证件类型
     private EditText card_num;//证件号码
     private EditText mobile;//手机号码
     private EditText home_address;//家庭地址
@@ -144,6 +147,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private TextView tv_Filling;//点击的填补文字
     private TextView next;//下一步和绑定设备
     private int nowpage=1;//当前页数，控制下一页和返回的显示
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -231,15 +235,26 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                 //可以换成底部的
                 //CHU
                 ///kk
-                final List<TieBean> strings = new ArrayList<TieBean>();
-                strings.add(new TieBean("身份证"));
-                strings.add(new TieBean("组织机构代码"));
-                DialogUIUtils.showSheet(AddCarActivity.this, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
+                final ArrayList<String>cardtypee = new ArrayList<>();
+                cardtypee.add("身份证");
+                cardtypee.add("组织机构代码");
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                OptionsPickerView pickerView = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
                     @Override
-                    public void onItemClick(CharSequence text, int position) {
-                        card_type.setText(text);
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        //当点击的时候触发的事件
+                        car_type.setText(cardtypee.get(options1));
+
+
                     }
-                }).show();
+                }).setTitleText("").setDividerColor(Color.BLUE)
+                        .setTextColorCenter(Color.GRAY)
+                        .setContentTextSize(18)
+                        .setOutSideCancelable(false).build();
+                pickerView.setPicker(cardtypee);
+                pickerView.show();
                 break;
             case R.id.rl_cartype:
                 break;
@@ -635,7 +650,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         tv_sex=findViewById(R.id.tv_sex);//性别
         name=findViewById(R.id.name);//姓名
         rl_cardtype=findViewById(R.id.rl_cardtype);//证件类型
-        card_type=findViewById(R.id.cardtype);//证件类型
+        car_type=findViewById(R.id.car_type);//证件类型
         card_num=findViewById(R.id.card_num);//证件号码
         mobile=findViewById(R.id.mobile);//手机号码
         home_address=findViewById(R.id.home_address);//家庭地址
