@@ -228,6 +228,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
             case R.id.rl_sex:
                 break;
             case R.id.rl_cardtype:
+                //可以换成底部的
                 final List<TieBean> strings = new ArrayList<TieBean>();
                 strings.add(new TieBean("身份证"));
                 strings.add(new TieBean("组织机构代码"));
