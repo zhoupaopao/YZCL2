@@ -116,7 +116,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private TextView tv_sex;//联系地址
     private EditText name;//姓名
     private RelativeLayout rl_cardtype;//证件类型
-    private TextView cardtype;//证件类型
+    private TextView card_type;//证件类型
     private EditText card_num;//证件号码
     private EditText mobile;//手机号码
     private EditText home_address;//家庭地址
@@ -228,6 +228,15 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
             case R.id.rl_sex:
                 break;
             case R.id.rl_cardtype:
+                final List<TieBean> strings = new ArrayList<TieBean>();
+                strings.add(new TieBean("身份证"));
+                strings.add(new TieBean("组织机构代码"));
+                DialogUIUtils.showSheet(AddCarActivity.this, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
+                    @Override
+                    public void onItemClick(CharSequence text, int position) {
+                        card_type.setText(text);
+                    }
+                }).show();
                 break;
             case R.id.rl_cartype:
                 break;
@@ -318,6 +327,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         back.setOnClickListener(this);
         tv_Filling.setOnClickListener(this);
         next.setOnClickListener(this);
+        rl_cardtype.setOnClickListener(this);
         starttime.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -622,7 +632,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         tv_sex=findViewById(R.id.tv_sex);//性别
         name=findViewById(R.id.name);//姓名
         rl_cardtype=findViewById(R.id.rl_cardtype);//证件类型
-        cardtype=findViewById(R.id.cardtype);//证件类型
+        card_type=findViewById(R.id.cardtype);//证件类型
         card_num=findViewById(R.id.card_num);//证件号码
         mobile=findViewById(R.id.mobile);//手机号码
         home_address=findViewById(R.id.home_address);//家庭地址
