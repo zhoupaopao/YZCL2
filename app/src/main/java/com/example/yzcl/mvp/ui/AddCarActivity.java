@@ -183,6 +183,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private ArrayList<String> Pinvince = new ArrayList<>();//省
     private ArrayList<String> city = new ArrayList<>();//市
     private ArrayList<String> area = new ArrayList<>();//区
+
     private int level = 0;//当前省市区级别（0：省，1市，2区）
     private String ssq = "";//省市区
     private String citycode = "";
@@ -406,7 +407,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     @Override
                     public void onOptionsSelect(int options1, int options2, int options3, View v) {
                         //当点击的时候触发的事件
-                        tv_starttime.setText(foruser.get(options1));
+                        tv_endtime.setText(foruser.get(options1));
 
 
                     }
@@ -433,11 +434,51 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     carjsonObject.put("car_no",car_num.getText().toString().trim());
                     carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
                     carjsonObject.put("color",car_color.getText().toString().trim());
-                    //发动机号
+                    //发动机号tv_starttime
+
                     carjsonObject.put("engine",car_fdj.getText().toString().trim());
                     carjsonObject.put("remark",bz_msg.getText().toString().trim());
                     //车辆用途
-                    carjsonObject.put("use_prop","1");
+                    switch (tv_starttime.getText().toString()){
+                        case "小型车":
+                            carjsonObject.put("car_type","1");
+                            break;
+                        case "紧凑车":
+                            carjsonObject.put("car_type","2");
+                            break;
+                        case "中型车":
+                            carjsonObject.put("car_type","3");
+                            break;
+                        case "中型SUV":
+                            carjsonObject.put("car_type","4");
+                            break;
+                        case "中大型车":
+                            carjsonObject.put("car_type","5");
+                            break;
+                        case "中大型SUV":
+                            carjsonObject.put("car_type","6");
+                            break;
+                        case "皮卡":
+                            carjsonObject.put("car_type","7");
+                            break;
+                        case "其他":
+                            carjsonObject.put("car_type","0");
+                            break;
+                    }
+                    switch (tv_endtime.getText().toString()){
+                        case "自用":
+                            carjsonObject.put("use_prop","1");
+                            break;
+                        case "非营运":
+                            carjsonObject.put("use_prop","3");
+                            break;
+                        case "营运":
+                            carjsonObject.put("use_prop","2");
+                            break;
+                        case "其他":
+                            carjsonObject.put("use_prop","0");
+                            break;
+                    }
                     //使用年限
                     carjsonObject.put("used_age",years.getText().toString().trim());
                     jsonObject.put("car",carjsonObject);
@@ -447,7 +488,20 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     pledgerjsonObject.put("phone",mobile.getText().toString().trim());
 //                    JSONObject pledgerjsonObject1=new JSONObject();
                     JSONArray pledgerListjsonObject=new JSONArray();
+                    JSONObject locjsonObject=new JSONObject();
+                    locjsonObject.put("province","");
+                    locjsonObject.put("city","");
+                    locjsonObject.put("district","");
+                    locjsonObject.put("address",home_address.getText().toString().trim());
+                    locjsonObject.put("type",1);
+                    locjsonObject.put("lat",null);
+                    locjsonObject.put("lng",null);
+                    pledgerListjsonObject.add(locjsonObject);
                     pledgerjsonObject.put("pledger_loc",pledgerListjsonObject);
+                    pledgerjsonObject.put("card_type","1");//写死是身份证
+                    pledgerjsonObject.put("idcard",card_num.getText().toString().trim());
+                    pledgerjsonObject.put("name",name.getText().toString().trim());
+                    pledgerjsonObject.put("phone",mobile.getText().toString().trim());
                     jsonObject.put("pledger",pledgerjsonObject);
 
                     params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
