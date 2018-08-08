@@ -141,9 +141,11 @@ public class HomePage extends BaseActivity implements OnBannerListener{
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, "onSuccess: "+jsonObject.toString());
+
                 if(jsonObject.getBoolean("success")){
                     //请求成功
                     //获取权限
+                    String group_id=jsonObject.getJSONObject("object").getString("groupid");
                     HashMap<String,Boolean>hashMap=new HashMap<>();
                     hashMap.put("qx_jk",false);
                     hashMap.put("qx_fk",false);
@@ -156,6 +158,7 @@ public class HomePage extends BaseActivity implements OnBannerListener{
                     String list_Jurisdiction=jsonObject.getJSONObject("object").getString("rightstring");
                     SharedPreferences.Editor editor=sp.edit();
                     editor.putString("list_Jurisdiction",list_Jurisdiction);
+                    editor.putString(Constant.Group_id,group_id);
                     editor.commit();
                     String[]list_jur=list_Jurisdiction.split(",");
                     for(int i=0;i<list_jur.length;i++){

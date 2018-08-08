@@ -297,6 +297,7 @@
                         android:maxLines="1"
                         android:gravity="center_vertical"
                         android:hint="请填写17位车架号"
+                        android:maxLength="17"
                         android:textColorHint="@color/hint_input_color"
                         android:textSize="14dp" />
 
@@ -372,6 +373,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="1dp"
@@ -740,6 +742,7 @@
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:paddingRight="10dp"
+                    android:maxLength="200"
                     android:hint="请描述，不超过200字"
                     android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />

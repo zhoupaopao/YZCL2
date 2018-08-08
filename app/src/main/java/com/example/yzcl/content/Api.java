@@ -89,4 +89,11 @@ public class Api {
     public static  String queryDeviceList=MonitorUrl+"/device/v1/queryDeviceListApp";
     //统计车辆数量/operation/v1/monitor/queVehicleListCount
     public static  String queVehicleListCount=MonitorUrl+"/operation/v1/monitor/queVehicleListCount";
+    //获取省市区接口operation/v1/vehicleManage/getAddress
+    public static  String getAddress=MonitorUrl+"/operation/v1/vehicleManage/getAddress";
+    //获取车辆品牌/operation/v1/vehicleManage/getCarBand
+    public static  String getCarBand=MonitorUrl+"/operation/v1/vehicleManage/getCarBand";
+    //新增车辆/operation/v1/vehicleManage/add
+    public static  String add=MonitorUrl+"/operation/v1/vehicleManage/add";
+
 }

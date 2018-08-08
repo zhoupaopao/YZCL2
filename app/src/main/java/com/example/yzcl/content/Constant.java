@@ -13,6 +13,7 @@ public class Constant {
     public static String Token="Token";
     public static String username="username";
     public static String userid="userid";
+    public static String Group_id="Group_id";
     public static String password="password";
     public static String Url_head="";
     //判断网络是否可用

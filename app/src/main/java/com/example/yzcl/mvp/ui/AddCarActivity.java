@@ -13,6 +13,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,7 +26,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -44,14 +47,30 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.andview.refreshview.XRefreshViewFooter;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
+import com.example.tree.Node3;
 import com.example.yzcl.Listener.OnRecyclerItemClickListener;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.CarListAdapter1;
 import com.example.yzcl.adapter.ImagePickerAdapter;
 import com.example.yzcl.adapter.PostArticleImgAdapter;
+import com.example.yzcl.adapter.SimpleTreeeAdapter;
+import com.example.yzcl.adapter.SortAdapter;
+import com.example.yzcl.adapter.TreeListViewwAdapter;
+import com.example.yzcl.content.Api;
+import com.example.yzcl.content.Constant;
+import com.example.yzcl.mvp.model.bean.CarBrandBean;
+import com.example.yzcl.mvp.model.bean.CarListBean;
+import com.example.yzcl.mvp.model.bean.CityBean;
+import com.example.yzcl.mvp.model.bean.CustomerOrganizationBeans;
+import com.example.yzcl.mvp.model.bean.NewFileBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
 import com.example.yzcl.utils.MultiImageSelector;
 import com.example.yzcl.utils.MyCallBack;
@@ -70,6 +89,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.zip.Inflater;
+
+import cn.finalteam.okhttpfinal.BaseHttpRequestCallback;
+import cn.finalteam.okhttpfinal.HttpRequest;
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 
 import static com.dou361.dialogui.DialogUIUtils.showToast;
 
@@ -140,15 +166,39 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private EditText installer_phone;//安装工手机号码
     private EditText installer_bz;//安装备注
     private LinearLayout add_device;//添加设备
+    private TextView tv_carxi;
+    private EditText car_fdj;
+    private EditText bz_msg;
+    private EditText years;
 
     private LinearLayout person_msg;//个人信息页面
     private LinearLayout car_filling_msg;//点击填补后的消息
     private LinearLayout car_msg;//车辆初始信息
     private TextView tv_Filling;//点击的填补文字
     private TextView next;//下一步和绑定设备
+    private TextView submit;//提交
+    private RelativeLayout rl_carxi;//品牌车系
     private int nowpage=1;//当前页数，控制下一页和返回的显示
 
+    private ArrayList<String> Pinvince = new ArrayList<>();//省
+    private ArrayList<String> city = new ArrayList<>();//市
+    private ArrayList<String> area = new ArrayList<>();//区
+    private int level = 0;//当前省市区级别（0：省，1市，2区）
+    private String ssq = "";//省市区
+    private String citycode = "";
+    private SharedPreferences sp;
+    private String TAG="AddCarActivity";
+    private BuildBean dialog;
+    InputMethodManager imm;
+    private EditText use_carmoney;//车辆价钱
 
+    String car_brand_id;
+    String car_brand;
+
+    String group_id="";
+    private List<CityBean.NewCityBean> citysBean=new ArrayList<>();
+    private List<CityBean.NewCityBean> citysBean1=new ArrayList<>();
+    private List<CityBean.NewCityBean> citysBean2=new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,12 +274,35 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     //返回第一页
                     person_msg.setVisibility(View.VISIBLE);
                     car_msg.setVisibility(View.GONE);
+                    tv_Filling.setVisibility(View.VISIBLE);
                     car_filling_msg.setVisibility(View.GONE);
                     next.setText("下一页");
+                    submit.setVisibility(View.GONE);
                     nowpage=1;
                 }
                 break;
             case R.id.rl_sex:
+                 imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                level = 0;
+                ssq = "";
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        //点击确定的时候，获取当前的信息
+                        String pinid = citysBean.get(options1).getId();
+                        ssq = ssq + Pinvince.get(options1);
+                        level = level + 1;
+                        showopv(pinid);
+                    }
+                }).setTitleText("").setDividerColor(Color.BLUE)
+                        .setTextColorCenter(Color.GRAY)
+                        .setContentTextSize(18)
+                        .setOutSideCancelable(false)
+                        .build();
+                pvOptions.setPicker(Pinvince);//三级选择器
+                pvOptions.show();
                 break;
             case R.id.rl_cardtype:
                 //可以换成底部的
@@ -261,10 +334,17 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
             case R.id.next:
                 //下一步
                 if(nowpage==1){
-                    person_msg.setVisibility(View.GONE);
-                    car_msg.setVisibility(View.VISIBLE);
-                    next.setText("绑定设备");
-                    nowpage=2;
+                    if(name.getText().toString().trim().equals("")){
+                        //是空的话
+                        Toast.makeText(AddCarActivity.this,"姓名不能为空",Toast.LENGTH_SHORT).show();
+                    }else{
+                        person_msg.setVisibility(View.GONE);
+                        car_msg.setVisibility(View.VISIBLE);
+                        next.setText("绑定设备");
+                        submit.setVisibility(View.VISIBLE);
+                        nowpage=2;
+                    }
+
                 }else{
                     //第二页了
                     //需要去绑定设备
@@ -279,16 +359,216 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 
 
                 break;
-//            case R.id.rl_sex:
-//                break;
-//            case R.id.rl_sex:
-//                break;
-//            case R.id.rl_sex:
-//                break;
-//            case R.id.rl_sex:
-//                break;
+            case R.id.rl_carxi:
+                //选择品牌车系
+                Intent intent = new Intent();
+                intent.setClass(AddCarActivity.this, BrandListActivity.class);
+                startActivityForResult(intent, 2);
+                break;
+            case R.id.starttime:
+                final ArrayList<String>cardtypeee = new ArrayList<>();
+                cardtypeee.add("小型车");
+                cardtypeee.add("紧凑车");
+                cardtypeee.add("中型车");
+                cardtypeee.add("中型SUV");
+                cardtypeee.add("中大型车");
+                cardtypeee.add("中大型SUV");
+                cardtypeee.add("皮卡");
+                cardtypeee.add("其他");
+                 imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                 pickerView = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        //当点击的时候触发的事件
+                        tv_starttime.setText(cardtypeee.get(options1));
+
+
+                    }
+                }).setTitleText("").setDividerColor(Color.BLUE)
+                        .setTextColorCenter(Color.GRAY)
+                        .setContentTextSize(18)
+                        .setOutSideCancelable(false).build();
+                pickerView.setPicker(cardtypeee);
+                pickerView.show();
+                break;
+            case R.id.endtime:
+                final ArrayList<String>foruser = new ArrayList<>();
+                foruser.add("自用");
+                foruser.add("非营运");
+                foruser.add("营运");
+                foruser.add("其他");
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                pickerView = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        //当点击的时候触发的事件
+                        tv_starttime.setText(foruser.get(options1));
+
+
+                    }
+                }).setTitleText("").setDividerColor(Color.BLUE)
+                        .setTextColorCenter(Color.GRAY)
+                        .setContentTextSize(18)
+                        .setOutSideCancelable(false).build();
+                pickerView.setPicker(foruser);
+                pickerView.show();
+                break;
+            case R.id.submit:
+                //提交，不加设备的那种
+                if(car_vin.getText().toString().trim().length()==17){
+                    //可以请求接口
+                    RequestParams params=new RequestParams();
+                    params.addHeader("Content-Type","application/json");
+                    JSONObject jsonObject=new JSONObject();
+                    JSONObject carjsonObject=new JSONObject();
+                    JSONObject pledgerjsonObject=new JSONObject();
+                    carjsonObject.put("vin",car_vin.getText().toString().trim());
+                    carjsonObject.put("is_new_car",1);
+                    carjsonObject.put("mileage",mileage.getText().toString().trim());
+                    carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
+                    carjsonObject.put("car_no",car_num.getText().toString().trim());
+                    carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
+                    carjsonObject.put("color",car_color.getText().toString().trim());
+                    //发动机号
+                    carjsonObject.put("engine",car_fdj.getText().toString().trim());
+                    carjsonObject.put("remark",bz_msg.getText().toString().trim());
+                    carjsonObject.put("use_prop","1");
+                    //使用年限
+                    carjsonObject.put("used_age",years.getText().toString().trim());
+                    jsonObject.put("car",carjsonObject);
+                    jsonObject.put("group_id",sp.getString(Constant.Group_id,""));
+                    pledgerjsonObject.put("card_type",1);
+                    pledgerjsonObject.put("name",name.getText().toString().trim());
+                    pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+//                    JSONObject pledgerjsonObject1=new JSONObject();
+                    JSONArray pledgerListjsonObject=new JSONArray();
+                    pledgerjsonObject.put("pledger_loc",pledgerListjsonObject);
+                    jsonObject.put("pledger",pledgerjsonObject);
+
+                    params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+                    HttpRequest.post(Api.add+"?token="+sp.getString(Constant.Token,""), params, new JsonHttpRequestCallback() {
+                        @Override
+                        protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                            super.onSuccess(headers, jsonObject);
+                            Log.i("jsonObject", jsonObject.toString());
+                            if(jsonObject.getBoolean("success")){
+                                ///成功
+                                Toast.makeText(AddCarActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                finish();
+                            }else{
+                                Toast.makeText(AddCarActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.dialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(int errorCode, String msg) {
+                            super.onFailure(errorCode, msg);
+                        }
+
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            dialog= DialogUIUtils.showLoading(AddCarActivity.this,"加载中...",true,true,false,true);
+                            dialog.show();
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                        }
+                    });
+                }else{
+                    Toast.makeText(AddCarActivity.this,"请填写17位车架号",Toast.LENGTH_SHORT).show();
+                }
+                break;
 
         }
+    }
+
+    private void showopv(String pinid) {
+        city.clear();
+        area.clear();
+        citysBean1.clear();
+        citysBean2.clear();
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("id",pinid);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getAddress+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                CityBean cityBean=JSONObject.parseObject(jsonObject.toString(),CityBean.class);
+                ArrayList<CityBean.NewCityBean>jsonArray=cityBean.getList();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    if (level == 1) {
+                        CityBean.NewCityBean newCityBean = jsonArray.get(i);
+                        citysBean1.add(newCityBean);
+                        city.add(newCityBean.getName());
+
+
+                    } else if (level == 2) {
+                        CityBean.NewCityBean newCityBean = jsonArray.get(i);
+                        citysBean2.add(newCityBean);
+                        area.add(newCityBean.getName());
+
+                    }
+                }
+                if (level == 1) {
+                    OptionsPickerView pickerView = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                        @Override
+                        public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                            //当点击的时候触发的事件
+                            String pinid = citysBean1.get(options1).getId();
+                            level = level + 1;
+                            ssq = ssq + city.get(options1);
+                            showopv(pinid);
+
+                        }
+                    }).setTitleText("").setDividerColor(Color.BLUE)
+                            .setTextColorCenter(Color.GRAY)
+                            .setContentTextSize(18)
+                            .setOutSideCancelable(false).build();
+                    pickerView.setPicker(city);
+                    pickerView.show();
+                } else if (level == 2) {
+                    OptionsPickerView pickerView = new OptionsPickerView.Builder(AddCarActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                        @Override
+                        public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                            //当点击的时候触发的事件
+                            ssq = ssq + area.get(options1);
+                            tv_sex.setText(ssq);
+                            citycode = citysBean2.get(options1).getCode();
+
+                        }
+                    }).setTitleText("").setDividerColor(Color.BLUE)
+                            .setTextColorCenter(Color.GRAY)
+                            .setContentTextSize(18)
+                            .setOutSideCancelable(false).build();
+                    pickerView.setPicker(area);
+                    pickerView.show();
+                }
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
+
+
     }
 
     static class MyRunnable implements Runnable {
@@ -346,13 +626,111 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         tv_Filling.setOnClickListener(this);
         next.setOnClickListener(this);
         rl_cardtype.setOnClickListener(this);
-        starttime.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View view) {
-
-                //这个是年月日选择器
-//                timenew=1;
+        rl_sex.setOnClickListener(this);
+        rl_carxi.setOnClickListener(this);
+        starttime.setOnClickListener(this);
+        submit.setOnClickListener(this);
+        //自定义时间段选择器
+//        starttime.setOnClickListener(new View.OnClickListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onClick(View view) {
+//
+//                //这个是年月日选择器
+////                timenew=1;
+////                Calendar ca=Calendar.getInstance();
+////                mYear=ca.get(Calendar.YEAR);
+////                mMonth=ca.get(Calendar.MONTH);
+////                mDay=ca.get(Calendar.DAY_OF_MONTH);
+////                mHour=ca.get(Calendar.HOUR_OF_DAY);
+////                mMinutes=ca.get(Calendar.MINUTE);
+////                showDialog(SHOW_STARTTIME);
+//                //年月日时分一体时间选择器
+//                //其他的单一的被禁用了
+//
+////                mTimePickerDialog = new TimePickerDialog(AddCarActivity.this);
+////                mTimePickerDialog.showDateAndTimePickerDialog();
+//                //尝试自定义时间选择器
+//                adb=new AlertDialog.Builder(AddCarActivity.this);
+//                adb.setTitle("选择时间");
+////                View pickerview=initPicker();
+////                adb.setView(pickerview);
+////                adb.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialogInterface, int i) {
+////                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+////                            //不同的android版本对应不同的方法
+////                            mMinutes=tp.getMinute();
+////                            mHour=tp.getHour();
+////                        }else{
+////                            mMinutes=tp.getCurrentMinute();
+////                            mHour=tp.getCurrentHour();
+////                        }
+////                        mYear=dp.getYear();
+////                        mMonth=dp.getMonth();
+////                        mDay=dp.getDayOfMonth();
+////                        tv_starttime.setText(new StringBuffer().append(mYear).append("-").append(mMonth).append("-").append(mDay).append(" ").append(mHour).append(":").append(mMinutes));
+////                    }
+////                });
+////                adb.show();
+//                //同页面开始时间结束时间范围
+//                View datafromto=initdatafromto();
+//                adb.setView(datafromto);
+////                dp.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+////                    @Override
+////                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+////                        if(isstart==1){
+////                            et_endtime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
+////                        }
+////                            et_starttime.setText(new StringBuffer().append(i).appnd("-").append(i1).append("-").append(i2));
+////                        }else{e
+//                Calendar ca=Calendar.getInstance();
+////                    }
+////                });
+//                dp.init(ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+//                    @Override
+//                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+//                        if(isstart==1){
+//                            et_starttime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
+//                        }else{
+//                            et_endtime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
+//                        }
+//                    }
+//                });
+//                et_starttime.setOnClickListener(new View.OnClickListener() {
+//                    @SuppressLint("ResourceAsColor")
+//                    @Override
+//                    public void onClick(View view) {
+//                        isstart=1;
+//                        et_starttime.setTextColor(0xff0000ff);
+//                        linestart.setBackgroundColor(0xff0000ff);
+//                        et_endtime.setTextColor(R.color.black);
+//                        lineend.setBackgroundColor(R.color.black);
+//
+//                        et_starttime.setText(new StringBuffer().append(dp.getYear()).append("-").append(dp.getMonth()).append("-").append(dp.getDayOfMonth()));
+//                    }
+//                });
+//                et_endtime.setOnClickListener(new View.OnClickListener() {
+//                    @SuppressLint("ResourceAsColor")
+//                    @Override
+//                    public void onClick(View view) {
+//                        isstart=0;
+//                        et_starttime.setTextColor(R.color.black);
+//                        linestart.setBackgroundColor(R.color.black);
+//                        et_endtime.setTextColor(0xff0000ff);
+//                        lineend.setBackgroundColor(0xff0000ff);
+//                        et_endtime.setText(new StringBuffer().append(dp.getYear()).append("-").append(dp.getMonth()).append("-").append(dp.getDayOfMonth()));
+//                    }
+//                });
+//                adb.show();
+//            }
+//        });
+        //结束时间设置
+        endtime.setOnClickListener(this);
+//        endtime.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                timenew=2;
 //                Calendar ca=Calendar.getInstance();
 //                mYear=ca.get(Calendar.YEAR);
 //                mMonth=ca.get(Calendar.MONTH);
@@ -360,100 +738,8 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 //                mHour=ca.get(Calendar.HOUR_OF_DAY);
 //                mMinutes=ca.get(Calendar.MINUTE);
 //                showDialog(SHOW_STARTTIME);
-                //年月日时分一体时间选择器
-                //其他的单一的被禁用了
-
-//                mTimePickerDialog = new TimePickerDialog(AddCarActivity.this);
-//                mTimePickerDialog.showDateAndTimePickerDialog();
-                //尝试自定义时间选择器
-                adb=new AlertDialog.Builder(AddCarActivity.this);
-                adb.setTitle("选择时间");
-//                View pickerview=initPicker();
-//                adb.setView(pickerview);
-//                adb.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                            //不同的android版本对应不同的方法
-//                            mMinutes=tp.getMinute();
-//                            mHour=tp.getHour();
-//                        }else{
-//                            mMinutes=tp.getCurrentMinute();
-//                            mHour=tp.getCurrentHour();
-//                        }
-//                        mYear=dp.getYear();
-//                        mMonth=dp.getMonth();
-//                        mDay=dp.getDayOfMonth();
-//                        tv_starttime.setText(new StringBuffer().append(mYear).append("-").append(mMonth).append("-").append(mDay).append(" ").append(mHour).append(":").append(mMinutes));
-//                    }
-//                });
-//                adb.show();
-                //同页面开始时间结束时间范围
-                View datafromto=initdatafromto();
-                adb.setView(datafromto);
-//                dp.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
-//                    @Override
-//                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-//                        if(isstart==1){
-//                            et_endtime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
-//                        }
-//                            et_starttime.setText(new StringBuffer().append(i).appnd("-").append(i1).append("-").append(i2));
-//                        }else{e
-                Calendar ca=Calendar.getInstance();
-//                    }
-//                });
-                dp.init(ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
-                    @Override
-                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                        if(isstart==1){
-                            et_starttime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
-                        }else{
-                            et_endtime.setText(new StringBuffer().append(i).append("-").append(i1).append("-").append(i2));
-                        }
-                    }
-                });
-                et_starttime.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("ResourceAsColor")
-                    @Override
-                    public void onClick(View view) {
-                        isstart=1;
-                        et_starttime.setTextColor(0xff0000ff);
-                        linestart.setBackgroundColor(0xff0000ff);
-                        et_endtime.setTextColor(R.color.black);
-                        lineend.setBackgroundColor(R.color.black);
-
-                        et_starttime.setText(new StringBuffer().append(dp.getYear()).append("-").append(dp.getMonth()).append("-").append(dp.getDayOfMonth()));
-                    }
-                });
-                et_endtime.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("ResourceAsColor")
-                    @Override
-                    public void onClick(View view) {
-                        isstart=0;
-                        et_starttime.setTextColor(R.color.black);
-                        linestart.setBackgroundColor(R.color.black);
-                        et_endtime.setTextColor(0xff0000ff);
-                        lineend.setBackgroundColor(0xff0000ff);
-                        et_endtime.setText(new StringBuffer().append(dp.getYear()).append("-").append(dp.getMonth()).append("-").append(dp.getDayOfMonth()));
-                    }
-                });
-                adb.show();
-            }
-        });
-        //结束时间设置
-        endtime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timenew=2;
-                Calendar ca=Calendar.getInstance();
-                mYear=ca.get(Calendar.YEAR);
-                mMonth=ca.get(Calendar.MONTH);
-                mDay=ca.get(Calendar.DAY_OF_MONTH);
-                mHour=ca.get(Calendar.HOUR_OF_DAY);
-                mMinutes=ca.get(Calendar.MINUTE);
-                showDialog(SHOW_STARTTIME);
-            }
-        });
+//            }
+//        });
     }
 
     @SuppressLint("ResourceAsColor")
@@ -494,6 +780,37 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 
 
     private void initData() {
+        //请求车辆品牌和地址接口
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("id","");
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        HttpRequest.post(Api.getAddress+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                CityBean cityBean=JSONObject.parseObject(jsonObject.toString(),CityBean.class);
+                citysBean=cityBean.getList();
+                for(int i=0;i<citysBean.size();i++){
+                    Pinvince.add(citysBean.get(i).getName());
+                }
+                dialog.dialog.dismiss();
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                dialog= DialogUIUtils.showLoading(AddCarActivity.this,"加载中...",true,true,false,true);
+                dialog.show();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
 //        if (originImages == null) {//原始图片
 //            originImages = new ArrayList<>();
 //        }
@@ -506,6 +823,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 //        dragImages.addAll(originImages);
 //        new Thread(new MyRunnable(this, dragImages, originImages, dragImages, myHandler, false)).start();//开启线程，在新线程中去压缩图片
     }
+
     public static PackageInfo getPackageInfo(Context context) {
         PackageManager pm = context.getPackageManager();
         try {
@@ -563,6 +881,13 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     selImageList.addAll(images);
                     adapter.setImages(selImageList);
                 }
+            }
+        } else if (resultCode == 3) {
+            //车型选择返回
+            if (data != null && requestCode == 2) {
+                 car_brand=data.getStringExtra("brand_name");
+                 car_brand_id=data.getStringExtra("brand_id");
+                tv_carxi.setText(car_brand);
             }
         }
     }
@@ -675,6 +1000,14 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
         car_msg=findViewById(R.id.car_msg);
         tv_Filling=findViewById(R.id.tv_Filling);
         next=findViewById(R.id.next);
+        submit=findViewById(R.id.submit);
+        rl_carxi=findViewById(R.id.rl_carxi);
+        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        tv_carxi=findViewById(R.id.tv_carxi);
+        use_carmoney=findViewById(R.id.use_carmoney);
+        car_fdj=findViewById(R.id.car_fdj);
+        bz_msg=findViewById(R.id.bz_msg);
+        years=findViewById(R.id.years);
         //初始化图片recycle
 //        initRcv();
         initRecy();
@@ -812,5 +1145,6 @@ itemTouchHelper.attachToRecyclerView(rcvImg);
     public void negativeListener() {
 
     }
+
 
 }
