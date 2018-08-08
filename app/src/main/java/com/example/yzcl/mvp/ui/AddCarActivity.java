@@ -436,6 +436,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     //发动机号
                     carjsonObject.put("engine",car_fdj.getText().toString().trim());
                     carjsonObject.put("remark",bz_msg.getText().toString().trim());
+                    //车辆用途
                     carjsonObject.put("use_prop","1");
                     //使用年限
                     carjsonObject.put("used_age",years.getText().toString().trim());
