@@ -183,7 +183,14 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private ArrayList<String> Pinvince = new ArrayList<>();//省
     private ArrayList<String> city = new ArrayList<>();//市
     private ArrayList<String> area = new ArrayList<>();//区
-
+    //具体的省市区
+    private String sheng="";
+    private String shi="";
+    private String qu="";
+    //临时的省市区
+    private String tem_sheng="";
+    private String tem_shi="";
+    private String tem_qu="";
     private int level = 0;//当前省市区级别（0：省，1市，2区）
     private String ssq = "";//省市区
     private String citycode = "";
@@ -295,6 +302,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                         String pinid = citysBean.get(options1).getId();
                         ssq = ssq + Pinvince.get(options1);
                         level = level + 1;
+                        tem_sheng=Pinvince.get(options1);
                         showopv(pinid);
                     }
                 }).setTitleText("").setDividerColor(Color.BLUE)
@@ -349,7 +357,100 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                 }else{
                     //第二页了
                     //需要去绑定设备
-                    Toast.makeText(AddCarActivity.this,"去绑定设备",Toast.LENGTH_SHORT).show();
+                    if(car_vin.getText().toString().trim().length()!=17){
+                        Toast.makeText(AddCarActivity.this,"请填写17位车架号",Toast.LENGTH_SHORT).show();
+                    }else if(mobile.getText().toString().trim().length()!=0&&mobile.getText().toString().trim().length()!=11){
+                        Toast.makeText(AddCarActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
+                    }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
+                        Toast.makeText(AddCarActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Intent intent=new Intent();
+                        intent.setClass(AddCarActivity.this,BindDeviceActivity.class);
+                        JSONObject jsonObject=new JSONObject();
+                        JSONObject carjsonObject=new JSONObject();
+                        JSONObject pledgerjsonObject=new JSONObject();
+                        carjsonObject.put("vin",car_vin.getText().toString().trim());
+                        carjsonObject.put("is_new_car",1);
+                        carjsonObject.put("mileage",mileage.getText().toString().trim());
+                        carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
+                        carjsonObject.put("car_no",car_num.getText().toString().trim());
+                        carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
+                        carjsonObject.put("color",car_color.getText().toString().trim());
+                        //发动机号tv_starttime
+
+                        carjsonObject.put("engine",car_fdj.getText().toString().trim());
+                        carjsonObject.put("remark",bz_msg.getText().toString().trim());
+                        //车辆用途
+                        switch (tv_starttime.getText().toString()){
+                            case "小型车":
+                                carjsonObject.put("car_type","1");
+                                break;
+                            case "紧凑车":
+                                carjsonObject.put("car_type","2");
+                                break;
+                            case "中型车":
+                                carjsonObject.put("car_type","3");
+                                break;
+                            case "中型SUV":
+                                carjsonObject.put("car_type","4");
+                                break;
+                            case "中大型车":
+                                carjsonObject.put("car_type","5");
+                                break;
+                            case "中大型SUV":
+                                carjsonObject.put("car_type","6");
+                                break;
+                            case "皮卡":
+                                carjsonObject.put("car_type","7");
+                                break;
+                            case "其他":
+                                carjsonObject.put("car_type","0");
+                                break;
+                        }
+                        switch (tv_endtime.getText().toString()){
+                            case "自用":
+                                carjsonObject.put("use_prop","1");
+                                break;
+                            case "非营运":
+                                carjsonObject.put("use_prop","3");
+                                break;
+                            case "营运":
+                                carjsonObject.put("use_prop","2");
+                                break;
+                            case "其他":
+                                carjsonObject.put("use_prop","0");
+                                break;
+                        }
+                        //使用年限
+                        carjsonObject.put("used_age",years.getText().toString().trim());
+                        jsonObject.put("car",carjsonObject);
+                        jsonObject.put("group_id",sp.getString(Constant.Group_id,""));
+                        pledgerjsonObject.put("card_type",1);
+                        pledgerjsonObject.put("name",name.getText().toString().trim());
+                        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+//                    JSONObject pledgerjsonObject1=new JSONObject();
+                        JSONArray pledgerListjsonObject=new JSONArray();
+                        JSONObject locjsonObject=new JSONObject();
+                        locjsonObject.put("province",sheng);
+                        locjsonObject.put("city",shi);
+                        locjsonObject.put("district",qu);
+                        locjsonObject.put("address",home_address.getText().toString().trim());
+                        locjsonObject.put("type",1);
+                        locjsonObject.put("lat",null);
+                        locjsonObject.put("lng",null);
+                        pledgerListjsonObject.add(locjsonObject);
+                        pledgerjsonObject.put("pledger_loc",pledgerListjsonObject);
+                        pledgerjsonObject.put("card_type","1");//写死是身份证
+                        pledgerjsonObject.put("idcard",card_num.getText().toString().trim());
+                        pledgerjsonObject.put("name",name.getText().toString().trim());
+                        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+
+                        jsonObject.put("pledger",pledgerjsonObject);
+
+                        intent.putExtra("jsonObject",jsonObject.toString());
+
+                        startActivity(intent);
+                    }
                 }
 
                 break;
@@ -420,7 +521,13 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                 break;
             case R.id.submit:
                 //提交，不加设备的那种
-                if(car_vin.getText().toString().trim().length()==17){
+                if(car_vin.getText().toString().trim().length()!=17){
+                    Toast.makeText(AddCarActivity.this,"请填写17位车架号",Toast.LENGTH_SHORT).show();
+                }else if(mobile.getText().toString().trim().length()!=0&&mobile.getText().toString().trim().length()!=11){
+                    Toast.makeText(AddCarActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
+                }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
+                    Toast.makeText(AddCarActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                }else{
                     //可以请求接口
                     RequestParams params=new RequestParams();
                     params.addHeader("Content-Type","application/json");
@@ -489,9 +596,9 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 //                    JSONObject pledgerjsonObject1=new JSONObject();
                     JSONArray pledgerListjsonObject=new JSONArray();
                     JSONObject locjsonObject=new JSONObject();
-                    locjsonObject.put("province","");
-                    locjsonObject.put("city","");
-                    locjsonObject.put("district","");
+                    locjsonObject.put("province",sheng);
+                    locjsonObject.put("city",shi);
+                    locjsonObject.put("district",qu);
                     locjsonObject.put("address",home_address.getText().toString().trim());
                     locjsonObject.put("type",1);
                     locjsonObject.put("lat",null);
@@ -502,6 +609,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     pledgerjsonObject.put("idcard",card_num.getText().toString().trim());
                     pledgerjsonObject.put("name",name.getText().toString().trim());
                     pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+
                     jsonObject.put("pledger",pledgerjsonObject);
 
                     params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
@@ -537,8 +645,6 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                             super.onFinish();
                         }
                     });
-                }else{
-                    Toast.makeText(AddCarActivity.this,"请填写17位车架号",Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -583,6 +689,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                             //当点击的时候触发的事件
                             String pinid = citysBean1.get(options1).getId();
                             level = level + 1;
+                            tem_shi=city.get(options1);
                             ssq = ssq + city.get(options1);
                             showopv(pinid);
 
@@ -599,9 +706,13 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                         public void onOptionsSelect(int options1, int options2, int options3, View v) {
                             //当点击的时候触发的事件
                             ssq = ssq + area.get(options1);
+                            tem_qu=area.get(options1);
                             tv_sex.setText(ssq);
                             citycode = citysBean2.get(options1).getCode();
-
+                            //直接一次性赋值
+                            sheng=tem_sheng;
+                            shi=tem_shi;
+                            qu=tem_qu;
                         }
                     }).setTitleText("").setDividerColor(Color.BLUE)
                             .setTextColorCenter(Color.GRAY)

@@ -95,5 +95,6 @@ public class Api {
     public static  String getCarBand=MonitorUrl+"/operation/v1/vehicleManage/getCarBand";
     //新增车辆/operation/v1/vehicleManage/add
     public static  String add=MonitorUrl+"/operation/v1/vehicleManage/add";
-
+    //新增车辆时添加设备/operation/v1/vehicleManage/getDeviceMess
+    public static  String getDeviceMess=MonitorUrl+"/operation/v1/vehicleManage/getDeviceMess";
 }
