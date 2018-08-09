@@ -96,7 +96,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
     Intent intent;
     JSONObject jsonObject1;
     private String url = "http://project.thinghigh.cn/index.php/api/v1/uploadTxt";
-
+//图片返回需要处理
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
