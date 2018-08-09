@@ -3,13 +3,17 @@ package com.example.yzcl.mvp.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.andview.refreshview.XRefreshViewFooter;
@@ -40,14 +45,26 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.finalteam.okhttpfinal.HttpRequest;
 import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
 import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.dou361.dialogui.DialogUIUtils.showToast;
 
@@ -78,6 +95,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
     String jsonObject;
     Intent intent;
     JSONObject jsonObject1;
+    private String url = "http://project.thinghigh.cn/index.php/api/v1/uploadTxt";
 
 
     @Override
@@ -147,6 +165,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
                     if(i==dev_list.size()-1){
                         Toast.makeText(BindDeviceActivity.this,"可以提交",Toast.LENGTH_SHORT).show();
                         Log.i(TAG, jsonObject1.getJSONObject("pledger").getString("card_type"));
+                        uploadMultiFile(selImageList.get(0).path);
 //
 //                        //可以请求接口
 //                        RequestParams params=new RequestParams();
@@ -423,5 +442,67 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
                 }
             }
         }
+    }
+    private void uploadMultiFile(String imgUrl) {
+        String imageType = "multipart/form-data";
+        File file = new File(imgUrl);//imgUrl为图片位置
+
+        RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        Bitmap bmp = BitmapFactory.decodeFile(imgUrl);
+        String imgba=Bitmap2StrByBase64(bmp);
+        Log.i(TAG, "uploadMultiFile: "+imgba);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), fileBody)
+                //下面这个是传送base64文件的
+//                .addFormDataPart("file", "data:image/jpeg;base64,"+imgba)
+//                .addFormDataPart("imagetype", imageType)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://101.37.119.32:20200//file/v1/upload?token="+sp.getString(Constant.Token,""))
+//                .url(url)
+                .post(requestBody)
+                .build();
+        final okhttp3.OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = httpBuilder
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("onFailure", "onFailure: ");
+                Toast.makeText(BindDeviceActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
+                DialogUIUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String htmlStr = response.body().string();
+                Log.i("onResponse: ", htmlStr);
+//                Log.i("result", "http://ring.thinghigh.cn"+htmlStr);
+//                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) JSON.parse(htmlStr);
+//                com.alibaba.fastjson.JSONObject datamsg = jsonObject.getJSONObject("data");
+//                String img_name = datamsg.getString("path");
+////                String img_name=jsonObject.getString("data");
+////                Toast.makeText(ChooseUpPicActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+//                final String IMAGE_URL = img_name;
+//                Log.i("result", IMAGE_URL);
+                //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //放在UI线程弹Toast
+                        Toast.makeText(BindDeviceActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+    }
+    public String Bitmap2StrByBase64(Bitmap bit){
+        ByteArrayOutputStream bos=new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+        byte[] bytes=bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 }

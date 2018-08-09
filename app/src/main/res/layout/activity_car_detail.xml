@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/first_title" />
+
+    <RadioGroup
+        android:id="@+id/car_status"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/group_car_list"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/status_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="借贷人信息"
+            android:textColor="@drawable/radio_button_color1"
+            android:textSize="13dp" />
+
+        <RadioButton
+            android:id="@+id/status_yuqi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="车辆信息"
+            android:textColor="@drawable/radio_button_color1"
+            android:textSize="13dp" />
+
+        <RadioButton
+            android:id="@+id/status_zdgz"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="设备信息(2)"
+            android:textColor="@drawable/radio_button_color1"
+            android:textSize="13dp" />
+    </RadioGroup>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/page1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="@color/red" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="姓名"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请输入客户名称(必填)"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="手机号码"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写手机号码"
+                        android:inputType="phone|number"
+                        android:maxLength="11"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/cardtype"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="证件类型"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_cardtype"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/cardtype">
+
+                        <ImageView
+                            android:id="@+id/toright1"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/car_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright1"
+                            android:gravity="center_vertical"
+                            android:text="身份证"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="证件号码"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/card_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写证件号码"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/sex"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="联系地址"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_sex"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/sex">
+
+                        <ImageView
+                            android:id="@+id/toright"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_sex"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:text="请选择所在地区"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="详细地址"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/home_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="街道和门牌号"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/page2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*"
+                            android:textColor="@color/red" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="车架号"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/car_vin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写17位车架号"
+                        android:maxLength="17"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="车牌号"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写车牌号"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/carxi"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="品牌车系"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_carxi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/carxi">
+
+                        <ImageView
+                            android:id="@+id/toright22"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_carxi"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright22"
+                            android:gravity="center_vertical"
+                            android:text="请选择"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/cartype"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="选择车型"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_cartype"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/cartype">
+
+                        <ImageView
+                            android:id="@+id/toright2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:id="@+id/tv_cartype"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/toright2"
+                            android:gravity="center_vertical"
+                            android:text="请选择"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="发动机号"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_fdj"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写行驶证上的发动机号码"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="车辆颜色"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:id="@+id/car_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请填写颜色"
+                        android:maxLines="1"
+                        android:textColorHint="@color/hint_input_color"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/car_filling_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/caryear"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="车龄"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/year1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:text="年" />
+
+                        <EditText
+                            android:id="@+id/years"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/year1"
+                            android:layout_toRightOf="@id/caryear"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="请填写车龄使用年限"
+                            android:inputType="phone|number"
+                            android:maxLines="1"
+                            android:textColorHint="@color/hint_input_color"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/carline"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="行驶里程"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/line"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:text="公里" />
+
+                        <EditText
+                            android:id="@+id/mileage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/line"
+                            android:layout_toRightOf="@id/carline"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="请填写行驶里程数"
+                            android:inputType="phone|number"
+                            android:maxLines="1"
+                            android:textColorHint="@color/hint_input_color"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/carmoney"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="车辆价格"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/money1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:text="万元" />
+
+                        <EditText
+                            android:id="@+id/use_carmoney"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/money1"
+                            android:layout_toRightOf="@id/carmoney"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="请填写购车金额，例如：22.23"
+                            android:inputType="phone|number"
+                            android:maxLines="1"
+                            android:textColorHint="@color/hint_input_color"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/money"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="借款金额"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/moneyline"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:text="万元" />
+
+                        <EditText
+                            android:id="@+id/use_money"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/moneyline"
+                            android:layout_toRightOf="@id/money"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="请输入金额，如22.23万元(选填)"
+                            android:inputType="phone|number"
+                            android:maxLines="1"
+                            android:textColorHint="@color/hint_input_color"
+                            android:textSize="14dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="车辆级别"
+                            android:textSize="16dp" />
+
+                        <RelativeLayout
+                            android:id="@+id/starttime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/date">
+
+
+                            <ImageView
+                                android:id="@+id/toright4"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:src="@mipmap/icon_right" />
+
+                            <TextView
+                                android:id="@+id/tv_starttime"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@id/toright4"
+                                android:gravity="center_vertical"
+                                android:text="请选择"
+                                android:textSize="14dp" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp">
+
+
+                        <TextView
+                            android:id="@+id/kong"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="使用性质"
+                            android:textSize="16dp" />
+
+                        <RelativeLayout
+                            android:id="@+id/endtime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/kong">
+
+                            <ImageView
+                                android:id="@+id/toright5"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:src="@mipmap/icon_right" />
+
+                            <TextView
+                                android:id="@+id/tv_endtime"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@id/toright5"
+                                android:gravity="center_vertical"
+                                android:text="请选择"
+                                android:textSize="14dp" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:text="备注信息"
+                            android:textSize="16dp" />
+
+                        <EditText
+                            android:id="@+id/bz_msg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="请描述，不超过200字"
+                            android:maxLength="200"
+                            android:paddingRight="10dp"
+                            android:textColorHint="@color/hint_input_color"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/page3"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:id="@+id/add_device"
+                        android:layout_width="60dp"
+                        android:layout_height="match_parent"
+                        android:text="添加"
+                        android:textColor="@color/title_color"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        />
+                    <EditText
+                        android:id="@+id/device_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="请输入设备名称"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:layout_toLeftOf="@id/add_device"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/device_list"
+                    android:background="@color/white"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/white"
+                    android:text="上传车辆和设备安装照片"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcv_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:background="@color/white"
+                    android:clipToPadding="false"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/botton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/save"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+
+                    android:background="@drawable/myrect"
+                    android:gravity="center"
+                    android:text="保存"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

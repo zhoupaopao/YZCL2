@@ -146,7 +146,7 @@
         <activity android:name="com.example.yzcl.mvp.ui.BrandListActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.BindDeviceActivity"></activity>
         <activity android:name="com.example.yzcl.mvp.ui.DeviceInstallAddActivity"></activity>
-
+        <activity android:name="com.example.yzcl.mvp.ui.CarDetailActivity"></activity>
         <activity
             android:name="com.lzy.imagepicker.ui.ImagePreviewDelActivity"
             android:theme="@style/ImagePickerThemeFullScreen" />
