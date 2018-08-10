@@ -319,7 +319,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                 ///kk
                 final ArrayList<String>cardtypee = new ArrayList<>();
                 cardtypee.add("身份证");
-                cardtypee.add("组织机构代码");
+//                cardtypee.add("组织机构代码");
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 // 隐藏软键盘
                 imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
@@ -448,8 +448,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                         jsonObject.put("pledger",pledgerjsonObject);
 
                         intent.putExtra("jsonObject",jsonObject.toString());
-
-                        startActivity(intent);
+                        startActivityForResult(intent,10);
                     }
                 }
 
@@ -650,6 +649,8 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
 
         }
     }
+
+
 
     private void showopv(String pinid) {
         city.clear();
@@ -1055,6 +1056,10 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                  car_brand_id=data.getStringExtra("brand_id");
                 tv_carxi.setText(car_brand);
             }
+        }else if (resultCode == 10) {
+            //新增成功返回
+            finish();
+
         }
     }
     @Override

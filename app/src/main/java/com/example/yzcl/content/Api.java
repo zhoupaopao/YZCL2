@@ -97,4 +97,13 @@ public class Api {
     public static  String add=MonitorUrl+"/operation/v1/vehicleManage/add";
     //新增车辆时添加设备/operation/v1/vehicleManage/getDeviceMess
     public static  String getDeviceMess=MonitorUrl+"/operation/v1/vehicleManage/getDeviceMess";
+    //提交图片/file/v1/upload
+    public static  String upload=MonitorUrl+"/file/v1/upload";
+    //获取车辆下的设备信息/operation/v1/monitor/queCarGpsInfo
+    public static  String queCarGpsInfo=MonitorUrl+"/operation/v1/monitor/queCarGpsInfo";
+    //给车辆添加设备/operation/v1/vehicleManage/addDevice
+    public static  String addDevice=MonitorUrl+"/operation/v1/vehicleManage/addDevice";
+    //添加安装位置/operation/v1/vehicleManage/getInstallPart
+    public static  String getInstallPart=MonitorUrl+"/operation/v1/vehicleManage/getInstallPart";
+
 }

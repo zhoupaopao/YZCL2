@@ -65,7 +65,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -583,6 +583,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:visibility="gone"
                         android:layout_marginTop="1dp"
                         android:background="@color/white"
                         android:paddingLeft="10dp">
@@ -623,6 +624,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="1dp"
+                        android:visibility="gone"
                         android:background="@color/white"
                         android:paddingLeft="10dp">
 
@@ -777,9 +779,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:orientation="vertical">
                 <RelativeLayout
-                    android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:layout_width="match_parent"
                     android:paddingLeft="5dp"
@@ -810,7 +812,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/device_list"
                     android:background="@color/white"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

@@ -77,9 +77,7 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
         ImmersionBar.with(this)
                 .statusBarColor(R.color.title_color)
                 .init();
-        initView();
-        initData(dev_status,1);
-        initListener();
+
     }
     private void initView() {
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
@@ -448,6 +446,9 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
     @Override
     protected void onResume() {
         super.onResume();
+        initView();
+        initData(dev_status,1);
+        initListener();
         appBarLayout.addOnOffsetChangedListener(this);
     }
 

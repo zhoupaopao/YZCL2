@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="150dp"
     android:orientation="vertical"
 
     android:background="@drawable/group_car_list"
@@ -8,7 +8,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/divider_line"/>
+        android:background="#fafafa"/>
     <RelativeLayout
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -28,7 +28,7 @@
             android:gravity="center"
             android:textColor="@color/red"
             android:layout_alignParentRight="true"
-            android:text="删除"/>
+            android:text="解绑"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -82,9 +82,21 @@
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/toright"
             android:gravity="center_vertical"
-            android:text="请选择安装位置(必填)"
-            android:textColor="@color/biankuang"/>
+            android:text="请选择安装位置(必填)"/>
         </RelativeLayout>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/bind_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="绑车时间：2018-02-03 11:11:11"/>
 
+    </RelativeLayout>
 </LinearLayout>

@@ -72,22 +72,23 @@ import static com.dou361.dialogui.DialogUIUtils.showToast;
  * Created by Lenovo on 2018/8/9.
  */
 
-public class BindDeviceActivity extends BaseActivity implements View.OnClickListener,ImagePickerAdapter.OnRecyclerViewItemClickListener{
+public class BindDeviceActivity extends BaseActivity implements View.OnClickListener, ImagePickerAdapter.OnRecyclerViewItemClickListener {
     private TextView back;
     private TextView textview2;
+    private TextView title;
     private ImagePickerAdapter adapter;
     private ArrayList<ImageItem> selImageList; //当前选择的所有图片
     private int maxImgCount = 5;               //允许选择图片最大数
     private RecyclerView rcv_img;
     private RecyclerView device_list;
-    private ArrayList<String>list=new ArrayList<>();
+    private ArrayList<String> list = new ArrayList<>();
     private TextView add_device;
     private TextView device_name;
     private SharedPreferences sp;
-    private String TAG="BindDeviceActivity";
+    private String TAG = "BindDeviceActivity";
     private BuildBean dialog;
     BindDeviceAdapter bindDeviceAdapter;
-    private ArrayList<BindDeviceBean.BindDeviceBeanMsg>dev_list=new ArrayList<>();
+    private ArrayList<BindDeviceBean.BindDeviceBeanMsg> dev_list = new ArrayList<>();
 
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;
@@ -96,6 +97,9 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
     Intent intent;
     JSONObject jsonObject1;
     private String url = "http://project.thinghigh.cn/index.php/api/v1/uploadTxt";
+
+    private int imgpos = 0;
+    ArrayList<String> lasturl = new ArrayList<>();
 //图片返回需要处理
 
     @Override
@@ -112,14 +116,15 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 
     @SuppressLint("WrongViewCast")
     private void initView() {
-        intent=getIntent();
-        back=findViewById(R.id.back);
-        textview2=findViewById(R.id.textview2);
-        rcv_img=findViewById(R.id.rcv_img);
-        device_list=findViewById(R.id.device_list);
-        device_name=findViewById(R.id.device_name);
-        add_device=findViewById(R.id.add_device);
-        sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        intent = getIntent();
+        title=findViewById(R.id.title);
+        back = findViewById(R.id.back);
+        textview2 = findViewById(R.id.textview2);
+        rcv_img = findViewById(R.id.rcv_img);
+        device_list = findViewById(R.id.device_list);
+        device_name = findViewById(R.id.device_name);
+        add_device = findViewById(R.id.add_device);
+        sp = getSharedPreferences("YZCL", MODE_PRIVATE);
         initRecy();
     }
 
@@ -127,174 +132,106 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 //        for(int i=0;i<30;i++){
 //            list.add(i+"aa");
 //        }
-        jsonObject=intent.getStringExtra("jsonObject");
-        jsonObject1=JSONObject.parseObject(jsonObject);
+        jsonObject = intent.getStringExtra("jsonObject");
+        jsonObject1 = JSONObject.parseObject(jsonObject);
     }
 
     private void initListener() {
         back.setText("取消");
         textview2.setText("完成");
+        title.setText("绑定设备");
         back.setOnClickListener(this);
         textview2.setOnClickListener(this);
         add_device.setOnClickListener(this);
 
-        bindDeviceAdapter=new BindDeviceAdapter(this,dev_list);
+        bindDeviceAdapter = new BindDeviceAdapter(this, dev_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(BindDeviceActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         device_list.setLayoutManager(layoutManager);
-        device_list.setItemAnimator( new DefaultItemAnimator());
+        device_list.setItemAnimator(new DefaultItemAnimator());
         device_list.setAdapter(bindDeviceAdapter);
 
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back:
                 finish();
                 break;
             case R.id.textview2:
-                for (int i=0;i<dev_list.size();i++){
-                    //只有全部通过才能提交
-                    if(dev_list.get(i).getLoc()!=null){
-                        Log.i(TAG, dev_list.get(i).getLoc());
-                    }else{
-                        Toast.makeText(BindDeviceActivity.this,"安装位置不能为空",Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    if(i==dev_list.size()-1){
-                        Toast.makeText(BindDeviceActivity.this,"可以提交",Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, jsonObject1.getJSONObject("pledger").getString("card_type"));
-                        uploadMultiFile(selImageList.get(0).path);
-//
-//                        //可以请求接口
-//                        RequestParams params=new RequestParams();
-//                        params.addHeader("Content-Type","application/json");
-//                        JSONObject jsonObject=new JSONObject();
-//                        JSONObject carjsonObject=new JSONObject();
-//                        JSONObject pledgerjsonObject=new JSONObject();
-//                        carjsonObject.put("vin",car_vin.getText().toString().trim());
-//                        carjsonObject.put("is_new_car",1);
-//                        carjsonObject.put("mileage",mileage.getText().toString().trim());
-//                        carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
-//                        carjsonObject.put("car_no",car_num.getText().toString().trim());
-//                        carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
-//                        carjsonObject.put("color",car_color.getText().toString().trim());
-//                        //发动机号tv_starttime
-//
-//                        carjsonObject.put("engine",car_fdj.getText().toString().trim());
-//                        carjsonObject.put("remark",bz_msg.getText().toString().trim());
-//                        //车辆用途
-//                        switch (tv_starttime.getText().toString()){
-//                            case "小型车":
-//                                carjsonObject.put("car_type","1");
-//                                break;
-//                            case "紧凑车":
-//                                carjsonObject.put("car_type","2");
-//                                break;
-//                            case "中型车":
-//                                carjsonObject.put("car_type","3");
-//                                break;
-//                            case "中型SUV":
-//                                carjsonObject.put("car_type","4");
-//                                break;
-//                            case "中大型车":
-//                                carjsonObject.put("car_type","5");
-//                                break;
-//                            case "中大型SUV":
-//                                carjsonObject.put("car_type","6");
-//                                break;
-//                            case "皮卡":
-//                                carjsonObject.put("car_type","7");
-//                                break;
-//                            case "其他":
-//                                carjsonObject.put("car_type","0");
-//                                break;
-//                        }
-//                        switch (tv_endtime.getText().toString()){
-//                            case "自用":
-//                                carjsonObject.put("use_prop","1");
-//                                break;
-//                            case "非营运":
-//                                carjsonObject.put("use_prop","3");
-//                                break;
-//                            case "营运":
-//                                carjsonObject.put("use_prop","2");
-//                                break;
-//                            case "其他":
-//                                carjsonObject.put("use_prop","0");
-//                                break;
-//                        }
-//                        //使用年限
-//                        carjsonObject.put("used_age",years.getText().toString().trim());
-//                        jsonObject.put("car",carjsonObject);
-//                        jsonObject.put("group_id",sp.getString(Constant.Group_id,""));
-//                        pledgerjsonObject.put("card_type",1);
-//                        pledgerjsonObject.put("name",name.getText().toString().trim());
-//                        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
-////                    JSONObject pledgerjsonObject1=new JSONObject();
-//                        JSONArray pledgerListjsonObject=new JSONArray();
-//                        JSONObject locjsonObject=new JSONObject();
-//                        locjsonObject.put("province",sheng);
-//                        locjsonObject.put("city",shi);
-//                        locjsonObject.put("district",qu);
-//                        locjsonObject.put("address",home_address.getText().toString().trim());
-//                        locjsonObject.put("type",1);
-//                        locjsonObject.put("lat",null);
-//                        locjsonObject.put("lng",null);
-//                        pledgerListjsonObject.add(locjsonObject);
-//                        pledgerjsonObject.put("pledger_loc",pledgerListjsonObject);
-//                        pledgerjsonObject.put("card_type","1");//写死是身份证
-//                        pledgerjsonObject.put("idcard",card_num.getText().toString().trim());
-//                        pledgerjsonObject.put("name",name.getText().toString().trim());
-//                        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
-//
-//                        jsonObject.put("pledger",pledgerjsonObject);
-//
-//                        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
-//                        HttpRequest.post(Api.add+"?token="+sp.getString(Constant.Token,""), params, new JsonHttpRequestCallback() {
-//                            @Override
-//                            protected void onSuccess(Headers headers, JSONObject jsonObject) {
-//                                super.onSuccess(headers, jsonObject);
-//                                Log.i("jsonObject", jsonObject.toString());
-//                                if(jsonObject.getBoolean("success")){
-//                                    ///成功
-//                                    Toast.makeText(AddCarActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-//                                    finish();
-//                                }else{
-//                                    Toast.makeText(AddCarActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-//                                }
-//                                dialog.dialog.dismiss();
-//                            }
-//
-//                            @Override
-//                            public void onFailure(int errorCode, String msg) {
-//                                super.onFailure(errorCode, msg);
-//                            }
-//
-//                            @Override
-//                            public void onStart() {
-//                                super.onStart();
-//                                dialog= DialogUIUtils.showLoading(AddCarActivity.this,"加载中...",true,true,false,true);
-//                                dialog.show();
-//                            }
-//
-//                            @Override
-//                            public void onFinish() {
-//                                super.onFinish();
-//                            }
-//                        });
-                    }
-                }
+                imgpos = 0;
+                lasturl.clear();
+                if(dev_list.size()>0){
 
+//                    if(dev_list.size()>0){
+                        //有设备
+                        for (int i = 0; i < dev_list.size(); i++) {
+                            //只有全部通过才能提交
+                            //有设备
+                            if (dev_list.get(i).getLoc() != null) {
+                                Log.i(TAG, dev_list.get(i).getLoc());
+                            } else {
+                                Toast.makeText(BindDeviceActivity.this, "安装位置不能为空", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            if (i == dev_list.size() - 1) {
+                                Toast.makeText(BindDeviceActivity.this, "可以提交", Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, jsonObject1.getJSONObject("pledger").getString("card_type"));
+
+                                if (selImageList.size() > 0) {
+                                    dialog = DialogUIUtils.showLoading(BindDeviceActivity.this, "加载中...", true, true, false, true);
+                                    dialog.show();
+                                    uploadMultiFile(selImageList.get(imgpos).path);
+                                }else{
+                                    //没有添加图片，只有设备
+                                    addCar();
+                                }
+                            }
+                        }
+//                    }else{
+//                        //没设备
+//                        addCar();
+//                    }
+
+                }else if(selImageList.size()==0){
+                    //没图片没设备
+                    Toast.makeText(BindDeviceActivity.this,"请至少添加一张图片或一个设备",Toast.LENGTH_SHORT).show();
+                }else{
+                    //有图片没设备
+                    dialog = DialogUIUtils.showLoading(BindDeviceActivity.this, "加载中...", true, true, false, true);
+                    dialog.show();
+                    uploadMultiFile(selImageList.get(imgpos).path);
+//                    for (int i = 0; i < dev_list.size(); i++) {
+                        //只有全部通过才能提交
+//                        if (dev_list.get(i).getLoc() != null) {
+//                            Log.i(TAG, dev_list.get(i).getLoc());
+//                        } else {
+//                            Toast.makeText(BindDeviceActivity.this, "安装位置不能为空", Toast.LENGTH_SHORT).show();
+//                            break;
+//                        }
+//                        if (i == dev_list.size() - 1) {
+//                            Toast.makeText(BindDeviceActivity.this, "可以提交", Toast.LENGTH_SHORT).show();
+//                            Log.i(TAG, jsonObject1.getJSONObject("pledger").getString("card_type"));
+//                            dialog = DialogUIUtils.showLoading(BindDeviceActivity.this, "加载中...", true, true, false, true);
+//                            dialog.show();
+//                            if (selImageList.size() > 0) {
+//                                uploadMultiFile(selImageList.get(imgpos).path);
+//                            }else{
+//                                //没有添加图片，只有设备
+//                                addCar();
+//                            }
+//                        }
+//                    }
+                }
                 break;
             case R.id.add_device:
                 //添加设备
-                String dev_name=device_name.getText().toString().trim();
+                String dev_name = device_name.getText().toString().trim();
                 //获取数据
-                if(dev_name.equals("")){
-                    Toast.makeText(BindDeviceActivity.this,"请输入设备名",Toast.LENGTH_SHORT).show();
-                }else{
+                if (dev_name.equals("")) {
+                    Toast.makeText(BindDeviceActivity.this, "请输入设备名", Toast.LENGTH_SHORT).show();
+                } else {
                     queDeviceMsg(dev_name);
                 }
 
@@ -303,33 +240,33 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
     }
 
     private void queDeviceMsg(final String dev_name) {
-        RequestParams params=new RequestParams();
-        params.addHeader("Content-Type","application/json");
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put("groupids",sp.getString(Constant.Group_id,""));
-        jsonObject.put("internalnum",dev_name);
-        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
-        HttpRequest.post(Api.getDeviceMess+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("groupids", sp.getString(Constant.Group_id, ""));
+        jsonObject.put("internalnum", dev_name);
+        params.setRequestBody(MediaType.parse("application/json"), jsonObject.toString());
+        HttpRequest.post(Api.getDeviceMess + "?token=" + sp.getString(Constant.Token, ""), params, new JsonHttpRequestCallback() {
             @Override
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
-                BindDeviceBean bindDeviceBean=JSONObject.parseObject(jsonObject.toString(),BindDeviceBean.class);
-                if(!bindDeviceBean.isSuccess()){
-                    Toast.makeText(BindDeviceActivity.this,bindDeviceBean.getMessage(),Toast.LENGTH_SHORT).show();
-                }else if(bindDeviceBean.getCount()==0){
-                    Toast.makeText(BindDeviceActivity.this,"设备名输入错误",Toast.LENGTH_SHORT).show();
-                }else{
+                BindDeviceBean bindDeviceBean = JSONObject.parseObject(jsonObject.toString(), BindDeviceBean.class);
+                if (!bindDeviceBean.isSuccess()) {
+                    Toast.makeText(BindDeviceActivity.this, bindDeviceBean.getMessage(), Toast.LENGTH_SHORT).show();
+                } else if (bindDeviceBean.getCount() == 0) {
+                    Toast.makeText(BindDeviceActivity.this, "设备名输入错误", Toast.LENGTH_SHORT).show();
+                } else {
                     //判断是否已经添加了
-                    boolean hasadd=false;
-                    for(int i=0;i<dev_list.size();i++){
-                        if(dev_list.get(i).getInternalnum().equals(bindDeviceBean.getList().get(0).getInternalnum())){
-                            Toast.makeText(BindDeviceActivity.this,"请勿重复添加",Toast.LENGTH_SHORT).show();
-                            hasadd=true;
+                    boolean hasadd = false;
+                    for (int i = 0; i < dev_list.size(); i++) {
+                        if (dev_list.get(i).getInternalnum().equals(bindDeviceBean.getList().get(0).getInternalnum())) {
+                            Toast.makeText(BindDeviceActivity.this, "请勿重复添加", Toast.LENGTH_SHORT).show();
+                            hasadd = true;
                             break;
                         }
                     }
-                    if(!hasadd){
+                    if (!hasadd) {
                         dev_list.add(bindDeviceBean.getList().get(0));
                         bindDeviceAdapter.notifyItemInserted(dev_list.size());
                     }
@@ -342,7 +279,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onStart() {
                 super.onStart();
-                dialog= DialogUIUtils.showLoading(BindDeviceActivity.this,"加载中...",true,true,false,true);
+                dialog = DialogUIUtils.showLoading(BindDeviceActivity.this, "加载中...", true, true, false, true);
                 dialog.show();
             }
 
@@ -365,7 +302,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.i("onItemClick: ",position+"21" );
+        Log.i("onItemClick: ", position + "21");
         //要进行application注册
         switch (position) {
 
@@ -382,7 +319,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
                                 //打开选择,本次允许选择的数量
                                 ImagePicker.getInstance().setSelectLimit(maxImgCount - selImageList.size());
                                 Intent intent = new Intent(BindDeviceActivity.this, ImageGridActivity.class);
-                                intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS,true); // 是否是直接打开相机
+                                intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
                                 startActivityForResult(intent, REQUEST_CODE_SELECT);
                                 break;
                             case 1:
@@ -407,7 +344,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
                 Intent intentPreview = new Intent(this, ImagePreviewDelActivity.class);
                 intentPreview.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, (ArrayList<ImageItem>) adapter.getImages());
                 intentPreview.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, position);
-                intentPreview.putExtra(ImagePicker.EXTRA_FROM_ITEMS,true);
+                intentPreview.putExtra(ImagePicker.EXTRA_FROM_ITEMS, true);
                 startActivityForResult(intentPreview, REQUEST_CODE_PREVIEW);
                 break;
         }
@@ -426,7 +363,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
             //添加图片返回
             if (data != null && requestCode == REQUEST_CODE_SELECT) {
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (images != null){
+                if (images != null) {
                     selImageList.addAll(images);
                     adapter.setImages(selImageList);
                 }
@@ -435,7 +372,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
             //预览图片返回
             if (data != null && requestCode == REQUEST_CODE_PREVIEW) {
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
-                if (images != null){
+                if (images != null) {
                     selImageList.clear();
                     selImageList.addAll(images);
                     adapter.setImages(selImageList);
@@ -443,14 +380,16 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
             }
         }
     }
+
     private void uploadMultiFile(String imgUrl) {
+
         String imageType = "multipart/form-data";
         File file = new File(imgUrl);//imgUrl为图片位置
 
         RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpg"), file);
         Bitmap bmp = BitmapFactory.decodeFile(imgUrl);
-        String imgba=Bitmap2StrByBase64(bmp);
-        Log.i(TAG, "uploadMultiFile: "+imgba);
+        String imgba = Bitmap2StrByBase64(bmp);
+        Log.i(TAG, "uploadMultiFile: " + imgba);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), fileBody)
@@ -459,7 +398,7 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 //                .addFormDataPart("imagetype", imageType)
                 .build();
         Request request = new Request.Builder()
-                .url("http://101.37.119.32:20200//file/v1/upload?token="+sp.getString(Constant.Token,""))
+                .url(Api.upload + "?token=" + sp.getString(Constant.Token, ""))
 //                .url(url)
                 .post(requestBody)
                 .build();
@@ -470,14 +409,17 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.i("onFailure", "onFailure: ");
-                Toast.makeText(BindDeviceActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
-                DialogUIUtils.dismiss();
+                Toast.makeText(BindDeviceActivity.this, "上传失败,请重试", Toast.LENGTH_SHORT).show();
+                dialog.dialog.dismiss();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String htmlStr = response.body().string();
                 Log.i("onResponse: ", htmlStr);
+                JSONObject jsonObject2 = JSONObject.parseObject(htmlStr);
+
+                lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
 //                Log.i("result", "http://ring.thinghigh.cn"+htmlStr);
 //                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) JSON.parse(htmlStr);
 //                com.alibaba.fastjson.JSONObject datamsg = jsonObject.getJSONObject("data");
@@ -487,22 +429,104 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 //                final String IMAGE_URL = img_name;
 //                Log.i("result", IMAGE_URL);
                 //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //放在UI线程弹Toast
-                        Toast.makeText(BindDeviceActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
-                    }
-                });
+
+                if (imgpos == selImageList.size() - 1) {
+                    //不能传了
+                    dialog.dialog.dismiss();
+                    //请求新增接口
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //放在UI线程弹Toast
+                            addCar();
+                        }
+                    });
+
+                } else {
+                    imgpos = imgpos + 1;
+                    uploadMultiFile(selImageList.get(imgpos).path);
+                }
+
+//                Handler handler = new Handler(Looper.getMainLooper());
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //放在UI线程弹Toast
+//                        Toast.makeText(BindDeviceActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
             }
         });
     }
-    public String Bitmap2StrByBase64(Bitmap bit){
-        ByteArrayOutputStream bos=new ByteArrayOutputStream();
+
+    private void addCar() {
+
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < lasturl.size(); i++) {
+            JSONObject imgjsonObject = new JSONObject();
+            imgjsonObject.put("imgurl", lasturl.get(i));
+            jsonArray.add(imgjsonObject);
+        }
+        jsonObject1.getJSONObject("car").put("carimage", jsonArray);
+
+        JSONArray jsonArray1 = new JSONArray();
+        for (int i = 0; i < dev_list.size(); i++) {
+            JSONObject devjsonObject = new JSONObject();
+            devjsonObject.put("deviceid", dev_list.get(i).getDeviceid());
+            devjsonObject.put("install_part", dev_list.get(i).getLoc());
+            jsonArray1.add(devjsonObject);
+        }
+        jsonObject1.put("device", jsonArray1);
+
+        //可以请求接口
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+
+        params.setRequestBody(MediaType.parse("application/json"), jsonObject1.toString());
+        String jsonstr=jsonObject1.toString();
+        HttpRequest.post(Api.add + "?token=" + sp.getString(Constant.Token, ""), params, new JsonHttpRequestCallback() {
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i("jsonObject", jsonObject.toString());
+                if (jsonObject.getBoolean("success")) {
+                    ///成功
+                    Toast.makeText(BindDeviceActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    Intent data=new Intent();
+                    setResult(10, data);
+                    finish();
+                } else {
+                    Toast.makeText(BindDeviceActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+                dialog.dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                dialog = DialogUIUtils.showLoading(BindDeviceActivity.this, "加载中...", true, true, false, true);
+                dialog.show();
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+            }
+        });
+    }
+
+    public String Bitmap2StrByBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
-        byte[] bytes=bos.toByteArray();
+        byte[] bytes = bos.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 }

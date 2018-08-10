@@ -49,7 +49,7 @@ public class CarMessageBean extends BaseResponse {
         private String status;
         private String updatetime;
         private String updatorid;
-        private String use_prop;
+        private int use_prop;
         private String user_id;
         private int used_age;
         private String vin;
@@ -305,11 +305,11 @@ public class CarMessageBean extends BaseResponse {
             this.updatorid = updatorid;
         }
 
-        public String getUse_prop() {
+        public int getUse_prop() {
             return use_prop;
         }
 
-        public void setUse_prop(String use_prop) {
+        public void setUse_prop(int use_prop) {
             this.use_prop = use_prop;
         }
 

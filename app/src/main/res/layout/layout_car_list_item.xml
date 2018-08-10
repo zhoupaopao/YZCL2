@@ -196,7 +196,7 @@
                     android:background="@drawable/unchecked_radio_button"
                     android:button="@null"
                     android:gravity="center"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:text="详情"
                     android:textColor="@color/title_color" />
 
