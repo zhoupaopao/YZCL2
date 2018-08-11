@@ -123,15 +123,26 @@ public class EditDeviceAdapter extends BaseRecyclerAdapter<EditDeviceAdapter.Vie
             @Override
             public void onClick(View view) {
                 //删除当前行，数据操作
-                list.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position,list.size()-position);//通知数据与界面重新绑定
+//                list.remove(position);
+//                notifyItemRemoved(position);
+//                notifyItemRangeChanged(position,list.size()-position);//通知数据与界面重新绑定
                 //请求接口
+                if(list.get(position).getDeviceid()==null){
+                    context.setUnbindDeviceByModify(list.get(position).getDevie_id(),position);
+                }else{
+                    context.setUnbindDeviceByModify(list.get(position).getDeviceid(),position);
+                }
+
             }
         });
 
     }
 
+    public void deletedev(int position){
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position,list.size()-position);//通知数据与界面重新绑定
+    }
     @Override
     public int getAdapterItemCount() {
         return list.size();

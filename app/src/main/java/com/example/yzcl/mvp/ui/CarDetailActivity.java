@@ -3,6 +3,8 @@ package com.example.yzcl.mvp.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,6 +48,10 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -313,6 +319,15 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                         tv_endtime.setText("请选择");
                     }
                     bz_msg.setText(carMessage.getRemark());
+
+                    //图片
+                    String imgurls=carMessage.getImgurls();
+                    String[]imgurl=imgurls.split(",");
+                    ImageItem imageItem=new ImageItem();
+                    imageItem.path=imgurl[0];
+                    Log.i(TAG, imgurl[0]);
+                    selImageList.add(imageItem);
+                    adapter.setImages(selImageList);
                 }else{
                     Toast.makeText(CarDetailActivity.this,carMessageBean.getMessage(),Toast.LENGTH_SHORT).show();
                 }
@@ -332,6 +347,19 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
             }
         });
     }
+    public static Bitmap getBitmap(String path) throws IOException {
+
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        conn.setConnectTimeout(5000);
+        conn.setRequestMethod("GET");
+        if(conn.getResponseCode() == 200){
+            InputStream inputStream = conn.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }
+        return null;
+    }
 
     private void queCarGpsInfo() {
         ///获取车辆下的设备情况
@@ -347,6 +375,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 Log.i(TAG, jsonObject.toString());
                 EditDeviceBean editDeviceBean=JSONObject.parseObject(jsonObject.toString(),EditDeviceBean.class);
                 list=editDeviceBean.getList();
+                status_zdgz.setText("设备信息("+list.size()+")");
                 editDeviceAdapter = new EditDeviceAdapter(CarDetailActivity.this, list);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(CarDetailActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -590,6 +619,40 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 list.addAll(editDeviceBean.getList());
                 editDeviceAdapter.notifyDataSetChanged();
                 dialog.dialog.dismiss();
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
+    }
+
+    public void setUnbindDeviceByModify(String deviceidd, final int postion){
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("carid", car_id);
+        jsonObject.put("deviceid", deviceidd);
+        params.setRequestBody(MediaType.parse("application/json"), jsonObject.toString());
+        HttpRequest.post(Api.setUnbindDeviceByModify + "?token=" + sp.getString(Constant.Token, ""), params, new JsonHttpRequestCallback() {
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+                if(jsonObject.getBoolean("success")){
+                    //添加成功
+                    Toast.makeText(CarDetailActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                    editDeviceAdapter.deletedev(postion);
+                }else{
+                    Toast.makeText(CarDetailActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override

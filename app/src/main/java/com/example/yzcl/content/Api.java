@@ -105,5 +105,6 @@ public class Api {
     public static  String addDevice=MonitorUrl+"/operation/v1/vehicleManage/addDevice";
     //添加安装位置/operation/v1/vehicleManage/getInstallPart
     public static  String getInstallPart=MonitorUrl+"/operation/v1/vehicleManage/getInstallPart";
-
+    //解绑设备/operation/v1/vehicleManage/setUnbindDeviceByModify
+    public static  String setUnbindDeviceByModify=MonitorUrl+"/operation/v1/vehicleManage/setUnbindDeviceByModify";
 }
