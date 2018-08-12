@@ -1,5 +1,6 @@
 package com.example.yzcl.mvp.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.bumptech.glide.Glide;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.dou361.dialogui.bean.TieBean;
@@ -153,6 +155,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     private EditDeviceAdapter editDeviceAdapter;
     ArrayList<EditDeviceBean.EditDeviceBeanMsg>list;
 
+    private ImageView imgg;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,6 +174,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         Intent intent=getIntent();
         car_id=intent.getStringExtra("carid");
+        imgg=findViewById(R.id.imgg);
         back=findViewById(R.id.back);
         title=findViewById(R.id.title);
         page1=findViewById(R.id.page1);
@@ -211,7 +216,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         device_list=findViewById(R.id.device_list);
         rcvImg=findViewById(R.id.rcv_img);
         save=findViewById(R.id.save);
-
+        Glide.with(this).load("http://101.37.119.32:20209/2018/08/10/11/35/10/1533872124549-8723e39803fe4a848d1f550b3db5a885.jpg").into(imgg);
+//        ImagePicker.getInstance().getImageLoader().displayImage( this, "http://101.37.119.32:20209/2018/08/10/11/35/10/1533872124549-8723e39803fe4a848d1f550b3db5a885.jpg", imgg, 0, 0);
         initRecy();
     }
 
