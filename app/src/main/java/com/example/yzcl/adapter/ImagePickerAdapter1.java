@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.ui.AddCarActivity;
 import com.lzy.imagepicker.ImagePicker;
@@ -99,7 +100,8 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
                 iv_img.setImageResource(R.drawable.selector_image_add);
                 clickPosition = AddCarActivity.IMAGE_ITEM_ADD;
             } else {
-                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item, iv_img, 0, 0);
+                Glide.with(mContext).load(item).into(iv_img);
+//                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item, iv_img, 0, 0);
                 clickPosition = position;
             }
         }

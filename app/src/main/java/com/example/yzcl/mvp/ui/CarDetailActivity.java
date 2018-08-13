@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,6 +39,7 @@ import com.example.yzcl.R;
 import com.example.yzcl.adapter.BindDeviceAdapter;
 import com.example.yzcl.adapter.EditDeviceAdapter;
 import com.example.yzcl.adapter.ImagePickerAdapter;
+import com.example.yzcl.adapter.ImagePickerAdapter1;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.BindDeviceBean;
@@ -50,6 +53,7 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -60,8 +64,15 @@ import java.util.List;
 import cn.finalteam.okhttpfinal.HttpRequest;
 import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
 import cn.finalteam.okhttpfinal.RequestParams;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.dou361.dialogui.DialogUIUtils.showToast;
 
@@ -69,7 +80,7 @@ import static com.dou361.dialogui.DialogUIUtils.showToast;
  * Created by 13126 on 2018/8/9.
  */
 
-public class CarDetailActivity extends BaseActivity implements ImagePickerAdapter.OnRecyclerViewItemClickListener,View.OnClickListener{
+public class CarDetailActivity extends BaseActivity implements ImagePickerAdapter1.OnRecyclerViewItemClickListener,View.OnClickListener{
     private TextView title;
     private ImageView back;
     private SharedPreferences sp;
@@ -79,8 +90,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;
     public static final int REQUEST_CODE_PREVIEW = 101;
-    private ImagePickerAdapter adapter;
-    private ArrayList<ImageItem> selImageList; //当前选择的所有图片
+    private ImagePickerAdapter1 adapter;
+    private ArrayList<String> selImageList; //当前选择的所有图片
     private int maxImgCount = 5;               //允许选择图片最大数
     String car_brand_id;
     String car_brand;
@@ -155,7 +166,12 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     private EditDeviceAdapter editDeviceAdapter;
     ArrayList<EditDeviceBean.EditDeviceBeanMsg>list;
 
-    private ImageView imgg;
+
+    private int imgpos = 0;//上传图片的位置
+    ArrayList<String> lasturl = new ArrayList<>();//上传后的集合
+    ArrayList<ImageItem> images=new ArrayList<>();//上个页面返回的图片
+
+//    private ImageView imgg;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -174,7 +190,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
         Intent intent=getIntent();
         car_id=intent.getStringExtra("carid");
-        imgg=findViewById(R.id.imgg);
+//        imgg=findViewById(R.id.imgg);
         back=findViewById(R.id.back);
         title=findViewById(R.id.title);
         page1=findViewById(R.id.page1);
@@ -216,7 +232,6 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         device_list=findViewById(R.id.device_list);
         rcvImg=findViewById(R.id.rcv_img);
         save=findViewById(R.id.save);
-        Glide.with(this).load("http://101.37.119.32:20209/2018/08/10/11/35/10/1533872124549-8723e39803fe4a848d1f550b3db5a885.jpg").into(imgg);
 //        ImagePicker.getInstance().getImageLoader().displayImage( this, "http://101.37.119.32:20209/2018/08/10/11/35/10/1533872124549-8723e39803fe4a848d1f550b3db5a885.jpg", imgg, 0, 0);
         initRecy();
     }
@@ -329,10 +344,10 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     //图片
                     String imgurls=carMessage.getImgurls();
                     String[]imgurl=imgurls.split(",");
-                    ImageItem imageItem=new ImageItem();
-                    imageItem.path=imgurl[0];
+//                    ImageItem imageItem=new ImageItem();
+//                    imageItem.path=imgurl[0];
                     Log.i(TAG, imgurl[0]);
-                    selImageList.add(imageItem);
+                    selImageList.add(imgurl[0]);
                     adapter.setImages(selImageList);
                 }else{
                     Toast.makeText(CarDetailActivity.this,carMessageBean.getMessage(),Toast.LENGTH_SHORT).show();
@@ -791,6 +806,91 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 
 
     }
+    public void picinitData(){
+        imgpos = 0;
+        lasturl.clear();
+    }
+    private void uploadMultiFile(String imgUrl) {
+
+        String imageType = "multipart/form-data";
+        File file = new File(imgUrl);//imgUrl为图片位置
+
+        RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        Bitmap bmp = BitmapFactory.decodeFile(imgUrl);
+//        String imgba = Bitmap2StrByBase64(bmp);
+//        Log.i(TAG, "uploadMultiFile: " + imgba);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), fileBody)
+                //下面这个是传送base64文件的
+//                .addFormDataPart("file", "data:image/jpeg;base64,"+imgba)
+//                .addFormDataPart("imagetype", imageType)
+                .build();
+        Request request = new Request.Builder()
+                .url(Api.upload + "?token=" + sp.getString(Constant.Token, ""))
+//                .url(url)
+                .post(requestBody)
+                .build();
+        final okhttp3.OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = httpBuilder
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("onFailure", "onFailure: ");
+                Toast.makeText(CarDetailActivity.this, "上传失败,请重试", Toast.LENGTH_SHORT).show();
+                dialog.dialog.dismiss();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String htmlStr = response.body().string();
+                Log.i("onResponse: ", htmlStr);
+                JSONObject jsonObject2 = JSONObject.parseObject(htmlStr);
+
+                lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
+//                Log.i("result", "http://ring.thinghigh.cn"+htmlStr);
+//                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) JSON.parse(htmlStr);
+//                com.alibaba.fastjson.JSONObject datamsg = jsonObject.getJSONObject("data");
+//                String img_name = datamsg.getString("path");
+////                String img_name=jsonObject.getString("data");
+////                Toast.makeText(ChooseUpPicActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+//                final String IMAGE_URL = img_name;
+//                Log.i("result", IMAGE_URL);
+                //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
+
+                if (imgpos == images.size() - 1) {
+                    //不能传了
+                    dialog.dialog.dismiss();
+                    //请求新增接口
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //放在UI线程弹Toast
+                            selImageList.addAll(lasturl);
+                            adapter.setImages(selImageList);
+                        }
+                    });
+
+                } else {
+                    Log.i(TAG, "onResponse: "+imgpos+"/"+images.get(imgpos).path);
+                    imgpos = imgpos + 1;
+                    uploadMultiFile(images.get(imgpos).path);
+                }
+
+//                Handler handler = new Handler(Looper.getMainLooper());
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //放在UI线程弹Toast
+//                        Toast.makeText(BindDeviceActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -802,10 +902,12 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             //添加图片返回
             if (data != null && requestCode == REQUEST_CODE_SELECT) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 if (images != null){
-                    selImageList.addAll(images);
-                    adapter.setImages(selImageList);
+                    //这个时候就一个上传
+                    picinitData();
+                    uploadMultiFile(images.get(imgpos).path);
+
                 }
             }
         } else if (resultCode == ImagePicker.RESULT_CODE_BACK) {
@@ -814,7 +916,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
                 if (images != null){
                     selImageList.clear();
-                    selImageList.addAll(images);
+//                    selImageList.addAll(images);
                     adapter.setImages(selImageList);
                 }
             }
@@ -833,7 +935,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     }
     private void initRecy() {
         selImageList = new ArrayList<>();
-        adapter = new ImagePickerAdapter(this, selImageList, maxImgCount);
+        adapter = new ImagePickerAdapter1(this, selImageList, maxImgCount);
         adapter.setOnItemClickListener(this);
 
         rcvImg.setLayoutManager(new GridLayoutManager(this, 4));
@@ -882,8 +984,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 break;
             default:
                 //打开预览
-                Intent intentPreview = new Intent(this, ImagePreviewDelActivity.class);
-                intentPreview.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, (ArrayList<ImageItem>) adapter.getImages());
+                Intent intentPreview = new Intent(this, ImagePreviewDelActivity1.class);
+                intentPreview.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, (ArrayList<String>) adapter.getImages());
                 intentPreview.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, position);
                 intentPreview.putExtra(ImagePicker.EXTRA_FROM_ITEMS,true);
                 startActivityForResult(intentPreview, REQUEST_CODE_PREVIEW);
