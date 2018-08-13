@@ -709,7 +709,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
             protected void onSuccess(Headers headers, JSONObject jsonObject) {
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
-
+                //这里返回是修改失败
 
             }
 
