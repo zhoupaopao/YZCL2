@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bumptech.glide.Glide;
@@ -166,6 +167,9 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     private EditDeviceAdapter editDeviceAdapter;
     ArrayList<EditDeviceBean.EditDeviceBeanMsg>list;
 
+    private String pledge_car="";
+    private String pledger_id="";
+//    private String car_id="";
 
     private int imgpos = 0;//上传图片的位置
     ArrayList<String> lasturl = new ArrayList<>();//上传后的集合
@@ -296,7 +300,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                         tv_sex.setText(carMessage.getPledger().getPledger_loc().get(0).getProvince()+carMessage.getPledger().getPledger_loc().get(0).getCity()+carMessage.getPledger().getPledger_loc().get(0).getDistrict());
                     }
                     home_address.setText(carMessage.getPledger().getPledger_loc().get(0).getAddress());
-
+                    pledge_car=carMessage.getPledge_car().getId();
+                    pledger_id=carMessage.getPledger().getId();
                     //第二页
                     car_vin.setText(carMessage.getVin());
                     car_num.setText(carMessage.getCar_no());
@@ -306,8 +311,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     years.setText(carMessage.getUsed_age()+"");
                     mileage.setText(carMessage.getMileage()+"");
                     //这个先不写
-                    use_carmoney.setText(carMessage.getCar_brand());
-                    use_money.setText(carMessage.getCar_brand());
+                    use_carmoney.setText(carMessage.getCar_value()+"");
+//                    use_money.setText(carMessage.getCar_brand());
 
                     if(carMessage.getCar_type()==0){
                         tv_starttime.setText("请选择");
@@ -429,6 +434,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         starttime.setOnClickListener(this);
         endtime.setOnClickListener(this);
         add_device.setOnClickListener(this);
+        save.setOnClickListener(this);
         title.setText("新增车辆");
         car_status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -580,8 +586,147 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 } else {
                     queDeviceMsg(dev_name);
                 }
+                break;
+            case R.id.save:
+                //提交修改
+                Log.i(TAG, "onClick: ");
+                if(name.getText().toString().trim().equals("")){
+                    //是空的话
+                    Toast.makeText(CarDetailActivity.this,"姓名不能为空",Toast.LENGTH_SHORT).show();
+                }else if(car_vin.getText().toString().trim().length()!=17){
+                    Toast.makeText(CarDetailActivity.this,"请填写17位车架号",Toast.LENGTH_SHORT).show();
+                }else if(mobile.getText().toString().trim().length()!=0&&mobile.getText().toString().trim().length()!=11){
+                    Toast.makeText(CarDetailActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
+                }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
+                    Toast.makeText(CarDetailActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.i(TAG, "onClick: ");
+                    UpDateCar();
+                }
+                break;
+
         }
     }
+
+    private void UpDateCar() {
+        ///获取车辆下的设备情况
+        RequestParams params=new RequestParams();
+        params.addHeader("Content-Type","application/json");
+        JSONObject jsonObject=new JSONObject();
+        JSONObject carjsonObject=new JSONObject();
+        JSONObject pledgerjsonObject=new JSONObject();
+        carjsonObject.put("vin",car_vin.getText().toString().trim());
+        carjsonObject.put("is_new_car",1);
+        carjsonObject.put("id",car_id);
+        carjsonObject.put("mileage",mileage.getText().toString().trim());
+        carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
+        carjsonObject.put("car_no",car_num.getText().toString().trim());
+        carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
+        carjsonObject.put("color",car_color.getText().toString().trim());
+        //发动机号tv_starttime
+        JSONArray carimagejsonObject=new JSONArray();
+        for(int pp=0;pp<selImageList.size();pp++){
+            JSONObject imgjsonobject=new JSONObject();
+            imgjsonobject.put("imgurl",selImageList.get(pp));
+            carimagejsonObject.add(imgjsonobject);
+        }
+        carjsonObject.put("carimage",carimagejsonObject);
+        carjsonObject.put("engine",car_fdj.getText().toString().trim());
+        carjsonObject.put("remark",bz_msg.getText().toString().trim());
+        //车辆用途
+        switch (tv_starttime.getText().toString()){
+            case "小型车":
+                carjsonObject.put("car_type","1");
+                break;
+            case "紧凑车":
+                carjsonObject.put("car_type","2");
+                break;
+            case "中型车":
+                carjsonObject.put("car_type","3");
+                break;
+            case "中型SUV":
+                carjsonObject.put("car_type","4");
+                break;
+            case "中大型车":
+                carjsonObject.put("car_type","5");
+                break;
+            case "中大型SUV":
+                carjsonObject.put("car_type","6");
+                break;
+            case "皮卡":
+                carjsonObject.put("car_type","7");
+                break;
+            case "其他":
+                carjsonObject.put("car_type","0");
+                break;
+        }
+        switch (tv_endtime.getText().toString()){
+            case "自用":
+                carjsonObject.put("use_prop","1");
+                break;
+            case "非营运":
+                carjsonObject.put("use_prop","3");
+                break;
+            case "营运":
+                carjsonObject.put("use_prop","2");
+                break;
+            case "其他":
+                carjsonObject.put("use_prop","0");
+                break;
+        }
+        //使用年限
+        carjsonObject.put("used_age",years.getText().toString().trim());
+        jsonObject.put("car",carjsonObject);
+        jsonObject.put("group_id",sp.getString(Constant.Group_id,""));
+        pledgerjsonObject.put("card_type",1);
+        pledgerjsonObject.put("name",name.getText().toString().trim());
+        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+//                    JSONObject pledgerjsonObject1=new JSONObject();
+        JSONArray pledgerListjsonObject=new JSONArray();
+        JSONObject locjsonObject=new JSONObject();
+        locjsonObject.put("province",sheng);
+        locjsonObject.put("city",shi);
+        locjsonObject.put("district",qu);
+        locjsonObject.put("address",home_address.getText().toString().trim());
+        locjsonObject.put("type",1);
+        locjsonObject.put("lat",null);
+        locjsonObject.put("lng",null);
+        pledgerListjsonObject.add(locjsonObject);
+        pledgerjsonObject.put("pledger_loc",pledgerListjsonObject);
+        pledgerjsonObject.put("card_type","1");//写死是身份证
+        pledgerjsonObject.put("idcard",card_num.getText().toString().trim());
+        pledgerjsonObject.put("name",name.getText().toString().trim());
+        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+        pledgerjsonObject.put("id",pledger_id);
+        jsonObject.put("pledger",pledgerjsonObject);
+        JSONObject pledgercarjsonObject=new JSONObject();
+        pledgercarjsonObject.put("id",pledge_car);
+        jsonObject.put("pledge_car",pledgercarjsonObject);
+        params.setRequestBody(MediaType.parse("application/json"),jsonObject.toString());
+        Log.i(TAG, "UpDateCar: "+jsonObject.toString());
+        HttpRequest.post(Api.updateCar+"?token="+sp.getString(Constant.Token,""),params,new JsonHttpRequestCallback(){
+            @Override
+            protected void onSuccess(Headers headers, JSONObject jsonObject) {
+                super.onSuccess(headers, jsonObject);
+                Log.i(TAG, jsonObject.toString());
+
+
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                Toast.makeText(CarDetailActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                dialog.dialog.dismiss();
+            }
+        });
+    }
+
     private void queDeviceMsg(final String dev_name) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
@@ -913,10 +1058,10 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         } else if (resultCode == ImagePicker.RESULT_CODE_BACK) {
             //预览图片返回
             if (data != null && requestCode == REQUEST_CODE_PREVIEW) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
+                ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
                 if (images != null){
                     selImageList.clear();
-//                    selImageList.addAll(images);
+                    selImageList.addAll(images);
                     adapter.setImages(selImageList);
                 }
             }

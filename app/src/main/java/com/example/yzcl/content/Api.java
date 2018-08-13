@@ -107,4 +107,7 @@ public class Api {
     public static  String getInstallPart=MonitorUrl+"/operation/v1/vehicleManage/getInstallPart";
     //解绑设备/operation/v1/vehicleManage/setUnbindDeviceByModify
     public static  String setUnbindDeviceByModify=MonitorUrl+"/operation/v1/vehicleManage/setUnbindDeviceByModify";
+    //编辑车辆信息/operation/v1/vehicleManage/updateCar
+    public static  String updateCar=MonitorUrl+"/operation/v1/vehicleManage/updateCar";
+
 }

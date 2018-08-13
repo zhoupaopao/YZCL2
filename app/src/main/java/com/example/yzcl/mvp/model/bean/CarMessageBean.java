@@ -23,7 +23,7 @@ public class CarMessageBean extends BaseResponse {
         private String car_no;
         private String car_series;//车系
         private int car_type;
-        private boolean car_value;
+        private int car_value;
         private String car_version;
         private String carloantype;
         private String cartodevice;
@@ -97,11 +97,11 @@ public class CarMessageBean extends BaseResponse {
             this.car_type = car_type;
         }
 
-        public boolean isCar_value() {
+        public int getCar_value() {
             return car_value;
         }
 
-        public void setCar_value(boolean car_value) {
+        public void setCar_value(int car_value) {
             this.car_value = car_value;
         }
 

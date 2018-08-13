@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lzy.imagepicker.ImagePicker;
+import com.example.ImageChoose.ImagePageAdapter1;
+import com.example.ImageChoose.ImagePicker1;
 import com.lzy.imagepicker.R;
 import com.lzy.imagepicker.ui.ImageBaseActivity;
 import com.lzy.imagepicker.util.Utils;
 import com.lzy.imagepicker.adapter.ImagePageAdapter;
 import com.lzy.imagepicker.DataHolder;
-import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.view.ViewPagerFixed;
 
 import java.util.ArrayList;
@@ -28,15 +28,15 @@ import java.util.ArrayList;
  */
 public abstract class ImagePreviewBaseActivity1 extends ImageBaseActivity {
 
-    protected ImagePicker imagePicker;
-    protected ArrayList<ImageItem> mImageItems;      //跳转进ImagePreviewFragment的图片文件夹
+    protected ImagePicker1 imagePicker;
+    protected ArrayList<String> mImageItems;      //跳转进ImagePreviewFragment的图片文件夹
     protected int mCurrentPosition = 0;              //跳转进ImagePreviewFragment时的序号，第几个图片
     protected TextView mTitleCount;                  //显示当前图片的位置  例如  5/31
-    protected ArrayList<ImageItem> selectedImages;   //所有已经选中的图片
+    protected ArrayList<String> selectedImages;   //所有已经选中的图片
     protected View content;
     protected View topBar;
     protected ViewPagerFixed mViewPager;
-    protected ImagePageAdapter mAdapter;
+    protected ImagePageAdapter1 mAdapter;
     protected boolean isFromItems = false;
 
     @Override
@@ -44,19 +44,19 @@ public abstract class ImagePreviewBaseActivity1 extends ImageBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
 
-        mCurrentPosition = getIntent().getIntExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, 0);
-        isFromItems = getIntent().getBooleanExtra(ImagePicker.EXTRA_FROM_ITEMS,false);
+        mCurrentPosition = getIntent().getIntExtra(ImagePicker1.EXTRA_SELECTED_IMAGE_POSITION, 0);
+        isFromItems = getIntent().getBooleanExtra(ImagePicker1.EXTRA_FROM_ITEMS,false);
 
         if (isFromItems){
             // 据说这样会导致大量图片崩溃
-            mImageItems = (ArrayList<ImageItem>) getIntent().getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
+            mImageItems = (ArrayList<String>) getIntent().getSerializableExtra(ImagePicker1.EXTRA_IMAGE_ITEMS);
         }else{
             // 下面采用弱引用会导致预览崩溃
-            mImageItems =  (ArrayList<ImageItem>) DataHolder.getInstance().retrieve(DataHolder.DH_CURRENT_IMAGE_FOLDER_ITEMS);
+            mImageItems =  (ArrayList<String>) DataHolder.getInstance().retrieve(DataHolder.DH_CURRENT_IMAGE_FOLDER_ITEMS);
         }
 
 
-        imagePicker = ImagePicker.getInstance();
+        imagePicker = ImagePicker1.getInstance();
         selectedImages = imagePicker.getSelectedImages();
 
         //初始化控件
@@ -80,7 +80,7 @@ public abstract class ImagePreviewBaseActivity1 extends ImageBaseActivity {
         mTitleCount = (TextView) findViewById(R.id.tv_des);
 
         mViewPager = (ViewPagerFixed) findViewById(R.id.viewpager);
-        mAdapter = new ImagePageAdapter(this, mImageItems);
+        mAdapter = new ImagePageAdapter1(this, mImageItems);
         mAdapter.setPhotoViewClickListener(new ImagePageAdapter.PhotoViewClickListener() {
             @Override
             public void OnPhotoTapListener(View view, float v, float v1) {
