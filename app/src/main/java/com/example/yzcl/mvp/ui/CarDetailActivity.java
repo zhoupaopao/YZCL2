@@ -175,6 +175,9 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     ArrayList<String> lasturl = new ArrayList<>();//上传后的集合
     ArrayList<ImageItem> images=new ArrayList<>();//上个页面返回的图片
 
+    private String maptype="";
+    private String locid="";
+
 //    private ImageView imgg;
 
     @Override
@@ -311,6 +314,11 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     years.setText(carMessage.getUsed_age()+"");
                     mileage.setText(carMessage.getMileage()+"");
                     //这个先不写
+                    maptype=carMessage.getPledger().getPledger_loc().get(0).getMaptype();
+                    locid=carMessage.getPledger().getPledger_loc().get(0).getId();
+                    sheng=carMessage.getPledger().getPledger_loc().get(0).getProvince();
+                    shi=carMessage.getPledger().getPledger_loc().get(0).getCity();
+                    qu=carMessage.getPledger().getPledger_loc().get(0).getDistrict();
                     use_carmoney.setText(carMessage.getCar_value()+"");
 //                    use_money.setText(carMessage.getCar_brand());
 
@@ -352,7 +360,10 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 //                    ImageItem imageItem=new ImageItem();
 //                    imageItem.path=imgurl[0];
                     Log.i(TAG, imgurl[0]);
-                    selImageList.add(imgurl[0]);
+                    for(int i=0;i<imgurl.length;i++){
+                        selImageList.add(imgurl[i]);
+                    }
+
                     adapter.setImages(selImageList);
                 }else{
                     Toast.makeText(CarDetailActivity.this,carMessageBean.getMessage(),Toast.LENGTH_SHORT).show();
@@ -618,11 +629,33 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         carjsonObject.put("vin",car_vin.getText().toString().trim());
         carjsonObject.put("is_new_car",1);
         carjsonObject.put("id",car_id);
-        carjsonObject.put("mileage",mileage.getText().toString().trim());
-        carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
-        carjsonObject.put("car_no",car_num.getText().toString().trim());
-        carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
-        carjsonObject.put("color",car_color.getText().toString().trim());
+        if(mileage.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("mileage",mileage.getText().toString().trim());
+        }
+        if(tv_carxi.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("car_brand",tv_carxi.getText().toString().trim());
+        }
+        if(car_num.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("car_no",car_num.getText().toString().trim());
+        }
+        if(use_carmoney.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("car_value",use_carmoney.getText().toString().trim());
+        }
+        if(car_color.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("color",car_color.getText().toString().trim());
+        }
+
+
         //发动机号tv_starttime
         JSONArray carimagejsonObject=new JSONArray();
         for(int pp=0;pp<selImageList.size();pp++){
@@ -630,9 +663,18 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
             imgjsonobject.put("imgurl",selImageList.get(pp));
             carimagejsonObject.add(imgjsonobject);
         }
+        if(car_fdj.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("engine",car_fdj.getText().toString().trim());
+        }
+        if(bz_msg.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("remark",bz_msg.getText().toString().trim());
+        }
         carjsonObject.put("carimage",carimagejsonObject);
-        carjsonObject.put("engine",car_fdj.getText().toString().trim());
-        carjsonObject.put("remark",bz_msg.getText().toString().trim());
+
         //车辆用途
         switch (tv_starttime.getText().toString()){
             case "小型车":
@@ -675,12 +717,20 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 break;
         }
         //使用年限
-        carjsonObject.put("used_age",years.getText().toString().trim());
+        if(years.getText().toString().trim().equals("")){
+
+        }else{
+            carjsonObject.put("used_age",years.getText().toString().trim());
+        }
         jsonObject.put("car",carjsonObject);
         jsonObject.put("group_id",sp.getString(Constant.Group_id,""));
         pledgerjsonObject.put("card_type",1);
         pledgerjsonObject.put("name",name.getText().toString().trim());
-        pledgerjsonObject.put("phone",mobile.getText().toString().trim());
+//        if(mobile.getText().toString().trim().equals("")){
+//
+//        }else{
+//            carjsonObject.put("phone",mobile.getText().toString().trim());
+//        }
 //                    JSONObject pledgerjsonObject1=new JSONObject();
         JSONArray pledgerListjsonObject=new JSONArray();
         JSONObject locjsonObject=new JSONObject();
@@ -689,6 +739,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         locjsonObject.put("district",qu);
         locjsonObject.put("address",home_address.getText().toString().trim());
         locjsonObject.put("type",1);
+        locjsonObject.put("maptype",maptype);
+        locjsonObject.put("id",locid);
         locjsonObject.put("lat",null);
         locjsonObject.put("lng",null);
         pledgerListjsonObject.add(locjsonObject);
@@ -710,7 +762,11 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
                 //这里返回是修改失败
-
+                if(jsonObject.getBoolean("success")){
+                    Toast.makeText(CarDetailActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(CarDetailActivity.this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
