@@ -59,12 +59,14 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
     private SharedPreferences sp;
     private BuildBean dialog;
     private int nowstatus;
+    private boolean canmark=false;
     public CarListAdapter1(RealCarListActivity context, List<CarListBean.CarBean> carlist, int nowstatus){
         this.context=context;
         this.carlist=carlist;
         this.nowstatus=nowstatus;
         mInflater=LayoutInflater.from(context);
         this.sp=context.getSharedPreferences("YZCL",Context.MODE_PRIVATE);
+        checkqx();
     }
 
 
@@ -121,6 +123,11 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
             }
         });
         holder.spinner.setAdapter(adapter);
+        if(canmark){
+            holder.spinner.setVisibility(View.VISIBLE);
+        }else{
+            holder.spinner.setVisibility(View.GONE);
+        }
         //借款人姓名
         holder.name.setText(carBean.getPledgename());
         //显示逾期按钮
@@ -210,7 +217,17 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
             });
         }
     }
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("184")){
+                canmark=true;
 
+            }
+
+        }
+    }
     private void achievemsg(String id) {
         if(!Constant.isNetworkConnected(context)) {
             //判断网络是否可用

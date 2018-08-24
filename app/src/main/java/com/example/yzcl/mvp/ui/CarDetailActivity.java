@@ -246,6 +246,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 
     private void initData() {
         //请求品牌
+
         RequestParams params=new RequestParams();
         params.addHeader("Content-Type","application/json");
         JSONObject jsonObject=new JSONObject();
@@ -371,7 +372,6 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                         for(int i=0;i<imgurl.length;i++){
                             selImageList.add(imgurl[i]);
                         }
-
                         adapter.setImages(selImageList);
                     }
 

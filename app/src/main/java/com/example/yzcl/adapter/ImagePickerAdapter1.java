@@ -3,6 +3,7 @@ package com.example.yzcl.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
         } else {
             isAdded = false;
         }
+        Log.i("setImages", "setImages: ");
         notifyDataSetChanged();
     }
 
@@ -102,6 +104,7 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
             } else {
                 Glide.with(mContext).load(item).into(iv_img);
 //                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item, iv_img, 0, 0);
+                Log.i("bind: ", position+"");
                 clickPosition = position;
             }
         }

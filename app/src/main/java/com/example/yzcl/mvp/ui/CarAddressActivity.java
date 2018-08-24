@@ -874,7 +874,10 @@ public class CarAddressActivity extends BaseActivity {
         if(carMessageBean.getObject().getPledger().getPledger_loc().size()==0){
             work_address.setText("家庭地址："+"暂无");
         }else{
-            work_address.setText("家庭地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
+            String province=carMessageBean.getObject().getPledger().getPledger_loc().get(0).getProvince();
+            String city=carMessageBean.getObject().getPledger().getPledger_loc().get(0).getCity();
+            String district=carMessageBean.getObject().getPledger().getPledger_loc().get(0).getDistrict();
+            work_address.setText("家庭地址："+province+city+district+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
         }
 //        work_address.setText("联系地址："+carMessageBean.getObject().getPledger().getPledger_loc().get(0).getAddress());
         customer.setText("所属客户："+carMessageBean.getObject().getSystemgroup().getGroup_name());
