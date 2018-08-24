@@ -48,6 +48,7 @@ import com.example.yzcl.mvp.model.bean.CarMessageBean;
 import com.example.yzcl.mvp.model.bean.CityBean;
 import com.example.yzcl.mvp.model.bean.EditDeviceBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.utils.EdittextSub;
 import com.gyf.barlibrary.ImmersionBar;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -119,7 +120,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     private RelativeLayout rl_cartype;//选择车型
     private TextView tv_cartype;//车辆类型
     private EditText car_color;//车辆颜色
-    private EditText mileage;//行驶里程
+    private EdittextSub mileage;//行驶里程
     private RelativeLayout rl_useyear;//使用年限
     private TextView use_age;//使用年限
     private EditText use_money;//借款金额
@@ -297,12 +298,22 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     mobile.setText(carMessage.getPledger().getPhone());
                     car_type.setText("身份证");
                     card_num.setText(carMessage.getPledger().getIdcard());
-                    if(carMessage.getPledger().getPledger_loc().get(0).getProvince().equals("")||carMessage.getPledger().getPledger_loc().get(0).getProvince()==null){
-                        tv_sex.setText("请选择");
+                    if(carMessage.getPledger().getPledger_loc().size()==0){
+
                     }else{
-                        tv_sex.setText(carMessage.getPledger().getPledger_loc().get(0).getProvince()+carMessage.getPledger().getPledger_loc().get(0).getCity()+carMessage.getPledger().getPledger_loc().get(0).getDistrict());
+                        if(carMessage.getPledger().getPledger_loc().get(0).getProvince().equals("")||carMessage.getPledger().getPledger_loc().get(0).getProvince()==null){
+                            tv_sex.setText("请选择");
+                        }else{
+                            tv_sex.setText(carMessage.getPledger().getPledger_loc().get(0).getProvince()+carMessage.getPledger().getPledger_loc().get(0).getCity()+carMessage.getPledger().getPledger_loc().get(0).getDistrict());
+                        }
+                        home_address.setText(carMessage.getPledger().getPledger_loc().get(0).getAddress());
+                        maptype=carMessage.getPledger().getPledger_loc().get(0).getMaptype();
+                        locid=carMessage.getPledger().getPledger_loc().get(0).getId();
+                        sheng=carMessage.getPledger().getPledger_loc().get(0).getProvince();
+                        shi=carMessage.getPledger().getPledger_loc().get(0).getCity();
+                        qu=carMessage.getPledger().getPledger_loc().get(0).getDistrict();
                     }
-                    home_address.setText(carMessage.getPledger().getPledger_loc().get(0).getAddress());
+
                     pledge_car=carMessage.getPledge_car().getId();
                     pledger_id=carMessage.getPledger().getId();
                     //第二页
@@ -314,11 +325,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     years.setText(carMessage.getUsed_age()+"");
                     mileage.setText(carMessage.getMileage()+"");
                     //这个先不写
-                    maptype=carMessage.getPledger().getPledger_loc().get(0).getMaptype();
-                    locid=carMessage.getPledger().getPledger_loc().get(0).getId();
-                    sheng=carMessage.getPledger().getPledger_loc().get(0).getProvince();
-                    shi=carMessage.getPledger().getPledger_loc().get(0).getCity();
-                    qu=carMessage.getPledger().getPledger_loc().get(0).getDistrict();
+
                     use_carmoney.setText(carMessage.getCar_value()+"");
 //                    use_money.setText(carMessage.getCar_brand());
 
@@ -356,15 +363,18 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 
                     //图片
                     String imgurls=carMessage.getImgurls();
-                    String[]imgurl=imgurls.split(",");
+                    if(imgurls!=null){
+                        String[]imgurl=imgurls.split(",");
 //                    ImageItem imageItem=new ImageItem();
 //                    imageItem.path=imgurl[0];
-                    Log.i(TAG, imgurl[0]);
-                    for(int i=0;i<imgurl.length;i++){
-                        selImageList.add(imgurl[i]);
+                        Log.i(TAG, imgurl[0]);
+                        for(int i=0;i<imgurl.length;i++){
+                            selImageList.add(imgurl[i]);
+                        }
+
+                        adapter.setImages(selImageList);
                     }
 
-                    adapter.setImages(selImageList);
                 }else{
                     Toast.makeText(CarDetailActivity.this,carMessageBean.getMessage(),Toast.LENGTH_SHORT).show();
                 }
@@ -446,7 +456,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         endtime.setOnClickListener(this);
         add_device.setOnClickListener(this);
         save.setOnClickListener(this);
-        title.setText("新增车辆");
+        title.setText("车辆详情");
         car_status.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -610,6 +620,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     Toast.makeText(CarDetailActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
                 }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
                     Toast.makeText(CarDetailActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                }else if(Float.parseFloat(mileage.getText().toString().trim())>1000000&&mileage.getText().toString().trim().length()!=0){
+                    Toast.makeText(CarDetailActivity.this,"行驶里程数不能大于100万公里(最多允许两位小数点)",Toast.LENGTH_SHORT).show();
                 }else{
                     Log.i(TAG, "onClick: ");
                     UpDateCar();

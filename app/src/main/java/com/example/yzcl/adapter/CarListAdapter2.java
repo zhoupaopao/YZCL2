@@ -27,6 +27,7 @@ import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarListBean;
 import com.example.yzcl.mvp.model.bean.carDetailGPSBeans;
 import com.example.yzcl.mvp.ui.CarAddressActivity;
+import com.example.yzcl.mvp.ui.CarDetailActivity;
 import com.example.yzcl.mvp.ui.CarSearchActivity;
 import com.example.yzcl.mvp.ui.MyCarListActivity;
 
@@ -144,6 +145,15 @@ public class CarListAdapter2 extends BaseRecyclerAdapter<CarListAdapter2.ViewHol
                 //请求接口
                 achievemsg(carBean.getId());
 //                context.lookAddress(carBean.getId());
+            }
+        });
+        holder.detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //进入详情页面
+                Intent intent=new Intent(context, CarDetailActivity.class);
+                intent.putExtra("carid",carBean.getId());
+                context.startActivity(intent);
             }
         });
     }

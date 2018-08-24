@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.example.yzcl.R;
+import com.example.yzcl.mvp.model.bean.CarListBean;
 import com.example.yzcl.mvp.model.bean.DeviceListBean;
 import com.example.yzcl.mvp.ui.DeviceAddressActivity;
 import com.example.yzcl.mvp.ui.XfzlActivity;
@@ -100,7 +101,7 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
         //绑车信息
         if(deviceLLBean.getBindtime()!=null){
             //有绑车时间
-            holder.car_message.setText("绑车信息："+deviceLLBean.getPledgerName()+","+deviceLLBean.getVin());
+            holder.car_message.setText("绑车信息："+deviceLLBean.getPledgerName()+"，"+deviceLLBean.getVin());
         }else{
             //未绑车
             holder.car_message.setText("绑车信息：未绑车");
@@ -108,9 +109,13 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
             holder.warning_name.setVisibility(View.GONE);
         }
         if(deviceLLBean.getGpsStates().equals("未定位")){
-            holder.car_loc.setText("当前定位：设备未开启，无法获取GPS定位信息");
+            holder.car_loc.setText("当前定位：当前无位置信息");
         }else{
-            holder.car_loc.setText("当前定位："+deviceLLBean.getLastLocTime()+"，"+deviceLLBean.getPostion());
+            if(deviceLLBean.getLastLocTime()==null||deviceLLBean.getPostion()==null){
+                holder.car_loc.setText("当前定位："+"设备未启用，无法获取GPS定位信息");
+            }else{
+                holder.car_loc.setText("当前定位："+deviceLLBean.getLastLocTime()+"，"+deviceLLBean.getPostion());
+            }
         }
 
         holder.xfzl.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +178,10 @@ public class CarDeviceListAdapter extends BaseRecyclerAdapter<CarDeviceListAdapt
     @Override
     public int getAdapterItemCount() {
         return list.size();
+    }
+    public void changedata(ArrayList<DeviceListBean.DeviceLLBean> nowList) {
+        this.list=nowList;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

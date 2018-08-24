@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:gravity="center_vertical"
-                        android:hint="请输入客户名称(必填)"
+                        android:hint="请填写车主姓名(必填)"
                         android:maxLines="1"
                         android:textColorHint="@color/hint_input_color"
                         android:textSize="14dp" />
@@ -207,6 +207,7 @@
                         android:gravity="center_vertical"
                         android:hint="请填写证件号码"
                         android:maxLines="1"
+                        android:maxLength="18"
                         android:textColorHint="@color/hint_input_color"
                         android:textSize="14dp" />
 
@@ -569,7 +570,7 @@
                             android:gravity="center_vertical"
                             android:text="公里" />
 
-                        <EditText
+                        <com.example.yzcl.utils.EdittextSub
                             android:id="@+id/mileage"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -618,6 +619,7 @@
                             android:background="@null"
                             android:gravity="center_vertical"
                             android:hint="请填写购车金额，例如：22.23"
+                            android:maxLength="5"
                             android:inputType="phone|number"
                             android:maxLines="1"
                             android:textColorHint="@color/hint_input_color"
@@ -767,12 +769,11 @@
                             android:id="@+id/bz_msg"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
                             android:background="@null"
-                            android:gravity="center_vertical"
-                            android:hint="请描述，不超过200字"
-                            android:maxLength="200"
+                            android:hint="请描述，不超过100字"
+                            android:maxLength="100"
                             android:paddingRight="10dp"
+                            android:gravity="top"
                             android:textColorHint="@color/hint_input_color"
                             android:textSize="14dp" />
                     </LinearLayout>

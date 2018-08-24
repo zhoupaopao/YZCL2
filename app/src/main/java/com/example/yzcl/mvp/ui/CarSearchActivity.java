@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +26,11 @@ import com.andview.refreshview.XRefreshViewFooter;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.example.yzcl.R;
+import com.example.yzcl.adapter.CarDeviceListAdapter;
 import com.example.yzcl.adapter.CarListAdapter1;
 import com.example.yzcl.adapter.CarListAdapter2;
+import com.example.yzcl.adapter.SearchHistoryDeviceAdapter;
+import com.example.yzcl.adapter.SearchHistoryDeviceCarAdapter;
 import com.example.yzcl.content.Api;
 import com.example.yzcl.content.Constant;
 import com.example.yzcl.mvp.model.bean.CarListBean;
@@ -56,6 +61,12 @@ public class CarSearchActivity extends BaseActivity {
     ArrayList<CarListBean.CarBean> nowList=new ArrayList<>();
     CarListAdapter2 adapter;
     private BuildBean dialog;
+//搜索相关
+SearchHistoryDeviceCarAdapter searchadapter;
+//    private RecyclerView search_recycleview;
+    private RelativeLayout rl_search_history;
+    private RecyclerView recycleview;
+    private ArrayList<String> arrayList;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,14 +85,51 @@ public class CarSearchActivity extends BaseActivity {
         delete=findViewById(R.id.delete);
         et_search=findViewById(R.id.et_search);
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
+        arrayList=new ArrayList<>();
+        recycleview=findViewById(R.id.recycleview);
+//        search_recycleview=findViewById(R.id.search_recycleview);
+        rl_search_history=findViewById(R.id.rl_search_history);
     }
 
     private void initData() {
         ids=getIntent().getStringExtra("ids");
+        //虚拟赋值，用于显示历史记录
+        String his_list=sp.getString("search_list",",");
+        String[]his=his_list.split(",");
+        Log.i(TAG, his_list);
+        Log.i(TAG, "initData: "+his.length);
+        if(his.length>0){
+            //代表有历史
+            rl_search_history.setVisibility(View.VISIBLE);
+            for(int i=0;i<his.length;i++){
+                arrayList.add(his[i]);
+            }
+        }else{
+            rl_search_history.setVisibility(View.GONE);
+        }
+//        for(int i=0;i<6;i++){
+//            arrayList.add("张三"+i);
+//        }
+        searchadapter=new SearchHistoryDeviceCarAdapter(this,arrayList);
+
+
+//        searchRecyclerAdapter1=new CarDeviceListAdapter(DeviceSearchAcrivity.this,deviceLLBeans);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(DeviceSearchAcrivity.this);
+//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        search_recycleview.setLayoutManager(layoutManager);
+//        search_recycleview.setAdapter(searchRecyclerAdapter1);
+//        search_recycleview.addItemDecoration(new DividerItemDecoration(DeviceSearchAcrivity.this, DividerItemDecoration.VERTICAL));
     }
 
     private void initListener() {
         et_search.setHint("请输入车架号、借款人");
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recycleview.setLayoutManager(layoutManager);
+        recycleview.setAdapter(searchadapter);
+        //添加Android自带的分割线
+        recycleview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recycleview.setItemAnimator( new DefaultItemAnimator());
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,6 +178,10 @@ public class CarSearchActivity extends BaseActivity {
                     if(et_search.getText().toString().trim().equals("")){
                         Toast.makeText(CarSearchActivity.this,"搜索字符不能为空",Toast.LENGTH_SHORT).show();
                     }else{
+                        String search_list_last=sp.getString("search_list","");
+                        SharedPreferences.Editor editor=sp.edit();
+                        editor.putString("search_list",et_search.getText().toString().trim()+","+search_list_last);
+                        editor.commit();
                         if(!Constant.isNetworkConnected(CarSearchActivity.this)) {
                             //判断网络是否可用
                             Toast.makeText(CarSearchActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
@@ -166,7 +218,14 @@ public class CarSearchActivity extends BaseActivity {
                 Log.i(TAG, jsonObject.toString());
                 carListBean= com.alibaba.fastjson.JSONObject.parseObject(jsonObject.toString(),CarListBean.class);
                 if(carListBean.isSuccess()){
+                    car_list.setVisibility(View.VISIBLE);
+                    recycleview.setVisibility(View.GONE);
+                    rl_search_history.setVisibility(View.GONE);
                     nowList=carListBean.getList();
+                    if(nowList.size()==0){
+                        //没有车辆数据
+                        Toast.makeText(CarSearchActivity.this,"暂无数据",Toast.LENGTH_SHORT).show();
+                    }
                     adapter=new CarListAdapter2(CarSearchActivity.this,nowList,trim);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(CarSearchActivity.this);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

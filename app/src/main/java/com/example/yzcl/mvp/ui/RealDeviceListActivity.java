@@ -130,7 +130,7 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                         loadmore(dev_status,nowPages);
 
                     }
-                }, 1500);
+                }, 500);
             }
         });
     }
@@ -350,14 +350,15 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 Log.i(TAG, jsonObject.toString());
                 DeviceListBean deviceListBean=JSONObject.parseObject(jsonObject.toString(),DeviceListBean.class);
                 deviceLLBeans=deviceListBean.getList();
-                adapter=new CarDeviceListAdapter(RealDeviceListActivity.this,deviceLLBeans);
-                adapter.setCustomLoadMoreView(new XRefreshViewFooter(RealDeviceListActivity.this));
-                LinearLayoutManager layoutManager = new LinearLayoutManager(RealDeviceListActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
+//                adapter=new CarDeviceListAdapter(RealDeviceListActivity.this,deviceLLBeans);
+//                adapter.setCustomLoadMoreView(new XRefreshViewFooter(RealDeviceListActivity.this));
+//                LinearLayoutManager layoutManager = new LinearLayoutManager(RealDeviceListActivity.this);
+//                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//                recyclerView.setLayoutManager(layoutManager);
+//                recyclerView.setAdapter(adapter);
+                adapter.changedata(deviceLLBeans);
                 //设置增加或删除条目的动画
-                recyclerView.setItemAnimator( new DefaultItemAnimator());
+//                recyclerView.setItemAnimator( new DefaultItemAnimator());
 
                 if(deviceLLBeans.size()>=10){
                     //加载显示

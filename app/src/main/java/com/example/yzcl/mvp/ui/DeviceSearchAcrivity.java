@@ -333,6 +333,10 @@ public class DeviceSearchAcrivity extends BaseActivity {
                     rl_search_history.setVisibility(View.GONE);
                     DeviceListBean deviceListBean=JSONObject.parseObject(jsonObject.toString(),DeviceListBean.class);
                     deviceLLBeans=deviceListBean.getList();
+                    if(deviceLLBeans.size()==0){
+                        //没有数据
+                        Toast.makeText(DeviceSearchAcrivity.this,"暂无数据",Toast.LENGTH_SHORT).show();
+                    }
                     searchRecyclerAdapter1=new CarDeviceListAdapter(DeviceSearchAcrivity.this,deviceLLBeans);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(DeviceSearchAcrivity.this);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

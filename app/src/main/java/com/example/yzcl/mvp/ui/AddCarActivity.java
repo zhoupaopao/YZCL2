@@ -72,6 +72,7 @@ import com.example.yzcl.mvp.model.bean.CityBean;
 import com.example.yzcl.mvp.model.bean.CustomerOrganizationBeans;
 import com.example.yzcl.mvp.model.bean.NewFileBean;
 import com.example.yzcl.mvp.ui.baseactivity.BaseActivity;
+import com.example.yzcl.utils.EdittextSub;
 import com.example.yzcl.utils.MultiImageSelector;
 import com.example.yzcl.utils.MyCallBack;
 import com.example.yzcl.utils.PickImageHelper;
@@ -154,7 +155,7 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
     private RelativeLayout rl_cartype;//选择车型
     private TextView tv_cartype;//车辆类型
     private EditText car_color;//车辆颜色
-    private EditText mileage;//行驶里程
+    private EdittextSub mileage;//行驶里程
     private RelativeLayout rl_useyear;//使用年限
     private TextView use_age;//使用年限
     private EditText use_money;//借款金额
@@ -363,6 +364,8 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                         Toast.makeText(AddCarActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
                     }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
                         Toast.makeText(AddCarActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                    }else if(Float.parseFloat(mileage.getText().toString().trim())>1000000&&mileage.getText().toString().trim().length()!=0){
+                        Toast.makeText(AddCarActivity.this,"行驶里程数不能大于100万公里(最多允许两位小数点)",Toast.LENGTH_SHORT).show();
                     }else{
                         Intent intent=new Intent();
                         intent.setClass(AddCarActivity.this,BindDeviceActivity.class);
@@ -526,6 +529,8 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                     Toast.makeText(AddCarActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
                 }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
                     Toast.makeText(AddCarActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
+                }else if(Float.parseFloat(mileage.getText().toString().trim())>1000000&&mileage.getText().toString().trim().length()!=0){
+                    Toast.makeText(AddCarActivity.this,"行驶里程数不能大于100万公里(最多允许两位小数点)",Toast.LENGTH_SHORT).show();
                 }else{
                     //可以请求接口
                     RequestParams params=new RequestParams();
