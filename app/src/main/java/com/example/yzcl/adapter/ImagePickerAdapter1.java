@@ -10,8 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.yzcl.R;
 import com.example.yzcl.mvp.ui.AddCarActivity;
+import com.example.yzcl.mvp.ui.CarDetailActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 
@@ -29,11 +33,12 @@ import java.util.List;
  */
 public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter1.SelectedPicViewHolder> {
     private int maxImgCount;
-    private Context mContext;
+    private CarDetailActivity mContext;
     private List<String> mData;
     private LayoutInflater mInflater;
     private OnRecyclerViewItemClickListener listener;
     private boolean isAdded;   //是否额外添加了最后一个图片
+    private int nowpos=0;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -61,10 +66,11 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
         else return mData;
     }
 
-    public ImagePickerAdapter1(Context mContext, List<String> data, int maxImgCount) {
+    public ImagePickerAdapter1(CarDetailActivity mContext, List<String> data, int maxImgCount) {
         this.mContext = mContext;
         this.maxImgCount = maxImgCount;
         this.mInflater = LayoutInflater.from(mContext);
+        nowpos=0;
         setImages(data);
     }
 
@@ -93,7 +99,7 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
             iv_img = (ImageView) itemView.findViewById(R.id.iv_img);
         }
 
-        public void bind(int position) {
+        public void bind(final int position) {
             //设置条目的点击事件
             itemView.setOnClickListener(this);
             //根据条目位置设置图片
@@ -102,9 +108,29 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
                 iv_img.setImageResource(R.drawable.selector_image_add);
                 clickPosition = AddCarActivity.IMAGE_ITEM_ADD;
             } else {
-                Glide.with(mContext).load(item).into(iv_img);
+                Glide.with(mContext).load(item).listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                               boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model,
+                                                   Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        Log.i("bind: ", position+"");
+                        nowpos=nowpos+1;
+                        int allnum=getImages().size();
+                        if(allnum==nowpos){
+                            Log.i("bind321123213: ", position+"");
+                            mContext.dismisdia();
+                        }
+
+                        return false;
+                    }
+                }).into(iv_img);
 //                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item, iv_img, 0, 0);
-                Log.i("bind: ", position+"");
+//                Log.i("bind: ", position+"");
                 clickPosition = position;
             }
         }

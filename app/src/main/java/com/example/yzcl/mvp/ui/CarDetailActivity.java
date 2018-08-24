@@ -181,6 +181,8 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 
 //    private ImageView imgg;
 
+    private boolean isfirst=true;//用于判断图片加载是否是第一次，是的话要有加载框
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -479,11 +481,21 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                         page1.setVisibility(View.GONE);
                         page2.setVisibility(View.GONE);
                         page3.setVisibility(View.VISIBLE);
+                        if(isfirst){
+                            dialog= DialogUIUtils.showLoading(CarDetailActivity.this,"加载中...",true,true,false,true);
+                            dialog.show();
+                        }else{
+                            isfirst=false;
+                        }
+
                         break;
 
                 }
             }
         });
+    }
+    public void dismisdia(){
+        dialog.dialog.dismiss();
     }
 
     @Override
