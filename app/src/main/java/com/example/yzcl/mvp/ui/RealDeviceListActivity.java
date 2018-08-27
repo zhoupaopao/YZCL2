@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andview.refreshview.XRefreshView;
@@ -217,37 +218,43 @@ public class RealDeviceListActivity extends BaseActivity implements AppBarLayout
                 super.onSuccess(headers, jsonObject);
                 Log.i(TAG, jsonObject.toString());
                 DeviceListBean deviceListBean=JSONObject.parseObject(jsonObject.toString(),DeviceListBean.class);
-                if(dev_status==0){
-                    status_zdgz.setText("离线("+deviceListBean.getCount()+")");
-                }else if(dev_status==1){
-                    status_yuqi.setText("在线("+deviceListBean.getCount()+")");
-                }else{
-                    status_all.setText("全部("+deviceListBean.getCount()+")");
-                }
-                deviceLLBeans=deviceListBean.getList();
-                adapter=new CarDeviceListAdapter(RealDeviceListActivity.this,deviceLLBeans);
-                adapter.setCustomLoadMoreView(new XRefreshViewFooter(RealDeviceListActivity.this));
-                LinearLayoutManager layoutManager = new LinearLayoutManager(RealDeviceListActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
-                //设置增加或删除条目的动画
-                recyclerView.setItemAnimator( new DefaultItemAnimator());
-                if(deviceLLBeans.size()<10){
-                    //说明没了
-                    xRefreshView.setLoadComplete(true);
-
-                }else{
-                    xRefreshView.setLoadComplete(false);
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-
-                        dialog.dialog.dismiss();
+                if(deviceListBean.isSuccess()){
+                    if(dev_status==0){
+                        status_zdgz.setText("离线("+deviceListBean.getCount()+")");
+                    }else if(dev_status==1){
+                        status_yuqi.setText("在线("+deviceListBean.getCount()+")");
+                    }else{
+                        status_all.setText("全部("+deviceListBean.getCount()+")");
                     }
-                }, 1500);
+                    deviceLLBeans=deviceListBean.getList();
+                    adapter=new CarDeviceListAdapter(RealDeviceListActivity.this,deviceLLBeans);
+                    adapter.setCustomLoadMoreView(new XRefreshViewFooter(RealDeviceListActivity.this));
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(RealDeviceListActivity.this);
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(adapter);
+                    //设置增加或删除条目的动画
+                    recyclerView.setItemAnimator( new DefaultItemAnimator());
+                    if(deviceLLBeans.size()<10){
+                        //说明没了
+                        xRefreshView.setLoadComplete(true);
+
+                    }else{
+                        xRefreshView.setLoadComplete(false);
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            dialog.dialog.dismiss();
+                        }
+                    }, 1500);
+                }else{
+                    Toast.makeText(RealDeviceListActivity.this,deviceListBean.getMessage(),Toast.LENGTH_SHORT).show();
+                    dialog.dialog.dismiss();
+                }
+
             }
 
             @Override

@@ -481,7 +481,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                         page1.setVisibility(View.GONE);
                         page2.setVisibility(View.GONE);
                         page3.setVisibility(View.VISIBLE);
-                        if(isfirst){
+                        if(isfirst&&selImageList.size()>0){
                             dialog= DialogUIUtils.showLoading(CarDetailActivity.this,"加载中...",true,true,false,true);
                             dialog.show();
                         }else{
@@ -632,7 +632,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     Toast.makeText(CarDetailActivity.this,"请填写11位手机号",Toast.LENGTH_SHORT).show();
                 }else if(card_num.getText().toString().trim().length()!=0&&card_num.getText().toString().trim().length()!=18){
                     Toast.makeText(CarDetailActivity.this,"请填写18位身份证号",Toast.LENGTH_SHORT).show();
-                }else if(Float.parseFloat(mileage.getText().toString().trim())>1000000&&mileage.getText().toString().trim().length()!=0){
+                }else if(mileage.getText().toString().trim().length()!=0&&Float.parseFloat(mileage.getText().toString().trim())>1000000){
                     Toast.makeText(CarDetailActivity.this,"行驶里程数不能大于100万公里(最多允许两位小数点)",Toast.LENGTH_SHORT).show();
                 }else{
                     Log.i(TAG, "onClick: ");

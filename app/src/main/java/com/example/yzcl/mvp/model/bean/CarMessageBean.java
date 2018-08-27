@@ -23,7 +23,7 @@ public class CarMessageBean extends BaseResponse {
         private String car_no;
         private String car_series;//车系
         private int car_type;
-        private int car_value;
+        private String car_value;
         private String car_version;
         private String carloantype;
         private String cartodevice;
@@ -41,7 +41,7 @@ public class CarMessageBean extends BaseResponse {
         private int iscare;
         private int isgrouped;
         private int isoverdue;
-        private int mileage;
+        private String mileage;
         private int online_status;
         private String phone;
         private String remark;
@@ -97,11 +97,11 @@ public class CarMessageBean extends BaseResponse {
             this.car_type = car_type;
         }
 
-        public int getCar_value() {
+        public String getCar_value() {
             return car_value;
         }
 
-        public void setCar_value(int car_value) {
+        public void setCar_value(String car_value) {
             this.car_value = car_value;
         }
 
@@ -241,11 +241,11 @@ public class CarMessageBean extends BaseResponse {
             this.isoverdue = isoverdue;
         }
 
-        public int getMileage() {
+        public String getMileage() {
             return mileage;
         }
 
-        public void setMileage(int mileage) {
+        public void setMileage(String mileage) {
             this.mileage = mileage;
         }
 

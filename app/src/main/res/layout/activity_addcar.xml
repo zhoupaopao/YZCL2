@@ -521,10 +521,12 @@
                     android:layout_toLeftOf="@id/year1"
                     android:layout_toRightOf="@id/caryear"
                     android:background="@null"
-                    android:inputType="phone|number"
+                    android:digits="0123456789"
+                    android:inputType="numberDecimal"
+                    android:maxLength="2"
                     android:maxLines="1"
                     android:gravity="center_vertical"
-                    android:hint="请填写车龄使用年限"
+                    android:hint="请填写车辆使用年限"
                     android:textColorHint="@color/hint_input_color"
                     android:textSize="14dp" />
             </RelativeLayout>
