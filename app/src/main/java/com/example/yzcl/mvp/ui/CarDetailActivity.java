@@ -304,7 +304,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                     if(carMessage.getPledger().getPledger_loc().size()==0){
 
                     }else{
-                        if(carMessage.getPledger().getPledger_loc().get(0).getProvince().equals("")||carMessage.getPledger().getPledger_loc().get(0).getProvince()==null){
+                        if(null==carMessage.getPledger().getPledger_loc().get(0).getProvince()||carMessage.getPledger().getPledger_loc().get(0).getProvince()==null){
                             tv_sex.setText("请选择");
                         }else{
                             tv_sex.setText(carMessage.getPledger().getPledger_loc().get(0).getProvince()+carMessage.getPledger().getPledger_loc().get(0).getCity()+carMessage.getPledger().getPledger_loc().get(0).getDistrict());
