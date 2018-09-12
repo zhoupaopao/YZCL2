@@ -1056,14 +1056,23 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 //                .url(url)
                 .post(requestBody)
                 .build();
+        Log.i(TAG, Api.upload + "?token=" + sp.getString(Constant.Token, ""));
         final okhttp3.OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
         OkHttpClient okHttpClient = httpBuilder
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("onFailure", "onFailure: ");
-                Toast.makeText(CarDetailActivity.this, "上传失败,请重试", Toast.LENGTH_SHORT).show();
+                Log.i("onFailure", e.toString());
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //放在UI线程弹Toast
+                        Toast.makeText(CarDetailActivity.this, "上传失败,请重试", Toast.LENGTH_SHORT).show();
+                    }
+                });
+//                Toast.makeText(CarDetailActivity.this, "上传失败,请重试", Toast.LENGTH_SHORT).show();
                 dialog.dialog.dismiss();
             }
 
