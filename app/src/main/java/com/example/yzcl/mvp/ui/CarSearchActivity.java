@@ -94,7 +94,7 @@ SearchHistoryDeviceCarAdapter searchadapter;
     private void initData() {
         ids=getIntent().getStringExtra("ids");
         //虚拟赋值，用于显示历史记录
-        String his_list=sp.getString("search_list",",");
+        String his_list=sp.getString("search_list_car",",");
         String[]his=his_list.split(",");
         Log.i(TAG, his_list);
         Log.i(TAG, "initData: "+his.length);
@@ -178,9 +178,9 @@ SearchHistoryDeviceCarAdapter searchadapter;
                     if(et_search.getText().toString().trim().equals("")){
                         Toast.makeText(CarSearchActivity.this,"搜索字符不能为空",Toast.LENGTH_SHORT).show();
                     }else{
-                        String search_list_last=sp.getString("search_list","");
+                        String search_list_last=sp.getString("search_list_car","");
                         SharedPreferences.Editor editor=sp.edit();
-                        editor.putString("search_list",et_search.getText().toString().trim()+","+search_list_last);
+                        editor.putString("search_list_car",et_search.getText().toString().trim()+","+search_list_last);
                         editor.commit();
                         if(!Constant.isNetworkConnected(CarSearchActivity.this)) {
                             //判断网络是否可用

@@ -393,9 +393,9 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
         File file = new File(imgUrl);//imgUrl为图片位置
 
         RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpg"), file);
-        Bitmap bmp = BitmapFactory.decodeFile(imgUrl);
-        String imgba = Bitmap2StrByBase64(bmp);
-        Log.i(TAG, "uploadMultiFile: " + imgba);
+//        Bitmap bmp = BitmapFactory.decodeFile(imgUrl);
+//        String imgba = Bitmap2StrByBase64(bmp);
+//        Log.i(TAG, "uploadMultiFile: " + imgba);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), fileBody)

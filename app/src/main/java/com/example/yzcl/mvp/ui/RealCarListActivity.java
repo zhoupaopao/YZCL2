@@ -70,6 +70,7 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
     private ImageView search;
     CarListBean carListBean;
     ArrayList<CarListBean.CarBean>nowList=new ArrayList<>();
+    private boolean canaddcar=false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,11 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
                 .statusBarColor(R.color.title_color)
                 .init();
 
+                initView();
+        checkqx();
+//        initData(dev_status,1);
+        initListener();
+
     }
     private void initView() {
         sp=getSharedPreferences("YZCL",MODE_PRIVATE);
@@ -85,6 +91,7 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
         search=findViewById(R.id.search);
         back=findViewById(R.id.back);
         AddCar=findViewById(R.id.add);
+        AddCar.setVisibility(View.GONE);
         car_status=findViewById(R.id.car_status);
         choose_customer=findViewById(R.id.choose_customer);
 //        deviceLLBeans=new ArrayList<>();
@@ -355,6 +362,7 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
             @Override
             public void onStart() {
                 super.onStart();
+                Log.i(TAG, "dialog.show() ");
                 dialog= DialogUIUtils.showLoading(RealCarListActivity.this,"加载中...",true,true,false,true);
                 dialog.show();
             }
@@ -442,13 +450,23 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
             xRefreshView.setEnabled(false);
         }
     }
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("176")){
+                //新增
+                AddCar.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initView();
+//        initView();
         initData(dev_status,1);
-        initListener();
+//        initListener();
         appBarLayout.addOnOffsetChangedListener(this);
     }
 
@@ -465,9 +483,10 @@ public class RealCarListActivity extends BaseActivity implements AppBarLayout.On
                 //选择了客户的
                 ids=data.getStringExtra("ids");
                 String names=data.getStringExtra("names");
+                Log.i(TAG, names);
                 groupname.setText(names.substring(0,names.length()-1));
                 //重新请求数据，根据当前的在离线和ids
-                initData(dev_status,1);
+//                initData(dev_status,1);
                 break;
         }
     }

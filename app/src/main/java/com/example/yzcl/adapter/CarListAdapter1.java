@@ -60,6 +60,7 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
     private BuildBean dialog;
     private int nowstatus;
     private boolean canmark=false;
+    private boolean candetail=false;
     public CarListAdapter1(RealCarListActivity context, List<CarListBean.CarBean> carlist, int nowstatus){
         this.context=context;
         this.carlist=carlist;
@@ -127,6 +128,11 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
             holder.spinner.setVisibility(View.VISIBLE);
         }else{
             holder.spinner.setVisibility(View.GONE);
+        }
+        if(candetail){
+            holder.detail.setVisibility(View.VISIBLE);
+        }else{
+            holder.detail.setVisibility(View.GONE);
         }
         //借款人姓名
         holder.name.setText(carBean.getPledgename());
@@ -223,6 +229,11 @@ public class CarListAdapter1 extends BaseRecyclerAdapter<CarListAdapter1.ViewHol
         for(int i=0;i<list_jur.length;i++){
             if (list_jur[i].equals("184")){
                 canmark=true;
+
+            }
+            if (list_jur[i].equals("104")){
+                //详情
+                candetail=true;
 
             }
 

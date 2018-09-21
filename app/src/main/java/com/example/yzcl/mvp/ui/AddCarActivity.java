@@ -693,11 +693,21 @@ public class AddCarActivity extends BaseActivity implements com.example.yzcl.uti
                         @Override
                         public void onOptionsSelect(int options1, int options2, int options3, View v) {
                             //当点击的时候触发的事件
-                            String pinid = citysBean1.get(options1).getId();
-                            level = level + 1;
-                            tem_shi=city.get(options1);
-                            ssq = ssq + city.get(options1);
-                            showopv(pinid);
+
+                            if(citysBean1.size()==0){
+                                //代表没有改区域
+                                tv_sex.setText(ssq);
+                                //直接一次性赋值
+                                sheng=tem_sheng;
+                                shi="";
+                                qu="";
+                            }else{
+                                String pinid = citysBean1.get(options1).getId();
+                                level = level + 1;
+                                tem_shi=city.get(options1);
+                                ssq = ssq + city.get(options1);
+                                showopv(pinid);
+                            }
 
                         }
                     }).setTitleText("").setDividerColor(Color.BLUE)
