@@ -180,9 +180,11 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
     private int imgpos = 0;//上传图片的位置
     ArrayList<String> lasturl = new ArrayList<>();//上传后的集合
     ArrayList<ImageItem> images=new ArrayList<>();//上个页面返回的图片
+    private RelativeLayout add_rl;
 
     private String maptype="";
     private String locid="";
+    private boolean canedit=false;
 
 //    private ImageView imgg;
 
@@ -197,7 +199,9 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 .init();
         initView();
         initData();
+
         initListener();
+        checkqx();
     }
 
     private void initView() {
@@ -247,6 +251,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
         device_list=findViewById(R.id.device_list);
         rcvImg=findViewById(R.id.rcv_img);
         save=findViewById(R.id.save);
+        add_rl=findViewById(R.id.add_rl);
 //        ImagePicker.getInstance().getImageLoader().displayImage( this, "http://101.37.119.32:20209/2018/08/10/11/35/10/1533872124549-8723e39803fe4a848d1f550b3db5a885.jpg", imgg, 0, 0);
         initRecy();
     }
@@ -1388,5 +1393,44 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
             e.printStackTrace();
         }
         return degree;
+    }
+    private void checkqx() {
+        String list_Jurisdiction=sp.getString("list_Jurisdiction","");
+        String[]list_jur=list_Jurisdiction.split(",");
+        for(int i=0;i<list_jur.length;i++){
+            if (list_jur[i].equals("203")){
+                canedit=true;
+
+            }
+
+        }
+        if(!canedit){
+            //不可以编辑
+            name.setEnabled(false);
+            mobile.setEnabled(false);
+            rl_cardtype.setClickable(false);
+            card_num.setEnabled(false);
+            rl_sex.setClickable(false);
+            home_address.setEnabled(false);
+
+//第二个页面
+            car_vin.setEnabled(false);
+            car_num.setEnabled(false);
+            rl_carxi.setClickable(false);
+            car_fdj.setEnabled(false);
+            car_color.setEnabled(false);
+            years.setEnabled(false);
+            mileage.setEnabled(false);
+            use_carmoney.setEnabled(false);
+            starttime.setClickable(false);
+            endtime.setClickable(false);
+            bz_msg.setEnabled(false);
+
+            //第三页
+            add_rl.setVisibility(View.GONE);
+//            device_list.setClickable(false);
+//            rcvImg.setClickable(false);
+            save.setVisibility(View.GONE);
+        }
     }
 }

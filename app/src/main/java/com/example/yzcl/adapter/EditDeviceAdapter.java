@@ -31,9 +31,20 @@ import java.util.List;
 public class EditDeviceAdapter extends BaseRecyclerAdapter<EditDeviceAdapter.ViewHolder> {
     private CarDetailActivity context;
     private ArrayList<EditDeviceBean.EditDeviceBeanMsg>list;
+    private static boolean canedit=false;
     public EditDeviceAdapter(CarDetailActivity context, ArrayList<EditDeviceBean.EditDeviceBeanMsg>list){
         this.context=context;
         this.list=list;
+        checkqx();
+    }
+    private void checkqx() {
+        String list_Jurisdiction = context.getSharedPreferences("YZCL",context.MODE_PRIVATE).getString("list_Jurisdiction", "");
+        String[] list_jur = list_Jurisdiction.split(",");
+        for (int i = 0; i < list_jur.length; i++) {
+            if (list_jur[i].equals("203")) {
+                canedit = true;
+            }
+        }
     }
     @Override
     public ViewHolder getViewHolder(View view) {
@@ -65,58 +76,62 @@ public class EditDeviceAdapter extends BaseRecyclerAdapter<EditDeviceAdapter.Vie
 //                Intent intent=new Intent();
 //                intent.setClass(context, DeviceInstallAddActivity.class);
 //                context.startActivity(intent);
-                List<TieBean> strings = new ArrayList<TieBean>();
-                strings.add(new TieBean("主驾驶保险丝盒"));
-                strings.add(new TieBean("副驾驶踏板"));
-                strings.add(new TieBean("后座座椅右侧"));
-                strings.add(new TieBean("后座座椅左侧"));
-                strings.add(new TieBean("后备箱右侧"));
-                strings.add(new TieBean("后备箱左侧"));
-                strings.add(new TieBean("手动输入"));
-                DialogUIUtils.showSheet(context, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
-                    @Override
-                    public void onItemClick(CharSequence text, final int positionn) {
-                        Log.i("onItemClick: ", text+""+positionn);
-                        if(positionn==6){
-                            //手动输入
-                            DialogUIUtils.showAlert((Activity) context, "安装位置", "", "请输入安装位置", null, "确定", "取消", false, true, true, new DialogUIListener() {
-                                @Override
-                                public void onPositive() {
+                if(!canedit){
+                }else{
+                    List<TieBean> strings = new ArrayList<TieBean>();
+                    strings.add(new TieBean("主驾驶保险丝盒"));
+                    strings.add(new TieBean("副驾驶踏板"));
+                    strings.add(new TieBean("后座座椅右侧"));
+                    strings.add(new TieBean("后座座椅左侧"));
+                    strings.add(new TieBean("后备箱右侧"));
+                    strings.add(new TieBean("后备箱左侧"));
+                    strings.add(new TieBean("手动输入"));
+                    DialogUIUtils.showSheet(context, strings, "", Gravity.CENTER, true, true, new DialogUIItemListener() {
+                        @Override
+                        public void onItemClick(CharSequence text, final int positionn) {
+                            Log.i("onItemClick: ", text+""+positionn);
+                            if(positionn==6){
+                                //手动输入
+                                DialogUIUtils.showAlert((Activity) context, "安装位置", "", "请输入安装位置", null, "确定", "取消", false, true, true, new DialogUIListener() {
+                                    @Override
+                                    public void onPositive() {
 
-                                }
-
-                                @Override
-                                public void onNegative() {
-
-                                }
-
-                                @Override
-                                public void onGetInput(CharSequence input1, CharSequence input2) {
-                                    super.onGetInput(input1, input2);
-                                    holder.install_location.setText(input1);
-                                    list.get(position).setInstall_part((String) input1);
-                                    //请求接口,添加安装位置
-                                    if(list.get(position).getDeviceid()==null){
-                                        context.getInstallPart(list.get(position).getDevie_id(),(String) input1);
-                                    }else{
-                                        context.getInstallPart(list.get(position).getDeviceid(),(String) input1);
                                     }
 
-                                }
-                            }).show();
-                        }else{
-                            holder.install_location.setText(text);
-                            list.get(position).setInstall_part((String) text);
-                            //请求接口,添加安装位置
-                            if(list.get(position).getDeviceid()==null){
-                                context.getInstallPart(list.get(position).getDevie_id(),(String) text);
-                            }else{
-                                context.getInstallPart(list.get(position).getDeviceid(),(String) text);
-                            }
-                        }
+                                    @Override
+                                    public void onNegative() {
 
-                    }
-                }).show();
+                                    }
+
+                                    @Override
+                                    public void onGetInput(CharSequence input1, CharSequence input2) {
+                                        super.onGetInput(input1, input2);
+                                        holder.install_location.setText(input1);
+                                        list.get(position).setInstall_part((String) input1);
+                                        //请求接口,添加安装位置
+                                        if(list.get(position).getDeviceid()==null){
+                                            context.getInstallPart(list.get(position).getDevie_id(),(String) input1);
+                                        }else{
+                                            context.getInstallPart(list.get(position).getDeviceid(),(String) input1);
+                                        }
+
+                                    }
+                                }).show();
+                            }else{
+                                holder.install_location.setText(text);
+                                list.get(position).setInstall_part((String) text);
+                                //请求接口,添加安装位置
+                                if(list.get(position).getDeviceid()==null){
+                                    context.getInstallPart(list.get(position).getDevie_id(),(String) text);
+                                }else{
+                                    context.getInstallPart(list.get(position).getDeviceid(),(String) text);
+                                }
+                            }
+
+                        }
+                    }).show();
+                }
+
             }
         });
         holder.dev_delete.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +178,9 @@ public class EditDeviceAdapter extends BaseRecyclerAdapter<EditDeviceAdapter.Vie
             install_location=itemView.findViewById(R.id.install_location);
             choose_loc=itemView.findViewById(R.id.choose_loc);
             bind_time=itemView.findViewById(R.id.bind_time);
+            if(!canedit){
+                dev_delete.setVisibility(View.GONE);
+            }
         }
     }
 }

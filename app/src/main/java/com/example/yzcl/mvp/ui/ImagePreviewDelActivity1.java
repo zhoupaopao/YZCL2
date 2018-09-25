@@ -35,14 +35,20 @@ import com.lzy.imagepicker.R;
  * ================================================
  */
 public class ImagePreviewDelActivity1 extends ImagePreviewBaseActivity1 implements View.OnClickListener {
-
+    private boolean canedit=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         @SuppressLint("WrongViewCast") ImageView mBtnDel = (ImageView) findViewById(com.lzy.imagepicker.R.id.btn_del);
         mBtnDel.setOnClickListener(this);
-        mBtnDel.setVisibility(View.VISIBLE);
+        checkqx();
+        if(canedit){
+            mBtnDel.setVisibility(View.VISIBLE);
+        }else{
+            mBtnDel.setVisibility(View.GONE);
+        }
+
         topBar.findViewById(com.lzy.imagepicker.R.id.btn_back).setOnClickListener(this);
 
         mTitleCount.setText(getString(com.lzy.imagepicker.R.string.preview_image_count, mCurrentPosition + 1, mImageItems.size()));
@@ -55,7 +61,15 @@ public class ImagePreviewDelActivity1 extends ImagePreviewBaseActivity1 implemen
             }
         });
     }
-
+    private void checkqx() {
+        String list_Jurisdiction = getSharedPreferences("YZCL",MODE_PRIVATE).getString("list_Jurisdiction", "");
+        String[] list_jur = list_Jurisdiction.split(",");
+        for (int i = 0; i < list_jur.length; i++) {
+            if (list_jur[i].equals("203")) {
+                canedit = true;
+            }
+        }
+    }
     @Override
     public void onClick(View v) {
         int id = v.getId();

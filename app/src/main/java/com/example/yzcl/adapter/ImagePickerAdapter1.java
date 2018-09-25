@@ -39,6 +39,7 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
     private OnRecyclerViewItemClickListener listener;
     private boolean isAdded;   //是否额外添加了最后一个图片
     private int nowpos=0;
+    private boolean canedit=false;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -72,6 +73,16 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
         this.mInflater = LayoutInflater.from(mContext);
         nowpos=0;
         setImages(data);
+        checkqx();
+    }
+    private void checkqx() {
+        String list_Jurisdiction = mContext.getSharedPreferences("YZCL",mContext.MODE_PRIVATE).getString("list_Jurisdiction", "");
+        String[] list_jur = list_Jurisdiction.split(",");
+        for (int i = 0; i < list_jur.length; i++) {
+            if (list_jur[i].equals("203")) {
+                canedit = true;
+            }
+        }
     }
 
     @Override
@@ -106,6 +117,9 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
             String item = mData.get(position);
             if (isAdded && position == getItemCount() - 1) {
                 iv_img.setImageResource(R.drawable.selector_image_add);
+                if(!canedit){
+                    iv_img.setVisibility(View.GONE);
+                }
                 clickPosition = AddCarActivity.IMAGE_ITEM_ADD;
             } else {
                 Glide.with(mContext).load(item).listener(new RequestListener<String, GlideDrawable>() {

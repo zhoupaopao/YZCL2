@@ -787,6 +787,7 @@
                 android:visibility="gone"
                 android:orientation="vertical">
                 <RelativeLayout
+                    android:id="@+id/add_rl"
                     android:background="@color/white"
                     android:layout_width="match_parent"
                     android:paddingLeft="5dp"
