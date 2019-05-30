@@ -2,6 +2,7 @@ package com.example.yzcl.mvp.ui;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
@@ -10,6 +11,8 @@ import com.example.yzcl.utils.GlideImageLoader1;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +49,7 @@ public class MyApplication extends Application {
         SDKInitializer.setCoordType(CoordType.BD09LL);
 
         app=this;
-
+        disableAPIDialog();
         String[] urls = getResources().getStringArray(R.array.url);
         String[] tips = getResources().getStringArray(R.array.title);
         List list = Arrays.asList(urls);
@@ -56,6 +59,20 @@ public class MyApplication extends Application {
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
         initImagePicker();
+    }
+    private void disableAPIDialog(){
+        if (Build.VERSION.SDK_INT < 28)return;
+        try {
+            Class clazz = Class.forName("android.app.ActivityThread");
+            Method currentActivityThread = clazz.getDeclaredMethod("currentActivityThread");
+            currentActivityThread.setAccessible(true);
+            Object activityThread = currentActivityThread.invoke(null);
+            Field mHiddenApiWarningShown = clazz.getDeclaredField("mHiddenApiWarningShown");
+            mHiddenApiWarningShown.setAccessible(true);
+            mHiddenApiWarningShown.setBoolean(activityThread, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void initImagePicker() {
         ImagePicker imagePicker = ImagePicker.getInstance();

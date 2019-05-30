@@ -433,8 +433,19 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
                 String htmlStr = response.body().string();
                 Log.i("onResponse: ", htmlStr);
                 JSONObject jsonObject2 = JSONObject.parseObject(htmlStr);
+                if(!jsonObject2.getBoolean("success")){
+                    dialog.dialog.dismiss();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //放在UI线程弹Toast
+                            Toast.makeText(BindDeviceActivity.this,"图片上传异常",Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
+                }else{
+                    lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
 //                Log.i("result", "http://ring.thinghigh.cn"+htmlStr);
 //                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) JSON.parse(htmlStr);
 //                com.alibaba.fastjson.JSONObject datamsg = jsonObject.getJSONObject("data");
@@ -443,25 +454,25 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 ////                Toast.makeText(ChooseUpPicActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
 //                final String IMAGE_URL = img_name;
 //                Log.i("result", IMAGE_URL);
-                //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
+                    //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
 
-                if (imgpos == selImageList.size() - 1) {
-                    //不能传了
-                    dialog.dialog.dismiss();
-                    //请求新增接口
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //放在UI线程弹Toast
-                            addCar();
-                        }
-                    });
+                    if (imgpos == selImageList.size() - 1) {
+                        //不能传了
+                        dialog.dialog.dismiss();
+                        //请求新增接口
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //放在UI线程弹Toast
+                                addCar();
+                            }
+                        });
 
-                } else {
-                    imgpos = imgpos + 1;
-                    uploadMultiFile(selImageList.get(imgpos).path);
-                }
+                    } else {
+                        imgpos = imgpos + 1;
+                        uploadMultiFile(selImageList.get(imgpos).path);
+                    }
 
 //                Handler handler = new Handler(Looper.getMainLooper());
 //                handler.post(new Runnable() {
@@ -471,6 +482,8 @@ public class BindDeviceActivity extends BaseActivity implements View.OnClickList
 //                        Toast.makeText(BindDeviceActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
 //                    }
 //                });
+                }
+
 
             }
         });

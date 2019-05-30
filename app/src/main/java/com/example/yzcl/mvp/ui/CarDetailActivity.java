@@ -1123,7 +1123,39 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
                 Log.i("onResponse: ", htmlStr);
                 JSONObject jsonObject2 = JSONObject.parseObject(htmlStr);
 
-                lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
+
+                if(!jsonObject2.getBoolean("success")){
+                    dialog.dialog.dismiss();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //放在UI线程弹Toast
+                            Toast.makeText(CarDetailActivity.this,"图片上传异常",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    lasturl.add("http://101.37.119.32:20209/" + jsonObject2.getJSONArray("list").getJSONObject(0).getString("fullname"));
+                    if (imgpos == images.size() - 1) {
+                        //不能传了
+                        dialog.dialog.dismiss();
+                        //请求新增接口
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //放在UI线程弹Toast
+                                selImageList.addAll(lasturl);
+                                adapter.setImages(selImageList);
+                            }
+                        });
+
+                    } else {
+                        Log.i(TAG, "onResponse: "+imgpos+"/"+images.get(imgpos).path);
+                        imgpos = imgpos + 1;
+                        uploadMultiFile(images.get(imgpos).path);
+                    }
+                }
 //                Log.i("result", "http://ring.thinghigh.cn"+htmlStr);
 //                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) JSON.parse(htmlStr);
 //                com.alibaba.fastjson.JSONObject datamsg = jsonObject.getJSONObject("data");
@@ -1134,25 +1166,7 @@ public class CarDetailActivity extends BaseActivity implements ImagePickerAdapte
 //                Log.i("result", IMAGE_URL);
                 //这个是个子线程，不能在子线程里面弹出toast，需要到主线程中去
 
-                if (imgpos == images.size() - 1) {
-                    //不能传了
-                    dialog.dialog.dismiss();
-                    //请求新增接口
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //放在UI线程弹Toast
-                            selImageList.addAll(lasturl);
-                            adapter.setImages(selImageList);
-                        }
-                    });
 
-                } else {
-                    Log.i(TAG, "onResponse: "+imgpos+"/"+images.get(imgpos).path);
-                    imgpos = imgpos + 1;
-                    uploadMultiFile(images.get(imgpos).path);
-                }
 
 //                Handler handler = new Handler(Looper.getMainLooper());
 //                handler.post(new Runnable() {

@@ -494,12 +494,16 @@ public class VehicleMonitoringActivity extends CheckPermissionsActivity {
 
 //                    carlist.setNestedScrollingEnabled(false);
                     carlist.setAdapter(adapter);
+                    Log.i("carDetailBeanArrayList", carDetailBeanArrayList.toString());
                     carlist.addOnItemTouchListener(new RecyclerItemClickListener(VehicleMonitoringActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
                             if(!Constant.isNetworkConnected(VehicleMonitoringActivity.this)) {
                                 //判断网络是否可用
                                 Toast.makeText(VehicleMonitoringActivity.this, "当前网络不可用，请稍后再试", Toast.LENGTH_SHORT).show();
+                            }else if(carDetailBeanArrayList.size()==0){
+//                                Toast.makeText(VehicleMonitoringActivity.this, "是设备？", Toast.LENGTH_SHORT).show();
+                                Log.i("carDetailBeanArrayList", "是设备？");
                             }else{
                                 CarDetailBeans.CarDetailBean carSearchBean= carDetailBeanArrayList.get(position);
                                 //点击具体的车辆

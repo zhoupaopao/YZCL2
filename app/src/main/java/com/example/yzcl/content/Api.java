@@ -31,8 +31,8 @@ public class Api {
     //用于存放各种接口
     public static final String GET_PROVINCE_CITY ="http://m1api.chetxt.com:8083/DataLib.asmx/Json_GetProvinceCity";
 //    http://101.37.119.32:20200//operation/v1/monitor/queVehicleListForSea?token
-    public  static  String MonitorUrl="http://101.37.119.32:20200/";//测试服
-//    public  static  String MonitorUrl="http://47.98.146.91:20200/";//正式服
+//    public  static  String MonitorUrl="http://101.37.119.32:20200/";//测试服
+    public  static  String MonitorUrl="http://47.98.146.91:20200/";//正式服
     //模糊搜索设备名车架号
     public static final String queVehicleListForSea=MonitorUrl+"/operation/v1/monitor/queVehicleListForSea";
     //获取车辆信息

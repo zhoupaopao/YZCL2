@@ -2,6 +2,7 @@ package com.example.yzcl.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -19,6 +21,7 @@ import com.example.yzcl.mvp.ui.CarDetailActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,6 +146,13 @@ public class ImagePickerAdapter1 extends RecyclerView.Adapter<ImagePickerAdapter
                         return false;
                     }
                 }).into(iv_img);
+
+//                Glide.with(activity)                             //配置上下文
+//                        .load(Uri.fromFile(new File(path)))      //设置图片路径(fix #8,文件名包含%符号 无法识别和显示)
+//                        .error(R.mipmap.default_image)           //设置错误图片
+//                        .placeholder(R.mipmap.default_image)     //设置占位图片
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL)//缓存全尺寸
+//                        .into(imageView);
 //                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item, iv_img, 0, 0);
 //                Log.i("bind: ", position+"");
                 clickPosition = position;
